@@ -1,2 +1,5 @@
 .env
 venv/
+.bashrc
+runGame.bat
+.vscode
