@@ -11,7 +11,9 @@ from embedBuilder import embedBuilder
 
 #Import the gameObjects
 from gameObjects.Lobby import Lobby
+from gameObjects.Theme import Theme
 
+#Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 
 intents = discord.Intents.all()
@@ -35,9 +37,11 @@ def resetFunction():
 async def on_ready():
     global home
     global noMentions, withMentions
+    global currentTheme
     home = client.get_channel(HOME_ID)
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
+    currentTheme = Theme()
     print(f"Bot Online, watching Channel {home.name}")
 
 @client.command('reset')
@@ -56,7 +60,7 @@ async def host(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, prefix, noMentions, home)
+    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
     if type(functionCall) == Lobby:
         currentLobby = functionCall
 
@@ -65,28 +69,39 @@ async def join(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.join(ctx, lobbyPassed, prefix, noMentions, home)
+    await lobbyFunctions.join(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
 
 @client.command('leave')
 async def leave(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.leave(ctx, lobbyPassed, prefix, noMentions, home)
+    await lobbyFunctions.leave(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
 
 @client.command('kick')
 async def kick(ctx, kicked:discord.Member=None):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.kick(ctx, lobbyPassed, prefix, noMentions, home, kicked)
+    await lobbyFunctions.kick(ctx, lobbyPassed, currentTheme, prefix, noMentions, home, kicked)
 
 @client.command('kickall')
 async def kickall(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.kickAll(ctx, lobbyPassed, prefix, noMentions, home)
+    await lobbyFunctions.kickAll(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
+
+@client.command('lobby')
+async def lobby(ctx):
+    if 'currentGame' in globals():
+        pass
+    else:
+        if 'currentLobby' in globals():
+            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+            await home.send(embed=embed, allowed_mentions=noMentions)
+        else:
+            await ctx.send(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
 
 
 client.run(BOT_TOKEN)

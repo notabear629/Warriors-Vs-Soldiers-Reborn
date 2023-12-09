@@ -6,3 +6,4 @@ runGame.bat
 __pycache__/
 gameObjects/__pycache__/
 gameFunctions/__pycache__/
+themeData/__pycache__/

@@ -1,10 +1,11 @@
 import discord
 from discord.ext import commands
+from themeData.defaultGameTheme import *
 
 class embedBuilder:
 
-    async def buildLobby(currentLobby, prefix):
-        returnedEmbed = discord.Embed(title = 'The Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help rules` for information on how to change the rules.', color = discord.Color.blue())
+    async def buildLobby(currentLobby, currentTheme, prefix):
+        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help rules` for information on how to change the rules.', color = discord.Color.blue())
         playerList = ''
         for player in currentLobby.users:
             playerList += f'**{player.mention}**\n'

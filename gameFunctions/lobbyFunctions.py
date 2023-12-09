@@ -5,7 +5,7 @@ from embedBuilder import embedBuilder
 
 
 class lobbyFunctions:
-    async def host(ctx, currentLobby, prefix, noMentions, home):
+    async def host(ctx, currentLobby, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
             if currentLobby != None:     
                 if ctx.message.author in currentLobby.users:
@@ -17,31 +17,31 @@ class lobbyFunctions:
                     await ctx.message.reply(f'There is already a lobby! Why not `{prefix}join` instead?')
             else:
                 currentLobby = Lobby(ctx.message.author)
-                embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await home.send(embed=embed, allowed_mentions= noMentions)
                 await home.send('Lobby Created.')
                 return currentLobby
             
-    async def join(ctx, currentLobby, prefix, noMentions, home):
+    async def join(ctx, currentLobby, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
             if  currentLobby != None:
                 if ctx.message.author in currentLobby.users:
                     await ctx.message.reply('Hey stinky, you are already in the lobby!')
                 else:
                     currentLobby.addUser(ctx.message.author)
-                    embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                     await home.send(embed=embed, allowed_mentions= noMentions)
                     await home.send(f'**{ctx.message.author.name}** has joined the Lobby.')
             else:
                 await ctx.message.reply(f'There is no active lobby. Why not create one using `{prefix}host`?')
 
-    async def leave(ctx, currentLobby, prefix, noMentions, home):
+    async def leave(ctx, currentLobby, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
             if currentLobby != None:
                 if ctx.message.author in currentLobby.users:
                     if currentLobby.host != ctx.message.author:
                         currentLobby.removeUser(ctx.message.author)
-                        embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                        embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                         await home.send(embed=embed, allowed_mentions= noMentions)
                         await home.send(f'**{ctx.message.author.name}** has left the Lobby.')
                     else:
@@ -51,7 +51,7 @@ class lobbyFunctions:
             else:
                 await ctx.message.reply(f'You can\'t leave a lobby that doesn\'t exist! There is no active lobby. You may create one using `{prefix}host`.')
     
-    async def kick(ctx, currentLobby, prefix, noMentions, home, kicked):
+    async def kick(ctx, currentLobby, currentTheme, prefix, noMentions, home, kicked):
         if home == ctx.channel:
             if kicked == None:
                 await ctx.message.reply(f'You didn\'t specify who to kick, so you kick the air! You hurt your hamstring doing so. Good job. Proper command usage is `{prefix}kick @guyYouWannaKick`.')
@@ -60,7 +60,7 @@ class lobbyFunctions:
                     if ctx.message.author == currentLobby.host:
                         if kicked in currentLobby.users:
                             currentLobby.removeUser(kicked)
-                            embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                             await home.send(embed=embed, allowed_mentions= noMentions)
                             await home.send(f'**{kicked.name}** has been kicked back to where they came from.')
                         else:
@@ -70,12 +70,12 @@ class lobbyFunctions:
                 else:
                     await ctx.message.reply(f'Hey, you bully! You can\'t kick a player out of a lobby that doesn\'t exist! At least have the decency to create a lobby using `{prefix}host` before kicking poor {kicked.name}.')
 
-    async def kickAll(ctx, currentLobby, prefix, noMentions, home):
+    async def kickAll(ctx, currentLobby, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
             if currentLobby != None:
                 if ctx.message.author == currentLobby.host:
                     currentLobby.clearUsers()
-                    embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                     await home.send(embed=embed, allowed_mentions= noMentions)
                     await home.send('The lobby has been rumbled.')
                 else:
