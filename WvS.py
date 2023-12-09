@@ -12,6 +12,8 @@ from embedBuilder import embedBuilder
 #Import the gameObjects
 from gameObjects.Lobby import Lobby
 
+from gameFunctions.lobbyFunctions import lobbyFunctions
+
 intents = discord.Intents.all()
 intents.members = True
 
@@ -51,34 +53,40 @@ async def reset(ctx):
 @client.command('host')
 async def host(ctx):
     global currentLobby
-    if home == ctx.channel:
-        if 'currentLobby' in globals():     
-            if ctx.message.author in currentLobby.users:
-                if ctx.message.author == currentLobby.host:
-                    await ctx.message.reply(f"You are already hosting a lobby. use `{prefix}reset` to close it to start a new one.")
-                else:
-                    await ctx.message.reply("Hey stinky, there's already a lobby! You're even in it!")
-            else:
-                await ctx.message.reply(f'There is already a lobby! Why not `{prefix}join` instead?')
-        else:
-            currentLobby = Lobby(ctx.message.author)
-            embed = await embedBuilder.buildLobby(currentLobby, prefix)
-            await home.send(embed=embed, allowed_mentions= noMentions)
-            await home.send('Lobby Created.')
+    lobbyPassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
+    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, prefix, noMentions, home)
+    if type(functionCall) == Lobby:
+        currentLobby = functionCall
 
 @client.command('join')
 async def join(ctx):
-    if home == ctx.channel:
-        if 'currentLobby' in globals():
-            if ctx.message.author in currentLobby.users:
-                await ctx.message.reply('Hey stinky, you are already in the lobby!')
-            else:
-                currentLobby.addUser(user)
-                embed = await embedBuilder.buildLobby(currentLobby, prefix)
-                await home.send(embed=embed, allowed_mentions= noMentions)
-                await home.send(f'**{ctx.message.author.name}** has joined the Lobby.')
-        else:
-            await ctx.message.reply(f'There is no active lobby. Why not create one using `{prefix}host`?')
+    lobbyPassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
+    await lobbyFunctions.join(ctx, lobbyPassed, prefix, noMentions, home)
+
+@client.command('leave')
+async def leave(ctx):
+    lobbyPassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
+    await lobbyFunctions.leave(ctx, lobbyPassed, prefix, noMentions, home)
+
+@client.command('kick')
+async def kick(ctx, kicked:discord.Member=None):
+    lobbyPassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
+    await lobbyFunctions.kick(ctx, lobbyPassed, prefix, noMentions, home, kicked)
+
+@client.command('kickall')
+async def kickall(ctx):
+    lobbyPassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
+    await lobbyFunctions.kickAll(ctx, lobbyPassed, prefix, noMentions, home)
 
 
 client.run(BOT_TOKEN)
