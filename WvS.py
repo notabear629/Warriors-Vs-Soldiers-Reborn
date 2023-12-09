@@ -43,6 +43,8 @@ async def reset(ctx):
     if home == ctx.channel:
         if 'currentLobby' in globals():
             resetFunction()
+            embed = await embedBuilder.buildReset(prefix)
+            await home.send(embed=embed)
         else:
             await home.send('There is no lobby to reset.')
 
@@ -64,6 +66,19 @@ async def host(ctx):
             await home.send(embed=embed, allowed_mentions= noMentions)
             await home.send('Lobby Created.')
 
+@client.command('join')
+async def join(ctx):
+    if home == ctx.channel:
+        if 'currentLobby' in globals():
+            if ctx.message.author in currentLobby.users:
+                await ctx.message.reply('Hey stinky, you are already in the lobby!')
+            else:
+                currentLobby.addUser(user)
+                embed = await embedBuilder.buildLobby(currentLobby, prefix)
+                await home.send(embed=embed, allowed_mentions= noMentions)
+                await home.send(f'**{ctx.message.author.name}** has joined the Lobby.')
+        else:
+            await ctx.message.reply(f'There is no active lobby. Why not create one using `{prefix}host`?')
 
 
 client.run(BOT_TOKEN)

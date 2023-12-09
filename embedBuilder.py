@@ -12,4 +12,5 @@ class embedBuilder:
         return returnedEmbed
     
     async def buildReset(prefix):
-        returnedEmbed = discord.Embed(title = 'The Game Lobby has been Reset.', description= 'Star')
+        returnedEmbed = discord.Embed(title = 'The Game Lobby has been Reset.', description= f'Start a new lobby by using `{prefix}host`')
+        return returnedEmbed

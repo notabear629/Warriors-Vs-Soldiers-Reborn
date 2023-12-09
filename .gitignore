@@ -3,3 +3,5 @@ venv/
 .bashrc
 runGame.bat
 .vscode
+__pycache__/
+gameObjects/__pycache__/
