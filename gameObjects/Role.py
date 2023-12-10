@@ -26,6 +26,9 @@ class Role:
     #Combine all warrior groups to make a complete warrior list
     warriorRoles = warriorGroupWarchief + warriorGroupDefault
 
+    #Combine all Roles with getInfo functions to one list
+    infoMessageRoles = soldierGroupCoordinate + warriorRoles
+
     def __init__(self, roleInfo):
         self.id = roleInfo['roleID']
         self.name = roleInfo['name']

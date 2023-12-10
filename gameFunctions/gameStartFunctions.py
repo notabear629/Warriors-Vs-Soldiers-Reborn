@@ -8,6 +8,7 @@ from gameObjects.Player import Player
 from gameObjects.Game import Game
 from gameObjects.Role import Role
 
+from dataFunctions.databaseManager import databaseManager
 
 from embedBuilder import embedBuilder
 
@@ -18,6 +19,7 @@ class gameStartFunctions:
                 if currentLobby != None:
                     if ctx.message.author == currentLobby.host:
                         game = await gameStartFunctions.createGame(currentLobby, currentTheme, client)
+                        await gameStartFunctions.sendRoleMessages(game, currentTheme, client)
                         return game
                     else:
                         await ctx.message.reply('Only the host may start the game!')
@@ -71,9 +73,6 @@ class gameStartFunctions:
             returnedRoles.append(Role(roleInfo))
         return returnedRoles
 
-        
-        
-
     async def getWarriorRoles(warriorCount, currentTheme, client):
         roleNames = ['Zeke']
         optionalWarriorRoles = Role.warriorGroupOptional
@@ -92,6 +91,53 @@ class gameStartFunctions:
                 roleInfo['emoji'] = client.get_emoji(roleInfo['emoji'])
             returnedRoles.append(Role(roleInfo))
         return returnedRoles
+    
+    async def sendRoleMessages(currentGame, currentTheme, client):
+        for player in currentGame.players:
+            await gameStartFunctions.sendRoleMessage(currentGame, currentTheme, player, client)
+
+    async def sendRoleMessage(currentGame, currentTheme, player, client):
+        if player.role.team == 'Soldiers':
+            messageColor = currentTheme.soldierColor
+            messageThumbnail = currentTheme.soldierThumbnail
+            messageDefault = currentTheme.soldierDefaultMessage
+            teamName = currentTheme.soldierPlural
+        elif player.role.team == 'Warriors':
+            messageColor = currentTheme.warriorColor
+            messageThumbnail = currentTheme.warriorThumbnail
+            messageDefault = currentTheme.warriorDefaultMessage
+            teamName = currentTheme.warriorPlural
+        elif player.role.team == 'Wildcards':
+            messageColor = currentTheme.wildcardColor
+            messageThumbnail = currentTheme.wildcardThumbnail
+            messageDefault = currentTheme.wildcardMessage
+            teamName = 'Wildcard'
+        
+        roleMessage = f'You are **{player.role.name}**\n\n'
+        if player.role.id in Role.soldierGroupCoordinate or player.role.id in Role.warriorGroupWarchief:
+            roleMessage += f'You are the Team Captain of the '
+        elif player.role.team != 'Wildcards':
+            roleMessage += f'You are on the side of the '
+        else:
+            roleMessage += f'You are a '
+        roleMessage += f'**{teamName}**.\n\n'
+        roleMessage += messageDefault + '\n\n'
+        roleMessage += player.role.roleMessage +'\n\n'
+
+        if player.role.id in Role.infoMessageRoles:
+            if player.role.team == 'Warriors':
+                functionCall = getattr(currentTheme, f'getWarriorInfo')
+                roleMessage += functionCall(currentGame, player)
+            else:
+                functionCall = getattr(currentTheme, f'get{player.role.id}Info')
+                roleMessage += functionCall(currentGame)
+        
+        embed = await embedBuilder.buildRoleMessageEmbed(player, roleMessage, messageColor, messageThumbnail)
+        
+        user = databaseManager.searchForUser(player.user)
+        userChannel = client.get_channel(user['channelID'])
+        await userChannel.send(player.user.mention)
+        await userChannel.send(embed=embed)
 
     
 

@@ -18,6 +18,19 @@ class Theme:
         self.wallSingle = theme.wallSingle
         self.wallPlural = theme.wallPlural
 
+        #Changing Some Team Aesthetics
+        self.soldierThumbnail = theme.soldierThumbnail
+        self.warriorThumbnail = theme.warriorThumbnail
+        self.wildcardThumbnail = theme.wildcardThumbnail
+        self.soldierColor = theme.soldierColor
+        self.warriorColor = theme.warriorColor
+        self.wildcardColor = theme.wildcardColor
+
+        #Changing Some Role Intro Messages
+        self.soldierDefaultMessage = theme.soldierDefaultMessage
+        self.warriorDefaultMessage = theme.warriorDefaultMessage
+        self.wildcardDefaultMessage = theme.wildcardDefaultMessage
+
 
         #Changing the Soldier Role Themes
         self.Eren = theme.Eren.roleDict
@@ -26,6 +39,10 @@ class Theme:
         #Changing the Warrior Role Themes
         self.Zeke = theme.Zeke.roleDict
         self.Warrior = theme.Warrior.roleDict
+
+        #Changing info getter functions
+        self.getErenInfo = theme.getErenInfo
+        self.getWarriorInfo = theme.getWarriorInfo
 
 
 

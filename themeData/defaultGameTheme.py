@@ -1,9 +1,11 @@
 #Please pay close attention to instructions when creating new theme classes.
 #When creating new themes, you should only be trying to make COSMETIC changes. To truly add more roles or functionality to the game, you will need to do a lot more than change the theme.
 #However, if you do create a new role, you will have to give them a theme in any themes you are using.
-
 import os
 from dotenv import load_dotenv
+import discord
+from discord.ext import commands
+import random
 
 #CHANGE THIS CLASS NAME. Your new file and your new class should NOT be named defaultGameTheme, each theme added should have different names.
 class defaultGameTheme:
@@ -16,6 +18,18 @@ class defaultGameTheme:
     warriorPlural = 'Warriors'
     wallSingle = 'Wall'
     wallPlural = 'Walls'
+
+    soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
+    warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
+    wildcardThumbnail ='https://cdn.discordapp.com/emojis/934489212277882932.webp?size=128&quality=lossless'
+
+    soldierColor = discord.Color.blue()
+    warriorColor = discord.Color.red()
+    wildcardColor = discord.Color.gold()
+
+    soldierDefaultMessage = 'Work with your fellow Soldiers to successfully complete 3 expeditions and reach the basement. Remember to conceal the true identity of Eren! Securing the walls is not enough, after the rounds of expeditions, the Warriors will have one last shot of winning if they can successfully identity Eren!'
+    warriorDefaultMessage = 'Work with your fellow Warriors to try to knock down the walls before the Soldiers can reach the basement. Be mindful of how the Soldiers behave, even if you fail to destroy the walls, you will have one last chance of victory if you can successfully identify Eren!'
+    wildcardDefaultMessage = 'Wildcards are neither Soldiers nor Warriors, so the roles behave much differently. Shoot for your personal objective to the best of your abilities so that you may bask in the eternal glory of winning your own way!'
 
     global prefix
 
@@ -48,7 +62,7 @@ class defaultGameTheme:
 
         #The roleMessage is the part of the message the bot sends that gives specific information regarding the role itself when you are assigned a role.
         #You may change any role message as you wish.
-        roleDict['roleMessage'] = f'You know the identity of all of the other Warriors, except for Zeke. Remember to not make the fact you know who the Warriors are obvious, and do your best to protect your identity. If the Warriors can successfully identify you, the Soldiers will lose!\n\n'
+        roleDict['roleMessage'] = f'You know the identity of all of the other Warriors, except for Zeke. Remember to not make the fact you know who the Warriors are obvious, and do your best to protect your identity. If the Warriors can successfully identify you, the Soldiers will lose!'
 
         #The gameRole is basically a way to relate what the job of this role is without making use of any theme. Remember how Entropi's bot was theme-less, this would essentially be what this role might be called in Entropi's bot.
         #You *can* change these, but I would recommend not to.
@@ -74,7 +88,7 @@ class defaultGameTheme:
 
         roleDict['emoji'] = ':shield:'
 
-        roleDict['roleMessage'] = f'You are an average Soldier. You do not possess any special abilities or supplemental information.\n\n'
+        roleDict['roleMessage'] = f'You are an average Soldier. You do not possess any special abilities or supplemental information.'
 
         roleDict['gameRole'] = ':shield:Default Soldier:shield:'
 
@@ -93,7 +107,7 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 685785857617035327
 
-        roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You also may `{prefix}kidnap @mention` Eren at any time, but be warned, this will end the game just like a regular kidnap! In order to unlock this ability, first use `{prefix}unlock` in this DM, then you will be able to kidnap Eren.\n\n'
+        roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You also may `{prefix}kidnap @mention` Eren at any time, but be warned, this will end the game just like a regular kidnap! In order to unlock this ability, first use `{prefix}unlock` in this DM, then you will be able to kidnap Eren.'
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
 
@@ -113,8 +127,31 @@ class defaultGameTheme:
 
         roleDict['emoji'] = ':crossed_swords:'
 
-        roleDict['roleMessage'] = f'You are an average Warrior. You do not possess any special abilities to aid you in breaking the walls.\n\n'
+        roleDict['roleMessage'] = f'You are an average Warrior. You do not possess any special abilities to aid you in breaking the walls.'
 
         roleDict['gameRole'] = ':crossed_swords:Default Warrior:crossed_swords:'
 
         roleDict['helpInfo'] = f'The Warrior role is merely just a default Warrior, they essentially have no role.'
+
+
+    def getErenInfo(CurrentGame):
+        erenInfo = 'The Warriors are:\n'
+        warriorList = CurrentGame.warriors.copy()
+        warriorList = random.sample(warriorList, len(warriorList))
+        for warrior in warriorList:
+            if warrior.role.id != 'Zeke':
+                erenInfo += f'**{warrior.user.name}**'
+            if warriorList.index(warrior) != len(warriorList) -1:
+                erenInfo += '\n'
+        return erenInfo
+    
+    def getWarriorInfo(CurrentGame, player):
+        warriorInfo = 'Your fellow Warriors are:\n'
+        warriorList = CurrentGame.warriors.copy()
+        warriorList = random.sample(warriorList, len(warriorList))
+        for warrior in warriorList:
+            if player.user.name != warrior.user.name:
+                warriorInfo += f'**{warrior.user.name}**'
+            if warriorList.index(warrior) != len(warriorList) - 1:
+                warriorInfo += '\n'
+        return warriorInfo
