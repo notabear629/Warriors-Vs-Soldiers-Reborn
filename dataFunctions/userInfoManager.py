@@ -3,8 +3,10 @@ from discord.ext import commands
 
 from dataFunctions.databaseManager import databaseManager
 
+from embedBuilder import embedBuilder
+
 class userInfoManager:
-    async def userRegistration(ctx, user, homeServer, userCategory):
+    async def userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix):
         userValidation = databaseManager.searchForUser(user)
         if userValidation == None:
             newPersonalRole = await homeServer.create_role(name = f'role-{user.name}')
@@ -14,7 +16,8 @@ class userInfoManager:
                 newPersonalRole: discord.PermissionOverwrite(read_messages=True)
             }
             channel = await homeServer.create_text_channel(name = f'channel-{user.name}', overwrites = overwrites, category = userCategory)
-            await channel.send(f'{user.mention}, oi fucker')
+            embed = await embedBuilder.buildRegistrationWelcome(user, homeServer, currentTheme, prefix)
+            await channel.send(embed=embed)
             userInformation = {'userID' : user.id, 'userName': user.name, 'roleID' : newPersonalRole.id, 'channelID' : channel.id}
             databaseManager.addUser(userInformation)
 
@@ -62,7 +65,7 @@ class userInfoManager:
             await userRole.edit(name=f'role-{user.name}')
             await ctx.reply(f'{user.mention}, your role name has been successfully updated to its default name.')
     
-    async def fixUser(ctx, client, user, homeServer, userCategory):
+    async def fixUser(ctx, client, user, homeServer, userCategory, currentTheme, prefix):
         userValidation = databaseManager.searchForUser(user)
         userRoleID = userValidation['roleID']
         userRole = homeServer.get_role(userRoleID)
@@ -79,7 +82,8 @@ class userInfoManager:
         userChannel = client.get_channel(userChannelID)
         if userChannel == None:
             userChannel = await homeServer.create_text_channel(name = f'channel-{user.name}', overwrites = overwrites, category = userCategory)
-            await userChannel.send(f'{user.mention}, oi fucker')
+            embed = await embedBuilder.buildRegistrationWelcome(user, homeServer, currentTheme, prefix)
+            await channel.send(embed=embed)
         else:
             await userChannel.edit(overwrites=overwrites)
         userInformation = {'userName': user.name, 'roleID' : userRole.id, 'channelID' : userChannel.id}

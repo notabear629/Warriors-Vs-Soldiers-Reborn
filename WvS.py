@@ -67,7 +67,7 @@ async def host(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     functionCall = await lobbyFunctions.host(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
     if type(functionCall) == Lobby:
         currentLobby = functionCall
@@ -77,7 +77,7 @@ async def join(ctx):
     lobbyPassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await lobbyFunctions.join(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
 
 @client.command('leave')
@@ -114,28 +114,28 @@ async def lobby(ctx):
 
 @client.command('color')
 async def color(ctx, *, colorInput=None):
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeColor(ctx, ctx.message.author, homeServer, colorInput)
 
 @client.command('colour')
 async def colour(ctx, *, colorInput=None):
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeColor(ctx, ctx.message.author, homeServer, colorInput)
 
 @client.command('renamechannel')
 async def renamechannel(ctx, *, channelName=None):
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeChannelName(ctx, client, ctx.message.author, homeServer, channelName)
 
 @client.command('renamerole')
 async def renamerole(ctx, *, roleName=None):
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeRoleName(ctx, ctx.message.author, homeServer, roleName)
 
 @client.command('fixme')
 async def fixme(ctx):
-    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory)
-    await userInfoManager.fixUser(ctx, client, ctx.message.author, homeServer, userCategory)
+    await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
+    await userInfoManager.fixUser(ctx, client, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
 
 
 client.run(BOT_TOKEN)
