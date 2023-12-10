@@ -83,7 +83,7 @@ class userInfoManager:
         if userChannel == None:
             userChannel = await homeServer.create_text_channel(name = f'channel-{user.name}', overwrites = overwrites, category = userCategory)
             embed = await embedBuilder.buildRegistrationWelcome(user, homeServer, currentTheme, prefix)
-            await channel.send(embed=embed)
+            await userChannel.send(embed=embed)
         else:
             await userChannel.edit(overwrites=overwrites)
         userInformation = {'userName': user.name, 'roleID' : userRole.id, 'channelID' : userChannel.id}
