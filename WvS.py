@@ -12,9 +12,12 @@ from embedBuilder import embedBuilder
 #Import the gameObjects
 from gameObjects.Lobby import Lobby
 from gameObjects.Theme import Theme
+from gameObjects.Game import Game
+from gameObjects.Player import Player
 
 #Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
+from gameFunctions.gameStartFunctions import gameStartFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -34,9 +37,14 @@ client = discord.Client(intents=intents)
 client = commands.Bot(command_prefix = prefix, intents = intents, help_command = None, case_insensitive=True)
 
 def resetFunction():
-    global currentLobby
+    global currentLobby, currentGame
     if 'currentLobby' in globals():
         del currentLobby
+    if 'currentGame' in globals():
+        for player in currentGame.players:
+            del player.role
+            del player
+        del currentGame
 
 @client.event
 async def on_ready():
@@ -55,9 +63,12 @@ async def on_ready():
 async def reset(ctx):
     if home == ctx.channel:
         if 'currentLobby' in globals():
-            resetFunction()
-            embed = await embedBuilder.buildReset(prefix)
-            await home.send(embed=embed)
+            if 'currentGame' in globals() and currentLobby.host != ctx.message.author:
+                await home.send('Only the host may reset the game once the game has begun!')
+            else:
+                resetFunction()
+                embed = await embedBuilder.buildReset(prefix)
+                await home.send(embed=embed)
         else:
             await home.send('There is no lobby to reset.')
 
@@ -65,41 +76,56 @@ async def reset(ctx):
 async def host(ctx):
     global currentLobby
     lobbyPassed = None
+    gamePassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
+    if 'currentGame' in globals():
+        gamePassed = currentGame
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
+    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
     if type(functionCall) == Lobby:
         currentLobby = functionCall
 
 @client.command('join')
 async def join(ctx):
     lobbyPassed = None
+    gamePassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
+    if 'currentGame' in globals():
+        gamePassed = currentGame
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    await lobbyFunctions.join(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
+    await lobbyFunctions.join(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
 
 @client.command('leave')
 async def leave(ctx):
     lobbyPassed = None
+    gamePassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.leave(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
+    if 'currentGame' in globals():
+        gamePassed = currentGame
+    await lobbyFunctions.leave(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
 
 @client.command('kick')
 async def kick(ctx, kicked:discord.Member=None):
     lobbyPassed = None
+    gamePassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.kick(ctx, lobbyPassed, currentTheme, prefix, noMentions, home, kicked)
+    if 'currentGame' in globals():
+        gamePassed = currentGame
+    await lobbyFunctions.kick(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home, kicked)
 
 @client.command('kickall')
 async def kickall(ctx):
     lobbyPassed = None
+    gamePassed = None
     if 'currentLobby' in globals():
         lobbyPassed = currentLobby
-    await lobbyFunctions.kickAll(ctx, lobbyPassed, currentTheme, prefix, noMentions, home)
+    if 'currentGame' in globals():
+        gamePassed = currentGame
+    await lobbyFunctions.kickAll(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
 
 @client.command('lobby')
 async def lobby(ctx):
@@ -136,6 +162,37 @@ async def renamerole(ctx, *, roleName=None):
 async def fixme(ctx):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.fixUser(ctx, client, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
+
+@client.command('start')
+async def start(ctx):
+    global currentGame
+    passedLobby = None
+    passedGame = None
+    if 'currentLobby' in globals():
+        passedLobby = currentLobby
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    newGame = await gameStartFunctions.start(ctx, passedLobby, passedGame, home, prefix, currentTheme, client)
+    if newGame != None:
+        currentGame = newGame
+        message = 'TEST MESSAGE: \n'
+        for elem in currentGame.players:
+            message += f'{elem.user.name} : {elem.role.emoji}{elem.role.name}{elem.role.emoji}\n'
+        await home.send(message)
+
+
+#TEST COMMAND ONLY
+@client.command('fill')
+async def fill(ctx):
+    bozos = [663576295682080789, 685709582118551552, 663577459647840259, 650144793296633887]
+    bozoUsers = []
+    for bozo in bozos:
+        user = homeServer.get_member(bozo)
+        await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
+        bozoUsers.append(user)
+    await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
+
+
 
 
 client.run(BOT_TOKEN)
