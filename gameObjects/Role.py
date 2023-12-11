@@ -12,7 +12,7 @@ class Role:
     soldierGroupOptional = []
 
     #We combine all the previous groups to create a complete list of soldier roles
-    soldierRoles = soldierGroupCoordinate + soldierGroupDefault
+    soldierRoles = soldierGroupCoordinate + soldierGroupOptional + soldierGroupDefault
 
     #The Warchief roles. Same business as the Coordinate roles, but for the Warriors.
     warriorGroupWarchief = ['Zeke']
@@ -24,7 +24,7 @@ class Role:
     warriorGroupOptional = []
 
     #Combine all warrior groups to make a complete warrior list
-    warriorRoles = warriorGroupWarchief + warriorGroupDefault
+    warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault
 
     #Combine all Roles with getInfo functions to one list
     infoMessageRoles = soldierGroupCoordinate + warriorRoles

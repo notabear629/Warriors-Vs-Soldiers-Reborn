@@ -129,14 +129,13 @@ async def kickall(ctx):
 
 @client.command('lobby')
 async def lobby(ctx):
+    lobbyPassed = None
+    gamePassed = None
+    if 'currentLobby' in globals():
+        lobbyPassed = currentLobby
     if 'currentGame' in globals():
-        pass
-    else:
-        if 'currentLobby' in globals():
-            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-            await home.send(embed=embed, allowed_mentions=noMentions)
-        else:
-            await ctx.send(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
+        gamePassed = currentGame
+    await lobbyFunctions.lobby(ctx, home, lobbyPassed, currentTheme, gamePassed, prefix, noMentions)
 
 @client.command('color')
 async def color(ctx, *, colorInput=None):
@@ -176,6 +175,24 @@ async def start(ctx):
     if newGame != None:
         currentGame = newGame
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
+        await midGameFunctions.showRoles(currentGame, currentTheme, home)
+
+@client.command('status')
+async def status(ctx):
+    passedLobby = None
+    passedGame = None
+    if 'currentLobby' in globals():
+        passedLobby = currentLobby
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await midGameFunctions.status(ctx, passedLobby, passedGame, currentTheme, home, prefix, noMentions)
+
+@client.command('roles')
+async def roles(ctx):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await midGameFunctions.roles(ctx, passedGame, currentTheme, home)
 
 
 #TEST COMMAND ONLY

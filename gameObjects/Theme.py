@@ -4,8 +4,6 @@ from discord.ext import commands
 
 class Theme:
 
-    emojiThemes = ['emojiWinMarkerOne', 'emojiWinMarkerTwo', 'emojiWinMarkerThree', 'emojiSpacer', 'emojiRoundVictoryMarker', 'emojiVictoryMarker']
-
     def __init__(self):
         #Change this to the default theme you want the bot to initialize on
         defaultTheme = defaultGameTheme
@@ -18,8 +16,10 @@ class Theme:
         self.gameName = theme.gameName
         self.soldierSingle = theme.soldierSingle
         self.soldierPlural = theme.soldierPlural
+        self.emojiSoldier = theme.emojiSoldier
         self.warriorSingle = theme.warriorSingle
         self.warriorPlural = theme.warriorPlural
+        self.emojiWarrior = theme.emojiWarrior
         self.wallSingle = theme.wallSingle
         self.wallPlural = theme.wallPlural
 
@@ -56,6 +56,9 @@ class Theme:
         self.emojiWinMarker = theme.emojiWinMarker
         self.emojiFailMarker = theme.emojiFailMarker
         self.emojiCurrentMarker = theme.emojiCurrentMarker
+
+        #Changing some roles embed aesthetics
+        self.rolesEmbedColor = theme.rolesEmbedColor
 
         #Changing Some Role Intro Messages
         self.soldierDefaultMessage = theme.soldierDefaultMessage

@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from themeData.defaultGameTheme import *
+from gameObjects.Role import Role
+
+from gameFunctions.searchFunctions import searchFunctions
 
 class embedBuilder:
 
@@ -99,3 +102,28 @@ class embedBuilder:
                 expeditionString += '\n'
         returnedEmbed.add_field(name = currentTheme.statusExpeditions, value = expeditionString, inline = False)
         return returnedEmbed
+    
+    async def buildCurrentRoles(currentGame, currentTheme):
+        returnedEmbed = discord.Embed(title = 'Current list of roles in game', color = currentTheme.rolesEmbedColor)
+        soldierList = ''
+        for role in Role.soldierRoles:
+            search = await searchFunctions.roleIDToPlayer(currentGame, role)
+            if search != None:
+                if type(search) == list:
+                    for player in search:
+                        soldierList += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
+                else:
+                    soldierList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
+        returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}', value = soldierList, inline = False)
+        warriorList = ''
+        for role in Role.warriorRoles:
+            search = await searchFunctions.roleIDToPlayer(currentGame, role)
+            if search != None:
+                if type(search) == list:
+                    for player in search:
+                        warriorList += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
+                else:
+                    warriorList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = warriorList, inline = False)
+        return returnedEmbed
+

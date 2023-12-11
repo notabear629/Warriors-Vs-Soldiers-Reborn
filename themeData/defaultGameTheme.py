@@ -14,8 +14,10 @@ class defaultGameTheme:
     gameName = 'Warriors vs Soldiers'
     soldierSingle = 'Soldier'
     soldierPlural = 'Soldiers'
+    emojiSoldier = ':shield:'
     warriorSingle = 'Warrior'
     warriorPlural = 'Warriors'
+    emojiWarrior = ':crossed_swords:'
     wallSingle = 'Wall'
     wallPlural = 'Walls'
 
@@ -59,6 +61,9 @@ class defaultGameTheme:
     emojiWinMarker = ':shield:'
     emojiFailMarker = ':crossed_swords:'
     emojiCurrentMarker = ':horse_racing:'
+
+    #Roles embed aesthetics
+    rolesEmbedColor = discord.Color.blue()
 
     global prefix
 
