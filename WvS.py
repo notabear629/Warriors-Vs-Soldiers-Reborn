@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+from scipy.special import comb
 
 #Imports from other .py files
 
@@ -18,6 +19,7 @@ from gameObjects.Player import Player
 #Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 from gameFunctions.gameStartFunctions import gameStartFunctions
+from gameFunctions.midGameFunctions import midGameFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -41,9 +43,6 @@ def resetFunction():
     if 'currentLobby' in globals():
         del currentLobby
     if 'currentGame' in globals():
-        for player in currentGame.players:
-            del player.role
-            del player
         del currentGame
 
 @client.event
@@ -57,6 +56,7 @@ async def on_ready():
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
+    await currentTheme.resolveEmojis(client)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
 @client.command('reset')
@@ -175,10 +175,7 @@ async def start(ctx):
     newGame = await gameStartFunctions.start(ctx, passedLobby, passedGame, home, prefix, currentTheme, client)
     if newGame != None:
         currentGame = newGame
-        message = 'TEST MESSAGE: \n'
-        for elem in currentGame.players:
-            message += f'{elem.user.name} : {elem.role.emoji}{elem.role.name}{elem.role.emoji}\n'
-        await home.send(message)
+        await midGameFunctions.showStatus(currentGame, currentTheme, home)
 
 
 #TEST COMMAND ONLY
@@ -191,8 +188,6 @@ async def fill(ctx):
         await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
         bozoUsers.append(user)
     await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
-
-
 
 
 client.run(BOT_TOKEN)

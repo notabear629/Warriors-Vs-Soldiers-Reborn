@@ -31,6 +31,35 @@ class defaultGameTheme:
     warriorDefaultMessage = 'Work with your fellow Warriors to try to knock down the walls before the Soldiers can reach the basement. Be mindful of how the Soldiers behave, even if you fail to destroy the walls, you will have one last chance of victory if you can successfully identify Eren!'
     wildcardDefaultMessage = 'Wildcards are neither Soldiers nor Warriors, so the roles behave much differently. Shoot for your personal objective to the best of your abilities so that you may bask in the eternal glory of winning your own way!'
 
+    #Status Embed Aesthetics
+    winningColor = discord.Color.green()
+    neutralColor = discord.Color.gold()
+    losingColor = discord.Color.red()
+    lostColor = discord.Color.default()
+
+    statusProgress = 'Progress towards Basement'
+    statusWalls = 'Status of the Walls'
+    statusExpeditions = 'Expedition Info'
+
+    expeditionName = 'Expedition'
+    expoMembersName = 'members'
+
+    emojiWinMarkerOne = ':one:'
+    emojiWinMarkerTwo = ':two:'
+    emojiWinMarkerThree = ':three:'
+    emojiSpacer = 686015611985461307
+    emojiRoundVictoryMarker = ':white_check_mark'
+    emojiVictoryMarker = ':checkered_flag:'
+    emojiMariaExterior = ':house:'
+    emojiMariaInterior = 686009957233066004
+    emojiRoseExterior = ':bank:'
+    emojiRoseInterior = 686009957123883056
+    emojiSinaExterior = ':european_castle:'
+    emojiSinaInterior = 686009957509758996
+    emojiWinMarker = ':shield:'
+    emojiFailMarker = ':crossed_swords:'
+    emojiCurrentMarker = ':horse_racing:'
+
     global prefix
 
     prefix = os.getenv('BOT_PREFIX')

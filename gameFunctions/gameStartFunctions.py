@@ -7,6 +7,9 @@ from gameObjects.Lobby import Lobby
 from gameObjects.Player import Player
 from gameObjects.Game import Game
 from gameObjects.Role import Role
+from gameObjects.Expedition import Expedition
+
+from gameFunctions.expoFunctions import expoFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -18,7 +21,11 @@ class gameStartFunctions:
             if currentGame == None:
                 if currentLobby != None:
                     if ctx.message.author == currentLobby.host:
+                        await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
                         game = await gameStartFunctions.createGame(currentLobby, currentTheme, client)
+                        expoSize = await expoFunctions.getExpeditionSize(game)
+                        expo = Expedition(game.commanderOrder[0], expoSize, game.players)
+                        game.setExpedition(expo)
                         await gameStartFunctions.sendRoleMessages(game, currentTheme, client)
                         return game
                     else:

@@ -1,6 +1,11 @@
 from themeData.defaultGameTheme import *
+import discord
+from discord.ext import commands
 
 class Theme:
+
+    emojiThemes = ['emojiWinMarkerOne', 'emojiWinMarkerTwo', 'emojiWinMarkerThree', 'emojiSpacer', 'emojiRoundVictoryMarker', 'emojiVictoryMarker']
+
     def __init__(self):
         #Change this to the default theme you want the bot to initialize on
         defaultTheme = defaultGameTheme
@@ -26,6 +31,32 @@ class Theme:
         self.warriorColor = theme.warriorColor
         self.wildcardColor = theme.wildcardColor
 
+        #Changing some expedition embed aesthetics
+        self.winningColor = theme.winningColor
+        self.neutralColor = theme.neutralColor
+        self.losingColor = theme.losingColor
+        self.lostColor = theme.lostColor
+        self.statusProgress = theme.statusProgress
+        self.statusWalls = theme.statusWalls
+        self.statusExpeditions = theme.statusExpeditions
+        self.expeditionName = theme.expeditionName
+        self.expoMembersName = theme.expoMembersName
+        self.emojiWinMarkerOne = theme.emojiWinMarkerOne
+        self.emojiWinMarkerTwo = theme.emojiWinMarkerTwo
+        self.emojiWinMarkerThree = theme.emojiWinMarkerThree
+        self.emojiSpacer = theme.emojiSpacer
+        self.emojiRoundVictoryMarker = theme.emojiRoundVictoryMarker
+        self.emojiVictoryMarker = theme.emojiVictoryMarker
+        self.emojiMariaExterior = theme.emojiMariaExterior
+        self.emojiMariaInterior = theme.emojiMariaInterior
+        self.emojiRoseExterior = theme.emojiRoseExterior
+        self.emojiRoseInterior = theme.emojiRoseInterior
+        self.emojiSinaExterior = theme.emojiSinaExterior
+        self.emojiSinaInterior = theme.emojiSinaInterior
+        self.emojiWinMarker = theme.emojiWinMarker
+        self.emojiFailMarker = theme.emojiFailMarker
+        self.emojiCurrentMarker = theme.emojiCurrentMarker
+
         #Changing Some Role Intro Messages
         self.soldierDefaultMessage = theme.soldierDefaultMessage
         self.warriorDefaultMessage = theme.warriorDefaultMessage
@@ -44,6 +75,13 @@ class Theme:
         self.getErenInfo = theme.getErenInfo
         self.getWarriorInfo = theme.getWarriorInfo
 
+    async def resolveEmojis(self, client):
+        for key, value in vars(self).items():
+            if key.startswith('emoji'):
+                resolvedEmoji = value
+                if type(value) == int:
+                    resolvedEmoji = client.get_emoji(value)
+                setattr(self, key, resolvedEmoji)
 
 
 
