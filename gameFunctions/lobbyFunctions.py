@@ -107,11 +107,8 @@ class lobbyFunctions:
                 await ctx.message.reply(f'You can\'t ~~rumble a world~~ kick players from a lobby that doesn\'t exist! Use `{prefix}host` to create the lobby before you flatten it!')
 
     async def lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions):
-        if currentGame != None:
-            pass
+        if currentLobby != None:
+            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+            await home.send(embed=embed, allowed_mentions=noMentions)
         else:
-            if currentLobby != None:
-                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                await home.send(embed=embed, allowed_mentions=noMentions)
-            else:
-                await ctx.send(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
+            await ctx.reply(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')

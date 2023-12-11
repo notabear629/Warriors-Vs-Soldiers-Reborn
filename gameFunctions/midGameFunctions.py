@@ -38,3 +38,15 @@ class midGameFunctions:
     async def showRoles(currentGame, currentTheme, home):
         embed = await embedBuilder.buildCurrentRoles(currentGame, currentTheme)
         await home.send(embed=embed)
+
+    async def showPlayers(currentGame, currentTheme, noMentions, home):
+        embed = await embedBuilder.buildPlayers(currentGame, currentTheme)
+        await home.send(embed=embed, allowed_mentions = noMentions)
+
+    async def players(ctx, currentLobby, currentGame, currentTheme, noMentions, home, prefix):
+        if currentGame != None:
+            await midGameFunctions.showPlayers(currentGame, currentTheme, noMentions, ctx.message.channel)
+        elif currentLobby != None:
+            await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)
+        else:
+            await ctx.reply(f'There is no active lobby! Why not start one in <#{home.id}> with `{prefix}host`?')

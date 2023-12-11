@@ -176,6 +176,7 @@ async def start(ctx):
         currentGame = newGame
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
         await midGameFunctions.showRoles(currentGame, currentTheme, home)
+        await midGameFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
 
 @client.command('status')
 async def status(ctx):
@@ -193,6 +194,16 @@ async def roles(ctx):
     if 'currentGame' in globals():
         passedGame = currentGame
     await midGameFunctions.roles(ctx, passedGame, currentTheme, home)
+
+@client.command('players')
+async def players(ctx):
+    passedLobby = None
+    passedGame = None
+    if 'currentLobby' in globals():
+        passedLobby = currentLobby
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await midGameFunctions.players(ctx, passedLobby, passedGame, currentTheme, noMentions, home, prefix)
 
 
 #TEST COMMAND ONLY

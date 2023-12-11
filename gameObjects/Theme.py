@@ -60,6 +60,11 @@ class Theme:
         #Changing some roles embed aesthetics
         self.rolesEmbedColor = theme.rolesEmbedColor
 
+        #Changing some players embed aesthetics
+        self.commanderName = theme.commanderName
+        self.emojiCommanderMarker = theme.emojiCommanderMarker
+        self.playersEmbedColor = theme.playersEmbedColor
+
         #Changing Some Role Intro Messages
         self.soldierDefaultMessage = theme.soldierDefaultMessage
         self.warriorDefaultMessage = theme.warriorDefaultMessage

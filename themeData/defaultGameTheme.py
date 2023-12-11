@@ -65,6 +65,11 @@ class defaultGameTheme:
     #Roles embed aesthetics
     rolesEmbedColor = discord.Color.blue()
 
+    #Players embed aesthetics
+    playersEmbedColor = discord.Color.blue()
+    commanderName = 'Commander'
+    emojiCommanderMarker = ':crown:'
+
     global prefix
 
     prefix = os.getenv('BOT_PREFIX')

@@ -126,4 +126,16 @@ class embedBuilder:
                     warriorList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = warriorList, inline = False)
         return returnedEmbed
+    
+    async def buildPlayers(currentGame, currentTheme):
+        playerList = ''
+        for player in currentGame.commanderOrder:
+            playerList += f'{player.user.mention}'
+            if player == currentGame.commanderOrder[0]:
+                playerList += f'{currentTheme.emojiCommanderMarker}'
+            playerList += '\n'
+        returnedEmbed = discord.Embed(title = f'List of players (in queue to become {currentTheme.commanderName})', description = playerList, color = currentTheme.playersEmbedColor)
+        return returnedEmbed
+    
+    
 
