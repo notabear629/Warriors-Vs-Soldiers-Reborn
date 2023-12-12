@@ -137,5 +137,11 @@ class embedBuilder:
         returnedEmbed = discord.Embed(title = f'List of players (in queue to become {currentTheme.commanderName})', description = playerList, color = currentTheme.playersEmbedColor)
         return returnedEmbed
     
+    async def pickExpoMember(currentGame, currentTheme):
+        playerList = ''
+        for player in currentGame.currentExpo.expeditionMembers:
+            playerList += f'**{player.user.name}**\n'
+        returnedEmbed = discord.Embed(title = f'{len(currentGame.currentExpo.expeditionMembers)}/{currentGame.currentExpo.size} players in {currentTheme.expeditionTeam}', description=playerList, color=currentTheme.pickColor)
+        return returnedEmbed
     
 

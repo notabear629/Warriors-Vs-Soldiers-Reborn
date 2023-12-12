@@ -26,6 +26,9 @@ class Role:
     #Combine all warrior groups to make a complete warrior list
     warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault
 
+    #Combine all roles into one
+    allRoles = soldierRoles + warriorRoles
+
     #Combine all Roles with getInfo functions to one list
     infoMessageRoles = soldierGroupCoordinate + warriorRoles
 

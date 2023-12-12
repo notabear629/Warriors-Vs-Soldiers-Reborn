@@ -15,11 +15,13 @@ from gameObjects.Lobby import Lobby
 from gameObjects.Theme import Theme
 from gameObjects.Game import Game
 from gameObjects.Player import Player
+from gameObjects.Rules import Rules
 
 #Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 from gameFunctions.gameStartFunctions import gameStartFunctions
 from gameFunctions.midGameFunctions import midGameFunctions
+from gameFunctions.expoProposalFunctions import expoProposalFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -49,13 +51,14 @@ def resetFunction():
 async def on_ready():
     global home, homeServer, userCategory
     global noMentions, withMentions
-    global currentTheme
+    global currentTheme, currentRules
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
+    currentRules = Rules()
     await currentTheme.resolveEmojis(client)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
@@ -66,6 +69,7 @@ async def reset(ctx):
             if 'currentGame' in globals() and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
+                currentGame.queueDelete()
                 resetFunction()
                 embed = await embedBuilder.buildReset(prefix)
                 await home.send(embed=embed)
@@ -171,12 +175,12 @@ async def start(ctx):
         passedLobby = currentLobby
     if 'currentGame' in globals():
         passedGame = currentGame
-    newGame = await gameStartFunctions.start(ctx, passedLobby, passedGame, home, prefix, currentTheme, client)
+    newGame = await gameStartFunctions.start(ctx, passedLobby, passedGame, home, prefix, currentTheme, client, currentRules)
     if newGame != None:
         currentGame = newGame
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
         await midGameFunctions.showRoles(currentGame, currentTheme, home)
-        await midGameFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
+        await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 @client.command('status')
 async def status(ctx):
@@ -204,6 +208,30 @@ async def players(ctx):
     if 'currentGame' in globals():
         passedGame = currentGame
     await midGameFunctions.players(ctx, passedLobby, passedGame, currentTheme, noMentions, home, prefix)
+
+@client.command('pick')
+async def pick(ctx, *, pickedUser:discord.Member):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await expoProposalFunctions.pick(ctx, passedGame, pickedUser, home, prefix, currentTheme)
+
+@client.command('pass')
+async def passExpo(ctx):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await expoProposalFunctions.passExpo(ctx, passedGame, home, prefix, currentTheme)
+
+@client.command('clear')
+async def clear(ctx):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await expoProposalFunctions.clearExpo(ctx, passedGame, home, prefix, currentTheme)
+        
+
+
 
 
 #TEST COMMAND ONLY

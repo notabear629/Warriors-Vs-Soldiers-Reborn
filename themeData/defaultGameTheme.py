@@ -70,6 +70,13 @@ class defaultGameTheme:
     commanderName = 'Commander'
     emojiCommanderMarker = ':crown:'
 
+    #Expedition aesthetics
+    expeditionTeamMembers = 'Expedition Team Members'
+    expeditionTeam = 'Expedition Team'
+
+    #Pick expo member aesthetics
+    pickColor = discord.Color.blue()
+
     global prefix
 
     prefix = os.getenv('BOT_PREFIX')

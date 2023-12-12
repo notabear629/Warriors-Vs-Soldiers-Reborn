@@ -9,21 +9,21 @@ from gameObjects.Game import Game
 from gameObjects.Role import Role
 from gameObjects.Expedition import Expedition
 
-from gameFunctions.expoFunctions import expoFunctions
+from gameFunctions.expoProposalFunctions import expoProposalFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
 from embedBuilder import embedBuilder
 
 class gameStartFunctions:
-    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client):
+    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules):
         if home == ctx.channel:
             if currentGame == None:
                 if currentLobby != None:
                     if ctx.message.author == currentLobby.host:
                         await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                        game = await gameStartFunctions.createGame(currentLobby, currentTheme, client)
-                        expoSize = await expoFunctions.getExpeditionSize(game)
+                        game = await gameStartFunctions.createGame(currentLobby, currentTheme, client, currentRules)
+                        expoSize = await expoProposalFunctions.getExpeditionSize(game)
                         expo = Expedition(game.commanderOrder[0], expoSize, game.players)
                         game.setExpedition(expo)
                         await gameStartFunctions.sendRoleMessages(game, currentTheme, client)
@@ -35,7 +35,7 @@ class gameStartFunctions:
             else:
                 await ctx.message.reply('There is already an active game!')
 
-    async def createGame(currentLobby, currentTheme, client):
+    async def createGame(currentLobby, currentTheme, client, currentRules):
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
         roleList = []
 
@@ -49,7 +49,7 @@ class gameStartFunctions:
             newPlayer = Player(user, roleList[index])
             players.append(newPlayer)
             index += 1
-        newGame = Game(currentLobby, players)
+        newGame = Game(currentLobby, players, currentRules)
         return newGame
 
     async def getPlayerCounts(currentLobby):

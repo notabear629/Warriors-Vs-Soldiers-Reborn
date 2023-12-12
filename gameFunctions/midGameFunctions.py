@@ -9,7 +9,7 @@ from gameObjects.Game import Game
 from gameObjects.Role import Role
 from gameObjects.Expedition import Expedition
 
-from gameFunctions.expoFunctions import expoFunctions
+from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 
 from dataFunctions.databaseManager import databaseManager
@@ -18,7 +18,7 @@ from embedBuilder import embedBuilder
 
 class midGameFunctions:
     async def showStatus(currentGame, currentTheme, home):
-        futureExpoCounts = await expoFunctions.getExpeditionPrediction(currentGame)
+        futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
         embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
         await home.send(embed=embed)
 

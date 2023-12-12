@@ -10,3 +10,11 @@ class searchFunctions:
             return matchesFound[0]
         else:
             return matchesFound
+        
+    async def userToPlayer(currentGame, user):
+        matchFound = None
+        for player in currentGame.players:
+            if player.user == user:
+                matchFound = player
+                break
+        return matchFound
