@@ -8,9 +8,11 @@ from gameObjects.Lobby import Lobby
 from gameObjects.Player import Player
 from gameObjects.Game import Game
 from gameObjects.Role import Role
+from gameObjects.Expedition import Expedition
 
 from gameFunctions.searchFunctions import searchFunctions
 from gameFunctions.timerManager import timerManager
+from gameFunctions.expoActiveFunctions import expoActiveFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -25,12 +27,12 @@ class expoProposalFunctions:
         elif currentGame.currentRound == 2:
             expeditionNumber = 3
         elif currentGame.currentRound > 2 and (len(currentGame.players) < 7):
-            if (currentGame.currentRound == 3 and currentGame.players == 5):
-                expeditionNumber = 2
-            elif (currentGame.players == 5 and (currentGame.currentRound>3)) or (currentGame.players == 6 and currentGame.currentRound == 4):
-                expeditionNumber = 3
+            fiveManCounts = [2, 3, 2, 3, 3]
+            sixManCounts = [2, 3, 4, 3, 4]
+            if len(currentGame.players) == 5:
+                expeditionNumber = fiveManCounts[currentGame.currentRound-1]
             else:
-                expeditionNumber = 4
+                expeditionNumber = sixManCounts[currentGame.currentRound-1]
         elif currentGame.currentRound > 2 and (len(currentGame.players) >= 7):
             dynamicOffset = currentGame.currentRoundWins
             if 1 in currentGame.passedRounds:
@@ -143,7 +145,7 @@ class expoProposalFunctions:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo)
+            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo)
             await userChannel.send(player.user.mention)
             await userChannel.send(embed=embed, view=view)
         timeout = await timerManager.setTimer(currentGame, 'Vote')
@@ -154,45 +156,59 @@ class expoProposalFunctions:
             for player in currentGame.currentExpo.eligibleVoters:
                 if player not in currentGame.currentExpo.voted:
                     currentGame.currentExpo.voteExpo(player, 'a')
-        await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix)
+        await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
         
         
             
-    async def acceptExpo(currentGame, player, client):
+    async def acceptExpo(currentGame, player, client, currentTheme, home):
         if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'y')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
 
-    async def rejectExpo(currentGame, player, client):
+    async def rejectExpo(currentGame, player, client, currentTheme, home):
         if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'n')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
 
-    async def abstainExpo(currentGame, player, client):
+    async def abstainExpo(currentGame, player, client, currentTheme, home):
         if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'a')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def getVotingResults(currentGame):
         if len(currentGame.currentExpo.accepted) > len(currentGame.currentExpo.rejected):
             return True
         return False
     
-    async def showVotingResults(currentGame, currentTheme, home, noMentions, prefix):
+    async def showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client):
         voteResult = await expoProposalFunctions.getVotingResults(currentGame)
         embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)
         await home.send(embed=embed)
         if voteResult:
             await home.send(f'The {currentTheme.expeditionName} Proposal has Passed!')
+            await expoActiveFunctions.activateExpedition(currentGame, currentTheme, home, client, prefix)
         else:
             await home.send(f'The {currentTheme.expeditionName} Proposal has Failed!')
             await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+
+    async def advanceRound(currentGame, currentTheme, home, noMentions, prefix):
+        currentGame.advanceRound()
+        expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+        expo = Expedition(currentGame.currentExpo.commander, expoSize, currentGame.players)
+        currentGame.setExpedition(expo)
+        futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
+        embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
+        await home.send(embed=embed)
+        await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 
 

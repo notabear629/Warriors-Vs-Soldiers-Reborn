@@ -11,6 +11,11 @@ class Expedition:
         self.accepted = []
         self.rejected = []
         self.abstained = []
+        self.currentlyExpeditioning = False
+        self.expeditioned = []
+        self.passedExpedition = []
+        self.sabotagedExpedition = []
+        self.resultsAvailable = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -47,5 +52,24 @@ class Expedition:
             self.abstained.append(player)
         if len(self.voted) == len(self.eligibleVoters):
             self.currentlyVoting = False
+
+    def beginExpeditioning(self):
+        self.currentlyExpeditioning = True
+        self.expeditioned = []
+        self.passedExpedition = []
+        self.sabotagedExpedition = []
+        self.resultsAvailable = False
+
+    def actExpo(self, player, actCase):
+        self.expeditioned.append(player)
+        if actCase == 'y':
+            self.passedExpedition.append(player)
+        elif actCase == 'n':
+            self.sabotagedExpedition.append(player)
+        if len(self.expeditioned) == len(self.expeditionMembers):
+            self.currentlyExpeditioning = False
+            self.resultsAvailable = True
+
+
 
         

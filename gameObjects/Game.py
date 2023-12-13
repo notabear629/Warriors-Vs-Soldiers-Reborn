@@ -1,5 +1,7 @@
 import random
 
+from embedBuilder import embedBuilder
+
 class Game:
     def __init__(self, lobby, players, currentRules):
         self.deleted = False
@@ -24,6 +26,10 @@ class Game:
         self.currentExpo = None
         self.expeditionHistory = []
         self.currentRules = currentRules
+        self.temporaryMessage = None
+        self.basementReached = False
+        self.wallsBroken = False
+        self.exposOver = False
 
         for player in players:
             if player.role.team == 'Soldiers':
@@ -39,9 +45,37 @@ class Game:
     def setExpedition(self, currentExpo):
         if self.currentExpo != None:
             self.expeditionHistory.append(self.currentExpo)
+            self.previousExpeditionCounts.append(self.currentExpo.size)
         self.currentExpo = currentExpo
 
     def nextCommander(self):
         oldCommander = self.commanderOrder.pop(0)
         self.commanderOrder.append(oldCommander)
         self.currentExpo.changeCommander(self.commanderOrder[0])
+
+    async def sendTemporaryMessage(self, currentTheme, home):
+        embed = await embedBuilder.temporaryMessage(self, currentTheme)
+        try:
+            await self.temporaryMessage.delete()
+        except:
+            pass
+        if embed != None:
+            self.temporaryMessage = await home.send(embed=embed)
+
+    def processResult(self, result):
+        if result == 'y':
+            self.passedRounds.append(self.currentRound)
+            self.roundWins += 1
+        elif result == 'n':
+            self.failedRounds.append(self.currentRound)
+            self.roundFails += 1
+        if self.roundWins == 3:
+            self.basementReached = True
+            self.exposOver = True
+        elif self.roundFails == 3:
+            self.wallsBroken = True
+            self.exposOver = True
+        self.resultsAvailable = False
+
+    def advanceRound(self):
+        self.currentRound += 1

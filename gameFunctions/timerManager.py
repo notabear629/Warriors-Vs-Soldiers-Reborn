@@ -27,6 +27,10 @@ class timerManager:
             timerValue = currentGame.currentRules.voteExpeditionTimer
             breakoutCondition = timerManager.voteWillBreakOut
         
+        elif context == 'Expo':
+            timerValue = currentGame.currentRules.actExpeditionTimer
+            breakoutCondition = timerManager.expoWillBreakOut
+        
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition}
     
     async def pickWillBreakOut(currentGame):
@@ -36,5 +40,10 @@ class timerManager:
     
     async def voteWillBreakOut(currentGame):
         if len(currentGame.currentExpo.eligibleVoters) == len(currentGame.currentExpo.voted):
+            return True
+        return False
+    
+    async def expoWillBreakOut(currentGame):
+        if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers):
             return True
         return False

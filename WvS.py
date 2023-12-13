@@ -23,6 +23,8 @@ from gameFunctions.lobbyFunctions import lobbyFunctions
 from gameFunctions.gameStartFunctions import gameStartFunctions
 from gameFunctions.midGameFunctions import midGameFunctions
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
+from gameFunctions.expoActiveFunctions import expoActiveFunctions
+from gameFunctions.endGameFunctions import endGameFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -232,7 +234,16 @@ async def clear(ctx):
         passedGame = currentGame
     await expoProposalFunctions.clearExpo(ctx, passedGame, home, prefix, currentTheme)
         
-
+@client.command('results')
+async def results(ctx):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await expoActiveFunctions.results(ctx, passedGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction)
+    if currentGame.deleted == False and currentGame.exposOver == False:
+        await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix)
+    if currentGame.deleted == False and currentGame.exposOver:
+        await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
 
 
 

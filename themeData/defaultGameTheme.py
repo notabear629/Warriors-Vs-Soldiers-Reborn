@@ -62,6 +62,8 @@ class defaultGameTheme:
     emojiRoseInterior = 686009957123883056
     emojiSinaExterior = str('🏰')
     emojiSinaInterior = 686009957509758996
+    emojiBrokenExterior = str('🏚️')
+    emojiBrokenInterior = str('💥')
     emojiWinMarker = str('🛡️')
     emojiFailMarker = str('⚔️')
     emojiCurrentMarker = str('🏇')
@@ -77,6 +79,8 @@ class defaultGameTheme:
     #Expedition aesthetics
     expeditionTeamMembers = 'Expedition Team Members'
     expeditionTeam = 'Expedition Team'
+    emojiPassExpedition = str('✅')
+    emojiSabotageExpedition = str('❌')
 
     #Pick expo member aesthetics
     pickColor = discord.Color.blue()
@@ -88,6 +92,24 @@ class defaultGameTheme:
     voteDMColor = discord.Color.blue()
     acceptedExpeditionColor = discord.Color.green()
     rejectedExpeditionColor = discord.Color.red()
+
+    #Expedition DM aesthetics
+    expeditionDMColor = discord.Color.blue()
+
+    #Temporary Message Aesthetics
+    temporaryMessageColor = discord.Color.blue()
+
+    #Expedition results aesthetics
+    expoPassedColor = discord.Color.green()
+    expoSabotagedColor = discord.Color.red()
+    wallMariaBreakMessage = str('💥Wall Maria has Fallen!💥')
+    wallRoseBreakMessage = str('💥Wall Rose has Fallen!💥')
+    wallSinaBreakMessage = str('💥Wall Sina has Fallen!💥')
+
+    #Game over Aesthetics
+    wallBreakMessage = str('⚔️All the Walls have Fallen and Paradis has been destroyed!⚔️\n\n⚔️Warriors Win!⚔️')
+    basementMessage = str('The Soldiers have reached the Basement, i\'ll finish this shit later fuck off')
+
 
     global prefix
 

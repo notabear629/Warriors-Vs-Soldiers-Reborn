@@ -74,7 +74,7 @@ class embedBuilder:
         wallStatusString = ''
         for i in range(3):
             if currentGame.roundFails > i:
-                wallStatusString += f'{spacer}{currentTheme.brokenExterior}{currentTheme.brokenInterior}{currentTheme.brokenExterior}'
+                wallStatusString += f'{spacer}{currentTheme.emojiBrokenExterior}{currentTheme.emojiBrokenInterior}{currentTheme.emojiBrokenExterior}'
             else:
                 wallStatusString += spacer + walls[i]
             if i != 2:
@@ -93,10 +93,10 @@ class embedBuilder:
             statusMarker = ''
             if currentRound in currentGame.failedRounds:
                 statusMarker = f'{currentTheme.emojiFailMarker}'
-            elif currentRound == currentGame.currentRound:
-                statusMarker = f'{currentTheme.emojiCurrentMarker}'
             elif currentRound in currentGame.passedRounds:
                 statusMarker = f'{currentTheme.emojiWinMarker}'
+            elif currentRound == currentGame.currentRound:
+                statusMarker = f'{currentTheme.emojiCurrentMarker}' 
             expeditionString += f'{currentTheme.expeditionName} {currentRound}: **{expoCounts[i]}** {currentTheme.expoMembersName} {statusMarker}'
             if i != 4:
                 expeditionString += '\n'
@@ -180,5 +180,48 @@ class embedBuilder:
             embedColor = currentTheme.rejectedExpeditionColor
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Voting Results', description= playerList, color = embedColor)
         return returnedEmbed
+    
+    async def expeditionDM(currentGame, player, currentTheme):
+        playerList = f'The current {currentTheme.expeditionTeam}:\n'
+        for expeditioner in currentGame.currentExpo.expeditionMembers:
+            playerList += f'**{expeditioner.user.name}**'
+            if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+                playerList += f'{currentTheme.emojiWarrior}'
+            playerList += '\n'
+
+        if player in currentGame.currentExpo.passedExpedition:
+            decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
+        elif player in currentGame.currentExpo.sabotagedExpedition:
+            decisionString = f'You have chosen to sabotage this {currentTheme.expeditionName}.'
+        else:
+            decisionString = f'You have not yet made a decision on what to do on this {currentTheme.expeditionName}.'
+
+        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Decision', description=playerList, color = currentTheme.expeditionDMColor)
+        returnedEmbed.add_field(name = f'Your Decision', value = decisionString, inline=False)
+
+        return returnedEmbed
+    
+    async def temporaryMessage(currentGame, currentTheme):
+        if currentGame.currentExpo.currentlyVoting:
+            returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Voters', description= f'{len(currentGame.currentExpo.voted)}/{len(currentGame.currentExpo.eligibleVoters)}', color = currentTheme.temporaryMessageColor)
+            return returnedEmbed
+        elif currentGame.currentExpo.currentlyExpeditioning:
+            returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionTeamMembers}', description= f'{len(currentGame.currentExpo.expeditioned)}/{len(currentGame.currentExpo.expeditionMembers)}', color = currentTheme.temporaryMessageColor)
+            return returnedEmbed
+        
+    async def results(currentGame, currentTheme, result):
+        if result == 'y':
+            resultColor = currentTheme.expoPassedColor
+        elif result == 'n':
+            resultColor = currentTheme.expoSabotagedColor
+        outcomeList = ''
+        for passer in currentGame.currentExpo.passedExpedition:
+            outcomeList += f'{currentTheme.emojiPassExpedition}\n'
+        for sabotager in currentGame.currentExpo.sabotagedExpedition:
+            outcomeList += f'{currentTheme.emojiSabotageExpedition}\n'
+        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Results', description=outcomeList, color = resultColor)
+
+        return returnedEmbed
+
     
 

@@ -1,4 +1,5 @@
 from themeData.defaultGameTheme import *
+from themeData.eggplant import *
 import discord
 from discord.ext import commands
 
@@ -9,7 +10,6 @@ class Theme:
     def __init__(self):
         #Change this to the default theme you want the bot to initialize on
         defaultTheme = defaultGameTheme
-        print(defaultTheme)
         self.setTheme(defaultTheme)
 
     def setTheme(self, theme):
