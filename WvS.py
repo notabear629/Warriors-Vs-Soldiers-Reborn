@@ -244,6 +244,15 @@ async def results(ctx):
         await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix)
     if currentGame.deleted == False and currentGame.exposOver:
         await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
+    if currentGame.deleted == False and currentGame.winCondition != None:
+        resetFunction()
+
+@client.command('kidnap')
+async def kidnap(ctx, *, kidnappedUser:discord.Member):
+    passedGame = None
+    if 'currentGame' in globals():
+        passedGame = currentGame
+    await endGameFunctions.kidnap(ctx, kidnappedUser, passedGame, currentTheme, home)
 
 
 

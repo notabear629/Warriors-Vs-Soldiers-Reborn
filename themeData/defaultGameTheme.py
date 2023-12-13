@@ -9,6 +9,11 @@ import random
 
 #CHANGE THIS CLASS NAME. Your new file and your new class should NOT be named defaultGameTheme, each theme added should have different names.
 class defaultGameTheme:
+    global prefix
+
+    prefix = os.getenv('BOT_PREFIX')
+
+
     #You have free reign to edit these as you please
     themeName = 'Default Warriors vs Soldiers'
     gameName = 'Warriors vs Soldiers'
@@ -32,6 +37,9 @@ class defaultGameTheme:
     soldierDefaultMessage = 'Work with your fellow Soldiers to successfully complete 3 expeditions and reach the basement. Remember to conceal the true identity of Eren! Securing the walls is not enough, after the rounds of expeditions, the Warriors will have one last shot of winning if they can successfully identity Eren!'
     warriorDefaultMessage = 'Work with your fellow Warriors to try to knock down the walls before the Soldiers can reach the basement. Be mindful of how the Soldiers behave, even if you fail to destroy the walls, you will have one last chance of victory if you can successfully identify Eren!'
     wildcardDefaultMessage = 'Wildcards are neither Soldiers nor Warriors, so the roles behave much differently. Shoot for your personal objective to the best of your abilities so that you may bask in the eternal glory of winning your own way!'
+
+    #Lobby embed Aesthetics
+    lobbyEmbedColor = discord.Color.blue()
 
     #Status Embed Aesthetics
     winningColor = discord.Color.green()
@@ -108,12 +116,15 @@ class defaultGameTheme:
 
     #Game over Aesthetics
     wallBreakMessage = str('⚔️All the Walls have Fallen and Paradis has been destroyed!⚔️\n\n⚔️Warriors Win!⚔️')
-    basementMessage = str('The Soldiers have reached the Basement, i\'ll finish this shit later fuck off')
+    basementMessage = str(f'The Soldiers have reached the Basement. The Warriors still have one final chance to win! Use `{prefix}kidnap @mention` to kidnap who you think is the Coordinate for one final chance at victory!')
+    kidnapTimeoutMessage = str(f'The Warriors have failed to identify the Coordinate in time...\n\n🛡️Soldiers Win!🛡️')
+    kidnapSuccessMessage = str('⚔️The Warriors have successfully identified the Coordinate!⚔️\n\n⚔️Warriors Win!⚔️')
+    kidnapFailMessage = str('🛡️The Warriors did not manage to successfully identify the Coordinate and Eren\'s identity was kept secret.🛡️\n\n🛡️Soldiers Win!🛡️')
+    endgameCardColor = discord.Color.blue()
+    emojiWinner ='🏅'
+    emojiLoser = '☠️'
 
-
-    global prefix
-
-    prefix = os.getenv('BOT_PREFIX')
+    
 
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.

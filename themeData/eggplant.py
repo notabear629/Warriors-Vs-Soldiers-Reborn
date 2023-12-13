@@ -29,9 +29,12 @@ class eggplant:
     warriorColor = discord.Color.dark_purple()
     wildcardColor = discord.Color.dark_purple()
 
-    soldierDefaultMessage = 'Work with your fellow Soldiers to successfully complete 3 expeditions and reach the basement. Remember to conceal the true identity of Eren! Securing the walls is not enough, after the rounds of expeditions, the Warriors will have one last shot of winning if they can successfully identity Eren!'
-    warriorDefaultMessage = 'Work with your fellow Warriors to try to knock down the walls before the Soldiers can reach the basement. Be mindful of how the Soldiers behave, even if you fail to destroy the walls, you will have one last chance of victory if you can successfully identify Eren!'
-    wildcardDefaultMessage = 'Wildcards are neither Soldiers nor Warriors, so the roles behave much differently. Shoot for your personal objective to the best of your abilities so that you may bask in the eternal glory of winning your own way!'
+    soldierDefaultMessage = str('🍆')
+    warriorDefaultMessage = str('🍆')
+    wildcardDefaultMessage = str('🍆')
+
+    #Lobby embed Aesthetics
+    lobbyEmbedColor = discord.Color.dark_purple()
 
     #Status Embed Aesthetics
     winningColor = discord.Color.dark_purple()

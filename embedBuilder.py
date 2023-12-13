@@ -8,7 +8,7 @@ from gameFunctions.searchFunctions import searchFunctions
 class embedBuilder:
 
     async def buildLobby(currentLobby, currentTheme, prefix):
-        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help rules` for information on how to change the rules.', color = discord.Color.blue())
+        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help rules` for information on how to change the rules.', color = currentTheme.lobbyEmbedColor)
         playerList = ''
         for player in currentLobby.users:
             playerList += f'**{player.mention}**\n'
@@ -222,6 +222,36 @@ class embedBuilder:
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Results', description=outcomeList, color = resultColor)
 
         return returnedEmbed
+    
+    async def endgame(currentGame, currentTheme):
+        
+        buildDescription = f'Number of Players: **{len(currentGame.players)}**'
+        buildDescription += '\n'
+        buildDescription += f'**{len(currentGame.soldiers)}** {currentTheme.soldierPlural}'
+        buildDescription += f' vs **{len(currentGame.warriors)}** {currentTheme.warriorPlural}'
 
+        returnedEmbed = discord.Embed(title = f'Game Summary', description=buildDescription, color= currentTheme.endgameCardColor)
+        for role in Role.allRoles:
+            search = await searchFunctions.roleIDToPlayer(currentGame, role)
+            if search != None:
+                if type(search) == list:
+                    newTitle = f'{search[0].role.emoji}{search[0].role.name}{search[0].role.emoji}'
+                    newDesc = ''
+                    for player in search:
+                        newDesc += f'{player.user.name}'
+                        if player in currentGame.winners:
+                            newDesc += f'{currentTheme.emojiWinner}'
+                        else:
+                            newDesc += f'{currentTheme.emojiLoser}'
+                        if player != search[len(search)-1]:
+                            newDesc += '\n'
+                    returnedEmbed.add_field(name=newTitle, value = newDesc, inline= True)
+                else:
+                    if search in currentGame.winners:
+                        addedEmoji = currentTheme.emojiWinner
+                    else:
+                        addedEmoji = currentTheme.emojiLoser
+                    returnedEmbed.add_field(name=f'{search.role.emoji}{search.role.name}{search.role.emoji}', value=f'{search.user.name}{addedEmoji}', inline=True)
+        return returnedEmbed
     
 

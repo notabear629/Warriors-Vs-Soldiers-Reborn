@@ -30,6 +30,10 @@ class Game:
         self.basementReached = False
         self.wallsBroken = False
         self.exposOver = False
+        self.winCondition = None
+        self.winners = []
+        self.currentlyKidnapping = False
+        self.kidnappedPlayer = None
 
         for player in players:
             if player.role.team == 'Soldiers':
@@ -79,3 +83,25 @@ class Game:
 
     def advanceRound(self):
         self.currentRound += 1
+
+    def activateKidnap(self):
+        self.currentlyKidnapping = True
+
+    def kidnapPlayer(self, player):
+        self.kidnappedPlayer = player
+        self.currentlyKidnapping = False
+
+    def setWinCondition(self, condition):
+        self.winCondition = condition
+
+    def processWinners(self):
+        if self.winCondition == 'wallBreaks':
+            self.winners = self.warriors.copy()
+        elif self.winCondition == 'kidnapTimeout':
+            self.winners = self.soldiers.copy()
+        elif self.winCondition == 'kidnapSuccess':
+            self.winners = self.warriors.copy()
+        elif self.winCondition == 'kidnapFail':
+            self.winners = self.soldiers.copy()
+
+        

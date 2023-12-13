@@ -31,6 +31,10 @@ class timerManager:
             timerValue = currentGame.currentRules.actExpeditionTimer
             breakoutCondition = timerManager.expoWillBreakOut
         
+        elif context == 'Kidnap':
+            timerValue = currentGame.currentRules.kidnapTimer
+            breakoutCondition = timerManager.kidnapWillBreakOut
+        
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition}
     
     async def pickWillBreakOut(currentGame):
@@ -45,5 +49,10 @@ class timerManager:
     
     async def expoWillBreakOut(currentGame):
         if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers):
+            return True
+        return False
+    
+    async def kidnapWillBreakOut(currentGame):
+        if currentGame.kidnappedPlayer != None:
             return True
         return False
