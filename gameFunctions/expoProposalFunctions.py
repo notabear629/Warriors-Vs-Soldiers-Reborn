@@ -108,7 +108,7 @@ class expoProposalFunctions:
         embed = await embedBuilder.buildPlayers(currentGame, currentTheme)
         await home.send(embed=embed, allowed_mentions = noMentions)
 
-    async def pick(ctx, currentGame, pickedPlayer, home, prefix, currentTheme):
+    async def pick(ctx, currentGame, pickedPlayer, home, prefix, currentTheme, client, noMentions):
         if home == ctx.message.channel and currentGame != None and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
             player = await searchFunctions.userToPlayer(currentGame, pickedPlayer)
             if player == None:
@@ -124,7 +124,7 @@ class expoProposalFunctions:
                 await home.send(f'{pickedPlayer.name} has been added to the {currentTheme.expeditionTeam}.')
                 if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size:
                     await home.send(f'The {currentTheme.expeditionName} is now full. The time to vote on if it should be allowed to pass has come.')
-                    await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme)
+                    await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
 
     async def passExpo(ctx, currentGame, home):
         if home == ctx.message.channel and currentGame != None and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
@@ -137,10 +137,66 @@ class expoProposalFunctions:
             await home.send(embed=embed)
             await home.send(f'Your {currentTheme.expeditionTeam} proposal has been reset.')
 
-    async def beginVoting(currentGame, home, prefix, currentTheme):
+    async def beginVoting(currentGame, home, prefix, currentTheme, client, noMentions):
         currentGame.currentExpo.beginVoting(currentGame)
-        discordView = await discordViewBuilder.expeditionVoteView()
-        await home.send('THIS IS A TEST', view = discordView)
+        for player in currentGame.currentExpo.eligibleVoters:
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo)
+            await userChannel.send(player.user.mention)
+            await userChannel.send(embed=embed, view=view)
+        timeout = await timerManager.setTimer(currentGame, 'Vote')
+        if timeout == None:
+            return
+        elif timeout:
+            await home.send(f'Time to vote on the {currentTheme.expeditionTeam} has run out. The remaining voters that did not vote will be marked as abstaining.')
+            for player in currentGame.currentExpo.eligibleVoters:
+                if player not in currentGame.currentExpo.voted:
+                    currentGame.currentExpo.voteExpo(player, 'a')
+        await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix)
+        
+        
+            
+    async def acceptExpo(currentGame, player, client):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+            currentGame.currentExpo.voteExpo(player, 'y')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+
+    async def rejectExpo(currentGame, player, client):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+            currentGame.currentExpo.voteExpo(player, 'n')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+
+    async def abstainExpo(currentGame, player, client):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+            currentGame.currentExpo.voteExpo(player, 'a')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+
+    async def getVotingResults(currentGame):
+        if len(currentGame.currentExpo.accepted) > len(currentGame.currentExpo.rejected):
+            return True
+        return False
+    
+    async def showVotingResults(currentGame, currentTheme, home, noMentions, prefix):
+        voteResult = await expoProposalFunctions.getVotingResults(currentGame)
+        embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)
+        await home.send(embed=embed)
+        if voteResult:
+            await home.send(f'The {currentTheme.expeditionName} Proposal has Passed!')
+        else:
+            await home.send(f'The {currentTheme.expeditionName} Proposal has Failed!')
+            await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+
+
+
+
 
 
 

@@ -3,12 +3,13 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from scipy.special import comb
 
 #Imports from other .py files
 
 #Import Embed Builder Functions
 from embedBuilder import embedBuilder
+
+from discordViewBuilder import discordViewBuilder
 
 #Import the gameObjects
 from gameObjects.Lobby import Lobby
@@ -69,7 +70,8 @@ async def reset(ctx):
             if 'currentGame' in globals() and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
-                currentGame.queueDelete()
+                if 'currentGame' in globals():
+                    currentGame.queueDelete()
                 resetFunction()
                 embed = await embedBuilder.buildReset(prefix)
                 await home.send(embed=embed)
@@ -214,7 +216,7 @@ async def pick(ctx, *, pickedUser:discord.Member):
     passedGame = None
     if 'currentGame' in globals():
         passedGame = currentGame
-    await expoProposalFunctions.pick(ctx, passedGame, pickedUser, home, prefix, currentTheme)
+    await expoProposalFunctions.pick(ctx, passedGame, pickedUser, home, prefix, currentTheme, client, noMentions)
 
 @client.command('pass')
 async def passExpo(ctx):
@@ -244,6 +246,12 @@ async def fill(ctx):
         await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
         bozoUsers.append(user)
     await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
+
+#TEST COMMAND ONLY
+@client.command('test')
+async def test(ctx):
+    view = await discordViewBuilder.expeditionVoteView(currentTheme)
+    await ctx.send(view=view)
 
 
 client.run(BOT_TOKEN)

@@ -7,6 +7,7 @@ class Expedition:
         self.passed = False
         self.currentlyVoting = False
         self.eligibleVoters = []
+        self.voted = []
         self.accepted = []
         self.rejected = []
         self.abstained = []
@@ -34,4 +35,17 @@ class Expedition:
         self.accepted = []
         self.rejected = []
         self.abstained = []
+        self.voted = []
+
+    def voteExpo(self, player, voteCase):
+        self.voted.append(player)
+        if voteCase == 'y':
+            self.accepted.append(player)
+        elif voteCase == 'n':
+            self.rejected.append(player)
+        elif voteCase == 'a':
+            self.abstained.append(player)
+        if len(self.voted) == len(self.eligibleVoters):
+            self.currentlyVoting = False
+
         

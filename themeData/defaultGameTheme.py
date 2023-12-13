@@ -14,10 +14,10 @@ class defaultGameTheme:
     gameName = 'Warriors vs Soldiers'
     soldierSingle = 'Soldier'
     soldierPlural = 'Soldiers'
-    emojiSoldier = ':shield:'
+    emojiSoldier = str('🛡️')
     warriorSingle = 'Warrior'
     warriorPlural = 'Warriors'
-    emojiWarrior = ':crossed_swords:'
+    emojiWarrior = str('⚔️')
     wallSingle = 'Wall'
     wallPlural = 'Walls'
 
@@ -46,21 +46,25 @@ class defaultGameTheme:
     expeditionName = 'Expedition'
     expoMembersName = 'members'
 
-    emojiWinMarkerOne = ':one:'
-    emojiWinMarkerTwo = ':two:'
-    emojiWinMarkerThree = ':three:'
+    #Note that for emojis, you may use a string of the unicode emoji for a default emoji, or an ID of a custom emoji.
+    #Please be sure to put the emojis in the form of str('emoji') if you are using default unicode emojis.
+    #The reason for typecasting a string as a string, is because the str() function is just an easy way to enable UTF-8 encoding to get the emoji to work.
+    #We aren't really turning our input to a String, since the '' marks already make it a string, we're abusing the str() function for the encoding since it's a simple way to call it
+    emojiWinMarkerOne = str('1️⃣')
+    emojiWinMarkerTwo = str('2️⃣')
+    emojiWinMarkerThree = str('3️⃣')
     emojiSpacer = 686015611985461307
-    emojiRoundVictoryMarker = ':white_check_mark'
-    emojiVictoryMarker = ':checkered_flag:'
-    emojiMariaExterior = ':house:'
+    emojiRoundVictoryMarker = str('✅')
+    emojiVictoryMarker = str('🏁')
+    emojiMariaExterior = str('🏠')
     emojiMariaInterior = 686009957233066004
-    emojiRoseExterior = ':bank:'
+    emojiRoseExterior = str('🏦')
     emojiRoseInterior = 686009957123883056
-    emojiSinaExterior = ':european_castle:'
+    emojiSinaExterior = str('🏰')
     emojiSinaInterior = 686009957509758996
-    emojiWinMarker = ':shield:'
-    emojiFailMarker = ':crossed_swords:'
-    emojiCurrentMarker = ':horse_racing:'
+    emojiWinMarker = str('🛡️')
+    emojiFailMarker = str('⚔️')
+    emojiCurrentMarker = str('🏇')
 
     #Roles embed aesthetics
     rolesEmbedColor = discord.Color.blue()
@@ -68,7 +72,7 @@ class defaultGameTheme:
     #Players embed aesthetics
     playersEmbedColor = discord.Color.blue()
     commanderName = 'Commander'
-    emojiCommanderMarker = ':crown:'
+    emojiCommanderMarker = str('👑')
 
     #Expedition aesthetics
     expeditionTeamMembers = 'Expedition Team Members'
@@ -76,6 +80,14 @@ class defaultGameTheme:
 
     #Pick expo member aesthetics
     pickColor = discord.Color.blue()
+
+    #Voting aesthetics
+    emojiAcceptExpedition = str('✅')
+    emojiRejectExpedition = str('❌')
+    emojiAbstainExpedition = str('✖️')
+    voteDMColor = discord.Color.blue()
+    acceptedExpeditionColor = discord.Color.green()
+    rejectedExpeditionColor = discord.Color.red()
 
     global prefix
 
@@ -132,7 +144,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = ':shield:'
+        roleDict['emoji'] = str('🛡️')
 
         roleDict['roleMessage'] = f'You are an average Soldier. You do not possess any special abilities or supplemental information.'
 
@@ -171,7 +183,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = ':crossed_swords:'
+        roleDict['emoji'] = str('⚔️')
 
         roleDict['roleMessage'] = f'You are an average Warrior. You do not possess any special abilities to aid you in breaking the walls.'
 

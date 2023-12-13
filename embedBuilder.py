@@ -144,4 +144,41 @@ class embedBuilder:
         returnedEmbed = discord.Embed(title = f'{len(currentGame.currentExpo.expeditionMembers)}/{currentGame.currentExpo.size} players in {currentTheme.expeditionTeam}', description=playerList, color=currentTheme.pickColor)
         return returnedEmbed
     
+    async def voteDM(currentGame, player, currentTheme):
+        playerList = f'The current {currentTheme.expeditionTeam}:\n'
+        for expeditioner in currentGame.currentExpo.expeditionMembers:
+            playerList += f'**{expeditioner.user.name}**'
+            if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+                playerList += f'{currentTheme.emojiWarrior}'
+            playerList += '\n'
+        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
+        if player in currentGame.currentExpo.accepted:
+            voteDesc = f'You have voted to accept this {currentTheme.expeditionTeam}.'
+        elif player in currentGame.currentExpo.rejected:
+            voteDesc = f'You have voted to reject this {currentTheme.expeditionTeam}.'
+        elif player in currentGame.currentExpo.abstained:
+            voteDesc = f'You have abstained from voting on this {currentTheme.expeditionTeam}.'
+        else:
+            voteDesc = f'You have not yet voted on this {currentTheme.expeditionTeam}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {currentTheme.expeditionTeam}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {currentTheme.expeditionTeam}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {currentTheme.expeditionTeam}'
+        returnedEmbed.add_field(name = f'Your Vote', value=voteDesc)
+        return returnedEmbed
+    
+    async def showVotingResults(currentGame, currentTheme, expeditionPassed):
+        playerList = ''
+        for voter in currentGame.currentExpo.eligibleVoters:
+            playerList += f'**{voter.user.name}**'
+            if voter in currentGame.currentExpo.accepted:
+                playerList += f'{currentTheme.emojiAcceptExpedition}'
+            elif voter in currentGame.currentExpo.rejected:
+                playerList += f'{currentTheme.emojiRejectExpedition}'
+            elif voter in currentGame.currentExpo.abstained:
+                playerList += f'{currentTheme.emojiAbstainExpedition}'
+            playerList += '\n'
+        if expeditionPassed:
+            embedColor = currentTheme.acceptedExpeditionColor
+        elif expeditionPassed == False:
+            embedColor = currentTheme.rejectedExpeditionColor
+        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Voting Results', description= playerList, color = embedColor)
+        return returnedEmbed
+    
 
