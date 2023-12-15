@@ -40,7 +40,7 @@ class endGameFunctions:
         await endGameFunctions.processEndgame(currentGame, currentTheme, home)
 
     async def kidnap(ctx, kidnappedUser, currentGame, currentTheme, home):
-        if ctx.message.channel == home and currentGame != None and currentGame.deleted == False and currentGame.currentlyKidnapping and currentGame.kidnappedPlayer == None:
+        if ctx.message.channel == home and currentGame.online and currentGame.currentlyKidnapping and currentGame.kidnappedPlayer == None:
             kidnapper = await searchFunctions.userToPlayer(currentGame, ctx.message.author)
             if kidnapper == None:
                 await ctx.reply(f'Only someone playing the game can choose who to kidnap!')

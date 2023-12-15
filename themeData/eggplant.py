@@ -20,6 +20,7 @@ class eggplant:
     emojiWarrior = str('🍆')
     wallSingle = str('🍆')
     wallPlural = str('🍆')
+    emojiTheme = str('🍆')
 
     soldierThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
     warriorThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'

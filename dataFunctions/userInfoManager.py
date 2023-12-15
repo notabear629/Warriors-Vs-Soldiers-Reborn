@@ -17,6 +17,7 @@ class userInfoManager:
             }
             channel = await homeServer.create_text_channel(name = f'channel-{user.name}', overwrites = overwrites, category = userCategory)
             embed = await embedBuilder.buildRegistrationWelcome(user, homeServer, currentTheme, prefix)
+            await channel.send(user.mention)
             await channel.send(embed=embed)
             userInformation = {'userID' : user.id, 'userName': user.name, 'roleID' : newPersonalRole.id, 'channelID' : channel.id}
             databaseManager.addUser(userInformation)

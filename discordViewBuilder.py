@@ -5,6 +5,8 @@ from discord.ui import *
 
 from embedBuilder import embedBuilder
 
+from gameObjects.Theme import Theme
+
 class discordViewBuilder:
 
     #This is a method that basically checks to make sure that who presses the button is the same person that the button was intended for.
@@ -106,3 +108,51 @@ class discordViewBuilder:
             returnedView.add_item(sabotageButton)
         return returnedView
     
+    @staticmethod
+    async def basicOptionsView(currentTheme, client, currentLobby, prefix):
+        returnedView = View()
+
+        themeSelect = Select(placeholder= 'Choose Theme', min_values=1, max_values=1)
+
+        for theme in Theme.loadedThemes:
+            if theme.themeName == currentTheme.themeName:
+                isDefaultSelection = True
+            else:
+                isDefaultSelection = False
+            loadedTheme = Theme()
+            loadedTheme.setTheme(theme)
+            await loadedTheme.resolveEmojis(client)
+            themeSelect.add_option(label = f'Chosen Theme: {theme.themeName}', emoji=loadedTheme.emojiTheme, default=isDefaultSelection)
+
+        async def processThemeSelect(interaction):
+            themeName = discordViewBuilder.getThemeName(themeSelect.values)
+            if themeName != currentTheme.themeName and themeName != None:
+                theme = await discordViewBuilder.getThemeFromName(themeName, client)
+                currentTheme.setTheme(theme)
+                await currentTheme.resolveEmojis(client)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+
+        themeSelect.callback = processThemeSelect
+
+        returnedView.add_item(themeSelect)
+            
+        return returnedView
+    
+
+    def getThemeName(themeValues):
+        if themeValues == []:
+            return None
+        themeName = str(themeValues[0])
+        return themeName[14:]
+    
+    async def getThemeFromName(themeName, client):
+        selectedTheme = None
+        for theme in Theme.loadedThemes:
+            if theme.themeName == themeName:
+                selectedTheme = theme
+                break
+        return selectedTheme
+        

@@ -3,11 +3,13 @@ from discord.ext import commands
 from gameObjects.Lobby import Lobby
 from embedBuilder import embedBuilder
 
+from discordViewBuilder import discordViewBuilder
+
 
 class lobbyFunctions:
     async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
-            if currentLobby != None:     
+            if currentLobby.online:     
                 if ctx.message.author in currentLobby.users:
                     if ctx.message.author == currentLobby.host:
                         await ctx.message.reply(f"You are already hosting a lobby. use `{prefix}reset` to close it to start a new one.")
@@ -16,22 +18,21 @@ class lobbyFunctions:
                 else:
                     await ctx.message.reply(f'There is already a lobby! Why not `{prefix}join` instead?')
             else:
-                if currentGame == None:
-                    currentLobby = Lobby(ctx.message.author)
+                if currentGame.online == False:
+                    currentLobby.openLobby(ctx.message.author)
                     embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                     await home.send(embed=embed, allowed_mentions= noMentions)
                     await home.send('Lobby Created.')
-                    return currentLobby
                 else:
                     await ctx.message.reply(f'There is already an active game! Please wait for it to finish before trying to host a new one.')
             
     async def join(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
-            if currentLobby != None:
+            if currentLobby.online:
                 if ctx.message.author in currentLobby.users:
                     await ctx.message.reply('Hey stinky, you are already in the lobby!')
                 else:
-                    if currentGame == None:
+                    if currentGame.online == False:
                         currentLobby.addUser(ctx.message.author)
                         embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                         await home.send(embed=embed, allowed_mentions= noMentions)
@@ -51,10 +52,10 @@ class lobbyFunctions:
 
     async def leave(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
-            if currentLobby != None:
+            if currentLobby.online:
                 if ctx.message.author in currentLobby.users:
                     if currentLobby.host != ctx.message.author:
-                        if currentGame == None:
+                        if currentGame.online == False:
                             currentLobby.removeUser(ctx.message.author)
                             embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                             await home.send(embed=embed, allowed_mentions= noMentions)
@@ -73,10 +74,10 @@ class lobbyFunctions:
             if kicked == None:
                 await ctx.message.reply(f'You didn\'t specify who to kick, so you kick the air! You hurt your hamstring doing so. Good job. Proper command usage is `{prefix}kick @guyYouWannaKick`.')
             else:
-                if currentLobby != None:
+                if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
                         if kicked in currentLobby.users:
-                            if currentGame == None:
+                            if currentGame.online == False:
                                 currentLobby.removeUser(kicked)
                                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                                 await home.send(embed=embed, allowed_mentions= noMentions)
@@ -92,9 +93,9 @@ class lobbyFunctions:
 
     async def kickAll(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
         if home == ctx.channel:
-            if currentLobby != None:
+            if currentLobby.online:
                 if ctx.message.author == currentLobby.host:
-                    if currentGame == None:
+                    if currentGame.online == False:
                         currentLobby.clearUsers()
                         embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                         await home.send(embed=embed, allowed_mentions= noMentions)
@@ -107,8 +108,24 @@ class lobbyFunctions:
                 await ctx.message.reply(f'You can\'t ~~rumble a world~~ kick players from a lobby that doesn\'t exist! Use `{prefix}host` to create the lobby before you flatten it!')
 
     async def lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions):
-        if currentLobby != None:
+        if currentLobby.online:
             embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
             await home.send(embed=embed, allowed_mentions=noMentions)
         else:
             await ctx.reply(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
+
+    async def options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client):
+        if home == ctx.channel:
+            if currentLobby.online:
+                if ctx.message.author == currentLobby.host:
+                    if currentGame.online == False:
+                        currentLobby.clearUsers()
+                        embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                        view = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, prefix)
+                        await home.send(embed=embed, allowed_mentions= noMentions, view = view)
+                    else:
+                        await ctx.message.reply('You cannot change options mid-game.')
+                else:
+                    await ctx.message.reply('Only the host may change game options.')
+            else:
+                await ctx.message.reply(f'There is no open lobby! Use `{prefix}host` to create one!')

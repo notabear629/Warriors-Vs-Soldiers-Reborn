@@ -25,6 +25,7 @@ class defaultGameTheme:
     emojiWarrior = str('⚔️')
     wallSingle = 'Wall'
     wallPlural = 'Walls'
+    emojiTheme = 685785857609039873
 
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'

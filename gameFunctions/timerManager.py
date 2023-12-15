@@ -9,7 +9,7 @@ class timerManager:
         breakoutCondition = timerVariables['breakoutCondition']
         timeout = True
         for i in range(timerValue):
-            if currentGame.deleted:
+            if currentGame.online == False:
                 return 
             if await breakoutCondition(currentGame):
                 timeout = False

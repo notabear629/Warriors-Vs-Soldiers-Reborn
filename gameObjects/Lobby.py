@@ -1,7 +1,14 @@
 class Lobby:
-    def __init__(self, host):
+    def __init__(self):
+        self.online = False
+
+    def openLobby(self, host):
+        self.online = True
         self.host = host
         self.users = [host]
+
+    def turnOffline(self):
+        self.online = False
 
     def addUser(self, user):
         self.users.append(user)

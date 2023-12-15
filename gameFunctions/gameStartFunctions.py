@@ -18,16 +18,16 @@ from embedBuilder import embedBuilder
 class gameStartFunctions:
     async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules):
         if home == ctx.channel:
-            if currentGame == None:
-                if currentLobby != None:
+            if currentGame.online == False:
+                if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
                         await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                        game = await gameStartFunctions.createGame(currentLobby, currentTheme, client, currentRules)
-                        expoSize = await expoProposalFunctions.getExpeditionSize(game)
-                        expo = Expedition(game.commanderOrder[0], expoSize, game.players)
-                        game.setExpedition(expo)
-                        await gameStartFunctions.sendRoleMessages(game, currentTheme, client)
-                        return game
+                        await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules)
+                        expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+                        expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
+                        currentGame.setExpedition(expo)
+                        await gameStartFunctions.sendRoleMessages(currentGame, currentTheme, client)
+                        return True
                     else:
                         await ctx.message.reply('Only the host may start the game!')
                 else:
@@ -35,7 +35,7 @@ class gameStartFunctions:
             else:
                 await ctx.message.reply('There is already an active game!')
 
-    async def createGame(currentLobby, currentTheme, client, currentRules):
+    async def createGame(currentGame, currentLobby, currentTheme, client, currentRules):
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
         roleList = []
 
@@ -49,8 +49,7 @@ class gameStartFunctions:
             newPlayer = Player(user, roleList[index])
             players.append(newPlayer)
             index += 1
-        newGame = Game(currentLobby, players, currentRules)
-        return newGame
+        currentGame.start(currentLobby, players, currentRules)
 
     async def getPlayerCounts(currentLobby):
         playerCount = len(currentLobby.users)

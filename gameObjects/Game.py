@@ -3,8 +3,12 @@ import random
 from embedBuilder import embedBuilder
 
 class Game:
-    def __init__(self, lobby, players, currentRules):
-        self.deleted = False
+    def __init__(self):
+        self.online = False
+
+
+    def start(self, lobby, players, currentRules):
+        self.online = True
         self.lobby = lobby
         self.players = players
         self.soldiers = []
@@ -42,9 +46,9 @@ class Game:
                 self.warriors.append(player)
             elif player.role.team == 'Wildcards':
                 self.wildcards.append(player)
-
-    def queueDelete(self):
-        self.deleted = True
+    
+    def turnOffline(self):
+        self.online = False
 
     def setExpedition(self, currentExpo):
         if self.currentExpo != None:

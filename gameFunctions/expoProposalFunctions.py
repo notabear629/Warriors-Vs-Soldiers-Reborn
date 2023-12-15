@@ -112,7 +112,7 @@ class expoProposalFunctions:
         await home.send(embed=embed, allowed_mentions = noMentions)
 
     async def pick(ctx, currentGame, pickedPlayer, home, prefix, currentTheme, client, noMentions):
-        if home == ctx.message.channel and currentGame != None and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
+        if home == ctx.message.channel and currentGame.online and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
             player = await searchFunctions.userToPlayer(currentGame, pickedPlayer)
             if player == None:
                 await ctx.reply(f'You may only pick people playing the game for your {currentTheme.expeditionTeam}!')
@@ -130,11 +130,11 @@ class expoProposalFunctions:
                     await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
 
     async def passExpo(ctx, currentGame, home):
-        if home == ctx.message.channel and currentGame != None and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
+        if home == ctx.message.channel and currentGame.online and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
             currentGame.currentExpo.passExpo()
 
     async def clearExpo(ctx, currentGame, home, prefix, currentTheme):
-        if home == ctx.message.channel and currentGame != None and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
+        if home == ctx.message.channel and currentGame.online and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
             currentGame.currentExpo.clearExpedition()
             embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)
             await home.send(embed=embed)
@@ -162,7 +162,7 @@ class expoProposalFunctions:
         
             
     async def acceptExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'y')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -170,7 +170,7 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def rejectExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'n')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -178,7 +178,7 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def abstainExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
             currentGame.currentExpo.voteExpo(player, 'a')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -186,7 +186,7 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def jeanExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Jean' and player.role.abilityActive:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Jean' and player.role.abilityActive:
             currentGame.currentExpo.voteExpo(player, 'Jean')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -194,7 +194,7 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def pieckAcceptExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
             currentGame.currentExpo.voteExpo(player, 'PieckAccept')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -202,7 +202,7 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def pieckRejectExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
+        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
             currentGame.currentExpo.voteExpo(player, 'PieckReject')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])

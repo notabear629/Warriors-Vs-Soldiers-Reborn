@@ -7,6 +7,9 @@ from gameObjects.Role import Role
 
 class Theme:
 
+    #Put all imported themes in this section!
+    loadedThemes = [defaultGameTheme, eggplant]
+
     def __init__(self):
         #Change this to the default theme you want the bot to initialize on
         defaultTheme = defaultGameTheme

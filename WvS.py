@@ -45,16 +45,18 @@ client = commands.Bot(command_prefix = prefix, intents = intents, help_command =
 
 def resetFunction():
     global currentLobby, currentGame
-    if 'currentLobby' in globals():
-        del currentLobby
-    if 'currentGame' in globals():
-        del currentGame
+    if currentLobby.online:
+        currentLobby.turnOffline()
+    if currentGame.online:
+        currentGame.turnOffline()
+    currentLobby = Lobby()
+    currentGame = Game()
 
 @client.event
 async def on_ready():
     global home, homeServer, userCategory
     global noMentions, withMentions
-    global currentTheme, currentRules
+    global currentTheme, currentRules, currentLobby, currentGame
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
@@ -62,18 +64,18 @@ async def on_ready():
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
     currentRules = Rules()
+    currentLobby = Lobby()
+    currentGame = Game()
     await currentTheme.resolveEmojis(client)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
 @client.command('reset')
 async def reset(ctx):
     if home == ctx.channel:
-        if 'currentLobby' in globals():
-            if 'currentGame' in globals() and currentLobby.host != ctx.message.author:
+        if currentLobby.online:
+            if currentGame.online and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
-                if 'currentGame' in globals():
-                    currentGame.queueDelete()
                 resetFunction()
                 embed = await embedBuilder.buildReset(prefix)
                 await home.send(embed=embed)
@@ -82,68 +84,34 @@ async def reset(ctx):
 
 @client.command('host')
 async def host(ctx):
-    global currentLobby
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    functionCall = await lobbyFunctions.host(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
-    if type(functionCall) == Lobby:
-        currentLobby = functionCall
+    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
+
 
 @client.command('join')
 async def join(ctx):
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    await lobbyFunctions.join(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
+    await lobbyFunctions.join(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
 
 @client.command('leave')
 async def leave(ctx):
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
-    await lobbyFunctions.leave(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
+    await lobbyFunctions.leave(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
 
 @client.command('kick')
 async def kick(ctx, kicked:discord.Member=None):
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
-    await lobbyFunctions.kick(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home, kicked)
+    await lobbyFunctions.kick(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, kicked)
 
 @client.command('kickall')
 async def kickall(ctx):
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
-    await lobbyFunctions.kickAll(ctx, lobbyPassed, gamePassed, currentTheme, prefix, noMentions, home)
+    await lobbyFunctions.kickAll(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
 
 @client.command('lobby')
 async def lobby(ctx):
-    lobbyPassed = None
-    gamePassed = None
-    if 'currentLobby' in globals():
-        lobbyPassed = currentLobby
-    if 'currentGame' in globals():
-        gamePassed = currentGame
-    await lobbyFunctions.lobby(ctx, home, lobbyPassed, currentTheme, gamePassed, prefix, noMentions)
+    await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)
+
+@client.command('options')
+async def options(ctx):
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client)
 
 @client.command('color')
 async def color(ctx, *, colorInput=None):
@@ -172,87 +140,49 @@ async def fixme(ctx):
 
 @client.command('start')
 async def start(ctx):
-    global currentGame
-    passedLobby = None
-    passedGame = None
-    if 'currentLobby' in globals():
-        passedLobby = currentLobby
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    newGame = await gameStartFunctions.start(ctx, passedLobby, passedGame, home, prefix, currentTheme, client, currentRules)
-    if newGame != None:
-        currentGame = newGame
+    newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules)
+    if newGame:
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
         await midGameFunctions.showRoles(currentGame, currentTheme, home)
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 @client.command('status')
 async def status(ctx):
-    passedLobby = None
-    passedGame = None
-    if 'currentLobby' in globals():
-        passedLobby = currentLobby
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await midGameFunctions.status(ctx, passedLobby, passedGame, currentTheme, home, prefix, noMentions)
+    await midGameFunctions.status(ctx, currentLobby, currentGame, currentTheme, home, prefix, noMentions)
 
 @client.command('roles')
 async def roles(ctx):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await midGameFunctions.roles(ctx, passedGame, currentTheme, home)
+    await midGameFunctions.roles(ctx, currentGame, currentTheme, home)
 
 @client.command('players')
 async def players(ctx):
-    passedLobby = None
-    passedGame = None
-    if 'currentLobby' in globals():
-        passedLobby = currentLobby
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await midGameFunctions.players(ctx, passedLobby, passedGame, currentTheme, noMentions, home, prefix)
+    await midGameFunctions.players(ctx, currentLobby, currentGame, currentTheme, noMentions, home, prefix)
 
 @client.command('pick')
 async def pick(ctx, *, pickedUser:discord.Member):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await expoProposalFunctions.pick(ctx, passedGame, pickedUser, home, prefix, currentTheme, client, noMentions)
+    await expoProposalFunctions.pick(ctx, currentGame, pickedUser, home, prefix, currentTheme, client, noMentions)
 
 @client.command('pass')
 async def passExpo(ctx):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await expoProposalFunctions.passExpo(ctx, passedGame, home, prefix, currentTheme)
+    await expoProposalFunctions.passExpo(ctx, currentGame, home, prefix, currentTheme)
 
 @client.command('clear')
 async def clear(ctx):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await expoProposalFunctions.clearExpo(ctx, passedGame, home, prefix, currentTheme)
+    await expoProposalFunctions.clearExpo(ctx, currentGame, home, prefix, currentTheme)
         
 @client.command('results')
 async def results(ctx):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await expoActiveFunctions.results(ctx, passedGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction)
-    if currentGame.deleted == False and currentGame.exposOver == False:
+    await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction)
+    if currentGame.online and currentGame.exposOver == False:
         await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix)
-    if currentGame.deleted == False and currentGame.exposOver:
+    if currentGame.online and currentGame.exposOver:
         await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
-    if currentGame.deleted == False and currentGame.winCondition != None:
+    if currentGame.online and currentGame.winCondition != None:
         resetFunction()
 
 @client.command('kidnap')
 async def kidnap(ctx, *, kidnappedUser:discord.Member):
-    passedGame = None
-    if 'currentGame' in globals():
-        passedGame = currentGame
-    await endGameFunctions.kidnap(ctx, kidnappedUser, passedGame, currentTheme, home)
+    await endGameFunctions.kidnap(ctx, kidnappedUser, currentGame, currentTheme, home)
 
 
 
@@ -270,7 +200,7 @@ async def fill(ctx):
 #TEST COMMAND ONLY
 @client.command('test')
 async def test(ctx):
-    view = await discordViewBuilder.expeditionVoteView(currentTheme)
+    view = await discordViewBuilder.basicOptionsView(currentTheme, client)
     await ctx.send(view=view)
 
 

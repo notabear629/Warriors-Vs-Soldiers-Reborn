@@ -13,6 +13,7 @@ class embedBuilder:
         for player in currentLobby.users:
             playerList += f'**{player.mention}**\n'
         returnedEmbed.add_field(name = 'Players', value = playerList, inline = False)
+        returnedEmbed.add_field(name = 'Current Theme', value = f'{currentTheme.emojiTheme}`{currentTheme.themeName}`', inline = False)
         return returnedEmbed
     
     async def buildReset(prefix):

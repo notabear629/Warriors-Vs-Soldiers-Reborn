@@ -34,7 +34,7 @@ class expoActiveFunctions:
         await home.send(f'The {currentTheme.expeditionName} results are in! Use `{prefix}results` to view them!')
 
     async def passExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
+        if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
             currentGame.currentExpo.actExpo(player, 'y')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -42,7 +42,7 @@ class expoActiveFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def sabotageExpo(currentGame, player, client, currentTheme, home):
-        if currentGame != None and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
+        if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
             currentGame.currentExpo.actExpo(player, 'n')
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -50,7 +50,7 @@ class expoActiveFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def results(ctx, currentGame, currentTheme, home, expoPredictFunction):
-        if currentGame != None and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:
+        if currentGame.online and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:
             result = await expoActiveFunctions.getExpeditionResult(currentGame)
             embed = await embedBuilder.results(currentGame, currentTheme, result)
             await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
