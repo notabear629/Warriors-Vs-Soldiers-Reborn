@@ -309,4 +309,12 @@ class embedBuilder:
 
         return returnedEmbed
     
+    async def infoUpdate(currentTheme, player, infoMessage):
+        if player.role.team == 'Soldiers':
+            selectedColor = currentTheme.soldierColor
+        elif player.role.team == 'Warriors':
+            selectedColor = currentTheme.warriorColor
+        returnedEmbed = discord.Embed(title= f'{player.role.name} Information Update', description=infoMessage, color = selectedColor)
+        return returnedEmbed
+    
 

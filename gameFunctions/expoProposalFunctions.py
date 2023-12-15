@@ -203,7 +203,7 @@ class expoProposalFunctions:
             await home.send(f'The {currentTheme.expeditionName} Proposal has Failed!')
             await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
-    async def advanceRound(currentGame, currentTheme, home, noMentions, prefix):
+    async def advanceRound(currentGame, currentTheme, home, noMentions, prefix, client):
         currentGame.advanceRound()
         expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
         expo = Expedition(currentGame.currentExpo.commander, expoSize, currentGame.players)
@@ -211,6 +211,7 @@ class expoProposalFunctions:
         futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
         embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
         await home.send(embed=embed)
+        await webhookManager.processNewRoundWebhooks(currentGame, currentTheme, home, client)
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 

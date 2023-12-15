@@ -77,7 +77,7 @@ class discordViewBuilder:
             pieckButtonReject = Button(label = f'{currentTheme.emojiRejectExpedition}Flip and Reject', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processPieckReject(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await voteExpoFunction(currentGame, player, client, currentTheme, home, acceptButton.label, pieckButtonReject.label)
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, pieckButtonReject.label)
                     embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view = None)
             pieckButtonReject.callback = processPieckReject

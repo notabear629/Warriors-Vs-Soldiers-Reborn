@@ -10,6 +10,7 @@ from gameObjects.Role import Role
 from gameObjects.Expedition import Expedition
 
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
+from gameFunctions.searchFunctions import searchFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -50,6 +51,9 @@ class gameStartFunctions:
             players.append(newPlayer)
             index += 1
         currentGame.start(currentLobby, players, currentRules)
+        search = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
+        if search != None:
+            await search.role.startHange(currentGame, search)
 
     async def getPlayerCounts(currentLobby):
         playerCount = len(currentLobby.users)

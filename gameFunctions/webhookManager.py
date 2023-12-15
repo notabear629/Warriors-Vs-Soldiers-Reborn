@@ -1,7 +1,11 @@
 import discord
 from discord.ext import commands
 
+from dataFunctions.databaseManager import databaseManager
+
 from gameFunctions.searchFunctions import searchFunctions
+
+from embedBuilder import embedBuilder
 
 class webhookManager:
     
@@ -34,4 +38,15 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.pieckMessageWithoutJean, 'Pieck', client)
         if currentGame.currentExpo.pieckActivated and currentGame.currentExpo.jeanActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.pieckMessageWithJean, 'Pieck', client)
+
+    async def processNewRoundWebhooks(currentGame, currentTheme, home, client):
+        Hange = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
+        if Hange != None:
+            user = databaseManager.searchForUser(Hange.user)
+            userChannel = client.get_channel(user['channelID'])
+            await Hange.role.hangeProcess(currentGame)
+            hangeInfo = currentTheme.getHangeInfo(currentGame, Hange)
+            embed = await embedBuilder.infoUpdate(currentTheme, Hange, hangeInfo)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hange', client, embed)
     

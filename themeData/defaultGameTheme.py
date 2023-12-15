@@ -202,6 +202,27 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Historia is the queen of Paradis and has closer knowledge of the situation than most Soldiers due to being in communications with the Yeager brothers, but there was a mistake in the line! Now, she knows which 2 players are Eren and Zeke, but not which is which!'
 
+    class Hange:
+        roleDict = {'roleID' : 'Hange'}
+
+        roleDict['name'] = 'Hange Zoë'
+
+        roleDict['shortName'] = 'Hange'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1185201738815393833
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = f'At the end of each round, you will be given a statistical analysis on each player that can help you figure out who to trust! Be careful though, this statistical analysis is NOT 100% guaranteed, merely a game of probabilities, and it doesn\'t take into account more "human" sides to the game like who you think is lying.'
+
+        roleDict['gameRole'] = ':bulb:Analyst:bulb:'
+
+        roleDict['helpInfo'] = 'Hange is one of the more academically gifted members of the Survey Corps. Thanks to these abilities, it is very easy for her to identify statistical trends, and at the end of each round, will be given probabilities on each player being a Warrior.'
+    
     class Jean:
         roleDict = {'roleID' : 'Jean'}
 
@@ -330,6 +351,17 @@ class defaultGameTheme:
         yeagerBros = random.sample(yeagerBros, 2)
         historiaInfo += f'**{yeagerBros[0]}**\n**{yeagerBros[1]}**'
         return historiaInfo
+    
+    def getHangeInfo(currentGame, Hange):
+        hangeInfo = 'I have deduced that of all possible remaining scenarios, the following users are Warriors in this percentage of them.\n\n'
+        getProbabilities = Hange.role.getProbabilities(currentGame)
+        for player in currentGame.players:
+            if player.role.id == 'Hange':
+                continue
+            hangeInfo += f'**{player.user.name}** - {getProbabilities[player]}%\n'
+        return hangeInfo
+
+
     
     def getWarriorInfo(currentGame, player):
         warriorInfo = 'Your fellow Warriors are:\n'
