@@ -146,7 +146,7 @@ class expoProposalFunctions:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo, expoProposalFunctions.jeanExpo, expoProposalFunctions.pieckAcceptExpo, expoProposalFunctions.pieckRejectExpo)
+            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.voteExpo)
             await userChannel.send(player.user.mention)
             await userChannel.send(embed=embed, view=view)
         timeout = await timerManager.setTimer(currentGame, 'Vote')
@@ -158,52 +158,23 @@ class expoProposalFunctions:
                 if player not in currentGame.currentExpo.voted:
                     currentGame.currentExpo.voteExpo(player, 'a')
         await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
-        
-        
-            
-    async def acceptExpo(currentGame, player, client, currentTheme, home):
+
+    
+    async def voteExpo(currentGame, player, client, currentTheme, home, vote):
         if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
-            currentGame.currentExpo.voteExpo(player, 'y')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
-
-    async def rejectExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
-            currentGame.currentExpo.voteExpo(player, 'n')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
-
-    async def abstainExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted:
-            currentGame.currentExpo.voteExpo(player, 'a')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
-
-    async def jeanExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Jean' and player.role.abilityActive:
-            currentGame.currentExpo.voteExpo(player, 'Jean')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
-
-    async def pieckAcceptExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
-            currentGame.currentExpo.voteExpo(player, 'PieckAccept')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
-
-    async def pieckRejectExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
-            currentGame.currentExpo.voteExpo(player, 'PieckReject')
+            if vote == 'Accept':
+                voteToProcess = 'y'
+            elif vote == 'Reject':
+                voteToProcess = 'n'
+            elif vote == 'Secure' and player.role.id == 'Jean' and player.role.abilityActive:
+                voteToProcess = 'Jean'
+            elif 'Flip and Accept' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
+                voteToProcess = 'PieckAccept'
+            elif 'Flip and Reject' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
+                voteToProcess = 'PieckReject'
+            else:
+                voteToProcess = 'a'
+            currentGame.currentExpo.voteExpo(player, voteToProcess)
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')

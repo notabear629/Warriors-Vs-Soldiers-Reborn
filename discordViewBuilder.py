@@ -20,15 +20,14 @@ class discordViewBuilder:
         return False
 
     @staticmethod
-    async def expeditionVoteView(currentTheme, currentGame, player, client, home, acceptFunction, rejectFunction, abstainFunction, jeanFunction, pieckAcceptFunction, pieckRejectFunction):
+    async def expeditionVoteView(currentTheme, currentGame, player, client, home, voteExpoFunction):
         returnedView = View()
-
 
 
         acceptButton = Button(label= 'Accept', emoji = currentTheme.emojiAcceptExpedition, style= discord.ButtonStyle.grey)
         async def processExpeditionAccept(interaction):
             if await discordViewBuilder.isInteractionIntended(player, interaction):
-                await acceptFunction(currentGame, player, client, currentTheme, home)
+                await voteExpoFunction(currentGame, player, client, currentTheme, home, acceptButton.label)
                 embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                 await interaction.message.edit(embed=embed, view = None)
         acceptButton.callback = processExpeditionAccept
@@ -36,7 +35,7 @@ class discordViewBuilder:
         rejectButton = Button(label = 'Reject', emoji = currentTheme.emojiRejectExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionReject(interaction):
             if await discordViewBuilder.isInteractionIntended(player, interaction):
-                await rejectFunction(currentGame, player, client, currentTheme, home)
+                await voteExpoFunction(currentGame, player, client, currentTheme, home, rejectButton.label)
                 embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                 await interaction.message.edit(embed=embed, view = None)
         rejectButton.callback = processExpeditionReject
@@ -45,7 +44,7 @@ class discordViewBuilder:
         abstainButton = Button(label = 'Abstain', emoji = currentTheme.emojiAbstainExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionAbstain(interaction):
             if await discordViewBuilder.isInteractionIntended(player, interaction):
-                await abstainFunction(currentGame, player, client, currentTheme, home)
+                await voteExpoFunction(currentGame, player, client, currentTheme, home, abstainButton.label)
                 embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                 await interaction.message.edit(embed=embed, view = None)
         abstainButton.callback = processExpeditionAbstain
@@ -58,7 +57,7 @@ class discordViewBuilder:
             jeanButton = Button(label = 'Secure', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processExpeditionJean(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await jeanFunction(currentGame, player, client, currentTheme, home)
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, jeanButton.label)
                     embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view = None)
             jeanButton.callback = processExpeditionJean
@@ -68,7 +67,7 @@ class discordViewBuilder:
             pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processPieckAccept(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await pieckAcceptFunction(currentGame, player, client, currentTheme, home)
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, pieckButtonAccept.label)
                     embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view = None)
             pieckButtonAccept.callback = processPieckAccept
@@ -77,7 +76,7 @@ class discordViewBuilder:
             pieckButtonReject = Button(label = f'{currentTheme.emojiRejectExpedition}Flip and Reject', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processPieckReject(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await pieckRejectFunction(currentGame, player, client, currentTheme, home)
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, acceptButton.label, pieckButtonReject.label)
                     embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view = None)
             pieckButtonReject.callback = processPieckReject
@@ -138,6 +137,16 @@ class discordViewBuilder:
         themeSelect.callback = processThemeSelect
 
         returnedView.add_item(themeSelect)
+
+        roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
+
+        async def processRoleOptionSelect(interaction):
+            print(roleOptionSelect.label)
+            await interaction.response.defer()
+
+        roleOptionSelect.callback = processRoleOptionSelect
+        returnedView.add_item(roleOptionSelect)
+
             
         return returnedView
     
