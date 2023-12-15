@@ -16,7 +16,7 @@ class expoActiveFunctions:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-            view = await discordViewBuilder.expeditionChoiceView(currentGame, currentTheme, player, client, home, expoActiveFunctions.passExpo, expoActiveFunctions.sabotageExpo)
+            view = await discordViewBuilder.expeditionChoiceView(currentGame, currentTheme, player, client, home, expoActiveFunctions.chooseExpo)
             await userChannel.send(f'{player.user.mention}')
             await userChannel.send(view=view, embed=embed)
         timeout = await timerManager.setTimer(currentGame, 'Expo')
@@ -33,21 +33,18 @@ class expoActiveFunctions:
                         currentGame.currentExpo.actExpo(player, 'y')
         await home.send(f'The {currentTheme.expeditionName} results are in! Use `{prefix}results` to view them!')
 
-    async def passExpo(currentGame, player, client, currentTheme, home):
+    async def chooseExpo(currentGame, player, client, currentTheme, home, choice):
         if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
-            currentGame.currentExpo.actExpo(player, 'y')
+            if choice == 'Sabotage' and player in currentGame.warriors:
+                expoChoice = 'n'
+            else:
+                expoChoice = 'y'
+            currentGame.currentExpo.actExpo(player, expoChoice)
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Choice Received.')
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
-    async def sabotageExpo(currentGame, player, client, currentTheme, home):
-        if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
-            currentGame.currentExpo.actExpo(player, 'n')
-            user = databaseManager.searchForUser(player.user)
-            userChannel = client.get_channel(user['channelID'])
-            await userChannel.send('Choice Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def results(ctx, currentGame, currentTheme, home, expoPredictFunction):
         if currentGame.online and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:

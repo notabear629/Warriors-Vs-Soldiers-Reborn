@@ -85,19 +85,19 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def expeditionChoiceView(currentGame, currentTheme, player, client, home, passFunction, sabotageFunction):
+    async def expeditionChoiceView(currentGame, currentTheme, player, client, home, chooseExpoFunction):
         returnedView = View()
 
         passButton = Button(label = 'Pass', emoji = currentTheme.emojiPassExpedition, style = discord.ButtonStyle.grey)
         async def processExpeditionPass(interaction):
-            await passFunction(currentGame, player, client, currentTheme, home)
+            await chooseExpoFunction(currentGame, player, client, currentTheme, home, passButton.label)
             embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
             await interaction.message.edit(embed=embed, view = None)
         passButton.callback = processExpeditionPass
 
         sabotageButton = Button(label = 'Sabotage', emoji = currentTheme.emojiSabotageExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionSabotage(interaction):
-            await sabotageFunction(currentGame, player, client, currentTheme, home)
+            await chooseExpoFunction(currentGame, player, client, currentTheme, home, sabotageButton.label)
             embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
             await interaction.message.edit(embed=embed, view = None)
         sabotageButton.callback = processExpeditionSabotage
