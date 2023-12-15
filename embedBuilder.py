@@ -152,7 +152,13 @@ class embedBuilder:
                 playerList += f'{currentTheme.emojiWarrior}'
             playerList += '\n'
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
-        if player in currentGame.currentExpo.accepted:
+        if player.role.id == 'Jean' and currentGame.currentExpo.jeanActivated:
+            voteDesc = f'You have voted to secure this {currentTheme.expeditionTeam}.'
+        elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.rejected:
+            voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
+        elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.accepted:
+            voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
+        elif player in currentGame.currentExpo.accepted:
             voteDesc = f'You have voted to accept this {currentTheme.expeditionTeam}.'
         elif player in currentGame.currentExpo.rejected:
             voteDesc = f'You have voted to reject this {currentTheme.expeditionTeam}.'
@@ -160,21 +166,39 @@ class embedBuilder:
             voteDesc = f'You have abstained from voting on this {currentTheme.expeditionTeam}.'
         else:
             voteDesc = f'You have not yet voted on this {currentTheme.expeditionTeam}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {currentTheme.expeditionTeam}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {currentTheme.expeditionTeam}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {currentTheme.expeditionTeam}'
+            if player.role.id == 'Jean' and player.role.abilityActive:
+                voteDesc += f'\n{player.role.emoji} Click the Secure Button to Secure the {currentTheme.expeditionTeam}.'
+            elif player.role.id == 'Pieck' and player.role.abilityActive:
+                voteDesc += f'\n{player.role.emoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {currentTheme.expeditionTeam}. Click this if you want to stay accepted after flip.'
+                voteDesc += f'\n{player.role.emoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {currentTheme.expeditionTeam}. Click this if you want to stay rejected after flip.'
         returnedEmbed.add_field(name = f'Your Vote', value=voteDesc)
         return returnedEmbed
     
     async def showVotingResults(currentGame, currentTheme, expeditionPassed):
-        playerList = ''
-        for voter in currentGame.currentExpo.eligibleVoters:
-            playerList += f'**{voter.user.name}**'
-            if voter in currentGame.currentExpo.accepted:
-                playerList += f'{currentTheme.emojiAcceptExpedition}'
-            elif voter in currentGame.currentExpo.rejected:
-                playerList += f'{currentTheme.emojiRejectExpedition}'
-            elif voter in currentGame.currentExpo.abstained:
-                playerList += f'{currentTheme.emojiAbstainExpedition}'
-            playerList += '\n'
-        if expeditionPassed:
+        if currentGame.currentExpo.jeanActivated:
+            playerList = ''
+            for voter in currentGame.currentExpo.eligibleVoters:
+                playerList += f'**{voter.user.name}**'
+                playerList += f'{currentTheme.emojiAcceptExpedition}\n'
+        else:
+            playerList = ''
+            displayAccept = f'{currentTheme.emojiAcceptExpedition}'
+            displayReject = f'{currentTheme.emojiRejectExpedition}'
+            if currentGame.currentExpo.pieckActivated:
+                displayReject = f'{currentTheme.emojiAcceptExpedition}'
+                displayAccept = f'{currentTheme.emojiRejectExpedition}'
+            for voter in currentGame.currentExpo.eligibleVoters:
+                playerList += f'**{voter.user.name}**'
+                if voter in currentGame.currentExpo.accepted:
+                    playerList += displayAccept
+                elif voter in currentGame.currentExpo.rejected:
+                    playerList += displayReject
+                elif voter in currentGame.currentExpo.abstained:
+                    playerList += f'{currentTheme.emojiAbstainExpedition}'
+                playerList += '\n'
+        if currentGame.currentExpo.jeanActivated:
+            embedColor = currentTheme.jeanedExpeditionColor
+        elif expeditionPassed:
             embedColor = currentTheme.acceptedExpeditionColor
         elif expeditionPassed == False:
             embedColor = currentTheme.rejectedExpeditionColor

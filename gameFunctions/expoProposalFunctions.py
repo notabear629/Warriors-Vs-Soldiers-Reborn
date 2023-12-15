@@ -13,6 +13,7 @@ from gameObjects.Expedition import Expedition
 from gameFunctions.searchFunctions import searchFunctions
 from gameFunctions.timerManager import timerManager
 from gameFunctions.expoActiveFunctions import expoActiveFunctions
+from gameFunctions.webhookManager import webhookManager
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -145,7 +146,7 @@ class expoProposalFunctions:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo)
+            view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.acceptExpo, expoProposalFunctions.rejectExpo, expoProposalFunctions.abstainExpo, expoProposalFunctions.jeanExpo, expoProposalFunctions.pieckAcceptExpo, expoProposalFunctions.pieckRejectExpo)
             await userChannel.send(player.user.mention)
             await userChannel.send(embed=embed, view=view)
         timeout = await timerManager.setTimer(currentGame, 'Vote')
@@ -184,8 +185,38 @@ class expoProposalFunctions:
             await userChannel.send('Vote Received.')
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
+    async def jeanExpo(currentGame, player, client, currentTheme, home):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Jean' and player.role.abilityActive:
+            currentGame.currentExpo.voteExpo(player, 'Jean')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
+
+    async def pieckAcceptExpo(currentGame, player, client, currentTheme, home):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
+            currentGame.currentExpo.voteExpo(player, 'PieckAccept')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
+
+    async def pieckRejectExpo(currentGame, player, client, currentTheme, home):
+        if currentGame != None and currentGame.currentExpo.currentlyVoting and player in currentGame.currentExpo.eligibleVoters and player not in currentGame.currentExpo.voted and player.role.id == 'Pieck' and player.role.abilityActive:
+            currentGame.currentExpo.voteExpo(player, 'PieckReject')
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            await userChannel.send('Vote Received.')
+            await currentGame.sendTemporaryMessage(currentTheme, home)
+
     async def getVotingResults(currentGame):
-        if len(currentGame.currentExpo.accepted) > len(currentGame.currentExpo.rejected):
+        if currentGame.currentExpo.jeanActivated:
+            return True
+        elif currentGame.currentExpo.pieckActivated:
+            if len(currentGame.currentExpo.rejected) > len(currentGame.currentExpo.accepted):
+                return True
+            return False
+        elif len(currentGame.currentExpo.accepted) > len(currentGame.currentExpo.rejected):
             return True
         return False
     
@@ -193,6 +224,7 @@ class expoProposalFunctions:
         voteResult = await expoProposalFunctions.getVotingResults(currentGame)
         embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)
         await home.send(embed=embed)
+        await webhookManager.processExpoVoteWebhooks(currentGame, currentTheme, home, client)
         if voteResult:
             await home.send(f'The {currentTheme.expeditionName} Proposal has Passed!')
             await expoActiveFunctions.activateExpedition(currentGame, currentTheme, home, client, prefix)

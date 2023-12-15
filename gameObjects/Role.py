@@ -8,8 +8,14 @@ class Role:
     #Kind of same thing as Eren, there's only 1 basic soldier, but whatever
     soldierGroupDefault = ['Soldier']
 
+    #A group of all optional Soldier roles that have power through information
+    soldierGroupInfo = ['Historia']
+
+    #A group of all optional Soldiers with one-time special abilities
+    soldierGroupAbility = ['Jean']
+
     #Combine all optional Soldier Roles
-    soldierGroupOptional = []
+    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility
 
     #We combine all the previous groups to create a complete list of soldier roles
     soldierRoles = soldierGroupCoordinate + soldierGroupOptional + soldierGroupDefault
@@ -17,11 +23,14 @@ class Role:
     #The Warchief roles. Same business as the Coordinate roles, but for the Warriors.
     warriorGroupWarchief = ['Zeke']
 
+    #The group of all option Warriors with one-time special abilities
+    warriorGroupAbility = ['Pieck']
+
     #The default Warrior classes.
     warriorGroupDefault = ['Warrior']
 
     #Combine all optional Warrior Roles
-    warriorGroupOptional = []
+    warriorGroupOptional = warriorGroupAbility
 
     #Combine all warrior groups to make a complete warrior list
     warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault
@@ -30,7 +39,7 @@ class Role:
     allRoles = soldierRoles + warriorRoles
 
     #Combine all Roles with getInfo functions to one list
-    infoMessageRoles = soldierGroupCoordinate + warriorRoles
+    infoMessageRoles = soldierGroupCoordinate + warriorRoles + soldierGroupInfo
 
     def __init__(self, roleInfo):
         self.id = roleInfo['roleID']
@@ -39,6 +48,11 @@ class Role:
         self.team = roleInfo['team']
         self.isTitan = roleInfo['isTitan']
         self.emoji = roleInfo['emoji']
+        self.imageURL = roleInfo['imageURL']
         self.roleMessage = roleInfo['roleMessage']
         self.gameRole = roleInfo['gameRole']
         self.helpInfo = roleInfo['helpInfo']
+        self.abilityActive = True
+
+    def disableAbility(self):
+        self.abilityActive = False

@@ -65,7 +65,7 @@ class gameStartFunctions:
         roleNames = ['Eren']
         optionalSoldierRoles = Role.soldierGroupOptional
         validSoldierRoles = optionalSoldierRoles.copy()
-        sampleLimit = soldierCount - 1
+        sampleLimit = int(soldierCount - 1)
         if sampleLimit > len(validSoldierRoles):
             sampleLimit = len(validSoldierRoles)
         roleNames += random.sample(validSoldierRoles, sampleLimit)
@@ -84,7 +84,7 @@ class gameStartFunctions:
         roleNames = ['Zeke']
         optionalWarriorRoles = Role.warriorGroupOptional
         validWarriorRoles = optionalWarriorRoles.copy()
-        sampleLimit = warriorCount - 1
+        sampleLimit = int(warriorCount - 1)
         if sampleLimit > len(validWarriorRoles):
             sampleLimit = len(validWarriorRoles)
         roleNames += random.sample(validWarriorRoles, sampleLimit)
@@ -145,6 +145,7 @@ class gameStartFunctions:
         userChannel = client.get_channel(user['channelID'])
         await userChannel.send(player.user.mention)
         await userChannel.send(embed=embed)
+
 
     
 

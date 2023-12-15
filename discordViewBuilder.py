@@ -7,37 +7,80 @@ from embedBuilder import embedBuilder
 
 class discordViewBuilder:
 
+    #This is a method that basically checks to make sure that who presses the button is the same person that the button was intended for.
+    #If there is a line at the top that just says "return True" it's because I use it to exploit clicking the button for my alts when I debug.
+    #The line should be deleted when actually seriously playing games.
     @staticmethod
-    async def expeditionVoteView(currentTheme, currentGame, player, client, home, acceptFunction, rejectFunction, abstainFunction):
+    async def isInteractionIntended(player, interaction):
+        return True
+        if player.user == interaction.user:
+            return True
+        return False
+
+    @staticmethod
+    async def expeditionVoteView(currentTheme, currentGame, player, client, home, acceptFunction, rejectFunction, abstainFunction, jeanFunction, pieckAcceptFunction, pieckRejectFunction):
         returnedView = View()
 
 
 
         acceptButton = Button(label= 'Accept', emoji = currentTheme.emojiAcceptExpedition, style= discord.ButtonStyle.grey)
         async def processExpeditionAccept(interaction):
-            await acceptFunction(currentGame, player, client, currentTheme, home)
-            embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            await interaction.message.edit(embed=embed, view = None)
+            if await discordViewBuilder.isInteractionIntended(player, interaction):
+                await acceptFunction(currentGame, player, client, currentTheme, home)
+                embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
         acceptButton.callback = processExpeditionAccept
 
         rejectButton = Button(label = 'Reject', emoji = currentTheme.emojiRejectExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionReject(interaction):
-            await rejectFunction(currentGame, player, client, currentTheme, home)
-            embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            await interaction.message.edit(embed=embed, view = None)
+            if await discordViewBuilder.isInteractionIntended(player, interaction):
+                await rejectFunction(currentGame, player, client, currentTheme, home)
+                embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
         rejectButton.callback = processExpeditionReject
     
 
         abstainButton = Button(label = 'Abstain', emoji = currentTheme.emojiAbstainExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionAbstain(interaction):
-            await abstainFunction(currentGame, player, client, currentTheme, home)
-            embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-            await interaction.message.edit(embed=embed, view = None)
+            if await discordViewBuilder.isInteractionIntended(player, interaction):
+                await abstainFunction(currentGame, player, client, currentTheme, home)
+                embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
         abstainButton.callback = processExpeditionAbstain
 
         returnedView.add_item(acceptButton)
         returnedView.add_item(rejectButton)
         returnedView.add_item(abstainButton)
+
+        if player.role.id == 'Jean' and player.role.abilityActive:
+            jeanButton = Button(label = 'Secure', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processExpeditionJean(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await jeanFunction(currentGame, player, client, currentTheme, home)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            jeanButton.callback = processExpeditionJean
+            returnedView.add_item(jeanButton)
+
+        if player.role.id == 'Pieck' and player.role.abilityActive:
+            pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processPieckAccept(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await pieckAcceptFunction(currentGame, player, client, currentTheme, home)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            pieckButtonAccept.callback = processPieckAccept
+            returnedView.add_item(pieckButtonAccept)
+
+            pieckButtonReject = Button(label = f'{currentTheme.emojiRejectExpedition}Flip and Reject', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processPieckReject(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await pieckRejectFunction(currentGame, player, client, currentTheme, home)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            pieckButtonReject.callback = processPieckReject
+            returnedView.add_item(pieckButtonReject)
+
         return returnedView
     
     @staticmethod

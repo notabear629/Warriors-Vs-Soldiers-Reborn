@@ -259,7 +259,7 @@ async def kidnap(ctx, *, kidnappedUser:discord.Member):
 #TEST COMMAND ONLY
 @client.command('fill')
 async def fill(ctx):
-    bozos = [663576295682080789, 685709582118551552, 663577459647840259, 650144793296633887]
+    bozos = [663576295682080789, 571823508909195265, 663577459647840259, 650144793296633887]
     bozoUsers = []
     for bozo in bozos:
         user = homeServer.get_member(bozo)

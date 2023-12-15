@@ -100,6 +100,7 @@ class defaultGameTheme:
     voteDMColor = discord.Color.blue()
     acceptedExpeditionColor = discord.Color.green()
     rejectedExpeditionColor = discord.Color.red()
+    jeanedExpeditionColor = discord.Color.gold()
 
     #Expedition DM aesthetics
     expeditionDMColor = discord.Color.blue()
@@ -124,7 +125,10 @@ class defaultGameTheme:
     emojiWinner ='🏅'
     emojiLoser = '☠️'
 
-    
+    #Webhook Message Aesthetics
+    jeanMessage = f'I\'m securing this Expedition!'
+    pieckMessageWithJean = f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Jean**!'
+    pieckMessageWithoutJean = f'I am flipping the votes!'
 
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
@@ -151,6 +155,10 @@ class defaultGameTheme:
         #If you are using a default emoji, like the crown emoji, you can just put a String ':crown:' and it will work fine. The code will check if the type is an integer or String so dont worry about mixing types.
         roleDict['emoji'] = 685785857609039873
 
+        #If you are using a custom emoji, then make sure this is set to None. Otherwise set this to a URL of the emoji you are using. Unfortunately, Webhook images and thumbnails can only be made with urls and default emojis dont have urls.
+        #Thus, if you are using a built in emoji, you will need to define this dictionary key.
+        roleDict['imageURL'] = None
+
         #The roleMessage is the part of the message the bot sends that gives specific information regarding the role itself when you are assigned a role.
         #You may change any role message as you wish.
         roleDict['roleMessage'] = f'You know the identity of all of the other Warriors, except for Zeke. Remember to not make the fact you know who the Warriors are obvious, and do your best to protect your identity. If the Warriors can successfully identify you, the Soldiers will lose!'
@@ -166,6 +174,48 @@ class defaultGameTheme:
 
     #PLEASE PLEASE FOLLOW ALL INSTRUCTIONS PRESENT FOR THE EREN ROLE FOR THE FUTURE ROLES!
 
+    class Historia:
+        roleDict = {'roleID' : 'Historia'}
+
+        roleDict['name'] = 'Historia Reiss'
+
+        roleDict['shortName'] = 'Historia'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 695886874937524275
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = f'You are given two names. One is Eren and one is Zeke, but you don\'t know which is which! Use this information to help guide you to victory, but be careful! Don\'t expose the identity of Eren to the Warriors!'
+
+        roleDict['gameRole'] = ':angel:Queen:angel:'
+
+        roleDict['helpInfo'] = 'Historia is the queen of Paradis and has closer knowledge of the situation than most Soldiers due to being in communications with the Yeager brothers, but there was a mistake in the line! Now, she knows which 2 players are Eren and Zeke, but not which is which!'
+
+    class Jean:
+        roleDict = {'roleID' : 'Jean'}
+
+        roleDict['name'] = 'Jean Kirschstein'
+
+        roleDict['shortName'] = 'Jean'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 686525460607401989
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = 'You have the ability to force an expedition proposal to pass once! But be careful! If you miscalculate, you could easily allow the Warriors to get a wall!\n\n'
+
+        roleDict['gameRole'] = ':white_check_mark:Voting Ackermann:white_check_mark:'
+
+        roleDict['helpInfo'] = 'Jean has an excellent ability to rally his comrades! Thanks to this, he has the ability to force an expedition proposal to be passed one time.'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -178,6 +228,8 @@ class defaultGameTheme:
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = str('🛡️')
+
+        roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
 
         roleDict['roleMessage'] = f'You are an average Soldier. You do not possess any special abilities or supplemental information.'
 
@@ -198,12 +250,36 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 685785857617035327
 
+        roleDict['imageURL'] = None
+
         roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You also may `{prefix}kidnap @mention` Eren at any time, but be warned, this will end the game just like a regular kidnap! In order to unlock this ability, first use `{prefix}unlock` in this DM, then you will be able to kidnap Eren.'
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
 
         roleDict['helpInfo'] = f'Zeke is the warchief and team captain for the Warriors! He will not be seen as a Wall by Eren, and is a mandatory role that appears every game. He is more important than just being invisible to the Coordinate, however. He alone has the ability to choose to kidnap in the middle of the game to stop all of the Warriors from being killed if the situation looks grim!'  
     
+
+    class Pieck:
+        roleDict = {'roleID' : 'Pieck'}
+
+        roleDict['name'] = 'Pieck Finger'
+
+        roleDict['shortName'] = 'Pieck'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1015918467167293440
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = f'You are an expert inflitrator! As such, you have the ability to drop into the expedition voting and flip the results once. When properly used, this ability is incredibly powerful, so be wise in your use of it!\n\n'
+
+        roleDict['gameRole'] = ':detective:Spy:detective:'
+
+        roleDict['helpInfo'] = 'Pieck is great at inflitrating enemy lines undetected. Thanks to this spying ability, she has the ability to mess with the votes for an expedition once and flip them all! This is an incredibly powerful ability when used properly, as it can turn a rejected expo into a free wall for the Warriors!'
+
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
@@ -218,6 +294,8 @@ class defaultGameTheme:
 
         roleDict['emoji'] = str('⚔️')
 
+        roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
+
         roleDict['roleMessage'] = f'You are an average Warrior. You do not possess any special abilities to aid you in breaking the walls.'
 
         roleDict['gameRole'] = ':crossed_swords:Default Warrior:crossed_swords:'
@@ -225,9 +303,9 @@ class defaultGameTheme:
         roleDict['helpInfo'] = f'The Warrior role is merely just a default Warrior, they essentially have no role.'
 
 
-    def getErenInfo(CurrentGame):
+    def getErenInfo(currentGame):
         erenInfo = 'The Warriors are:\n'
-        warriorList = CurrentGame.warriors.copy()
+        warriorList = currentGame.warriors.copy()
         warriorList = random.sample(warriorList, len(warriorList))
         for warrior in warriorList:
             if warrior.role.id != 'Zeke':
@@ -236,9 +314,19 @@ class defaultGameTheme:
                 erenInfo += '\n'
         return erenInfo
     
-    def getWarriorInfo(CurrentGame, player):
+    def getHistoriaInfo(currentGame):
+        historiaInfo = 'The Yeager Brothers are:\n'
+        yeagerBros = []
+        for player in currentGame.players:
+            if player.role.id == 'Zeke' or player.role.id == 'Eren':
+                yeagerBros.append(player.user.name)
+        yeagerBros = random.sample(yeagerBros, 2)
+        historiaInfo += f'**{yeagerBros[0]}**\n**{yeagerBros[1]}**'
+        return historiaInfo
+    
+    def getWarriorInfo(currentGame, player):
         warriorInfo = 'Your fellow Warriors are:\n'
-        warriorList = CurrentGame.warriors.copy()
+        warriorList = currentGame.warriors.copy()
         warriorList = random.sample(warriorList, len(warriorList))
         for warrior in warriorList:
             if player.user.name != warrior.user.name:

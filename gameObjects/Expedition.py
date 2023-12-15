@@ -16,6 +16,8 @@ class Expedition:
         self.passedExpedition = []
         self.sabotagedExpedition = []
         self.resultsAvailable = False
+        self.jeanActivated = False
+        self.pieckActivated = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -50,6 +52,18 @@ class Expedition:
             self.rejected.append(player)
         elif voteCase == 'a':
             self.abstained.append(player)
+        elif voteCase == 'Jean':
+            self.accepted.append(player)
+            player.role.disableAbility()
+            self.jeanActivated = True
+        elif voteCase == 'PieckAccept':
+            self.rejected.append(player)
+            player.role.disableAbility()
+            self.pieckActivated = True
+        elif voteCase == 'PieckReject':
+            self.accepted.append(player)
+            player.role.disableAbility()
+            self.pieckActivated = True
         if len(self.voted) == len(self.eligibleVoters):
             self.currentlyVoting = False
 
