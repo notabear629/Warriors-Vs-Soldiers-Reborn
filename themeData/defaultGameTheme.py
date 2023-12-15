@@ -42,6 +42,12 @@ class defaultGameTheme:
     #Lobby embed Aesthetics
     lobbyEmbedColor = discord.Color.blue()
 
+    #Rule Selection Aesthetics
+    emojiBackButton = str('◀️')
+    emojiRoleEnabled = str('✅')
+    emojiRoleDisabled = str('❌')
+    emojiRoleDefault = str('➖')
+
     #Status Embed Aesthetics
     winningColor = discord.Color.green()
     neutralColor = discord.Color.gold()

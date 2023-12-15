@@ -2,10 +2,11 @@ class Lobby:
     def __init__(self):
         self.online = False
 
-    def openLobby(self, host):
+    def openLobby(self, host, currentRules):
         self.online = True
         self.host = host
         self.users = [host]
+        self.currentRules = currentRules
 
     def turnOffline(self):
         self.online = False

@@ -6,6 +6,7 @@ from discord.ui import *
 from embedBuilder import embedBuilder
 
 from gameObjects.Theme import Theme
+from gameObjects.Role import Role
 
 class discordViewBuilder:
 
@@ -108,31 +109,35 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def basicOptionsView(currentTheme, client, currentLobby, prefix):
+    async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
         returnedView = View()
 
         themeSelect = Select(placeholder= 'Choose Theme', min_values=1, max_values=1)
 
         for theme in Theme.loadedThemes:
-            if theme.themeName == currentTheme.themeName:
-                isDefaultSelection = True
-            else:
-                isDefaultSelection = False
             loadedTheme = Theme()
             loadedTheme.setTheme(theme)
             await loadedTheme.resolveEmojis(client)
-            themeSelect.add_option(label = f'Chosen Theme: {theme.themeName}', emoji=loadedTheme.emojiTheme, default=isDefaultSelection)
+            themeSelect.add_option(label = f'{theme.themeName}', emoji=loadedTheme.emojiTheme)
 
         async def processThemeSelect(interaction):
-            themeName = discordViewBuilder.getThemeName(themeSelect.values)
-            if themeName != currentTheme.themeName and themeName != None:
-                theme = await discordViewBuilder.getThemeFromName(themeName, client)
-                currentTheme.setTheme(theme)
-                await currentTheme.resolveEmojis(client)
-                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, prefix)
-                await interaction.message.edit(embed=embed, view=refreshedView)
-                await interaction.response.defer()
+            themeName = str(themeSelect.values[0])
+            if themeName != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                if themeName == currentTheme.themeName:
+                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                    await interaction.message.edit(embed=embed, view=refreshedView)
+                    await interaction.response.defer()
+                else:
+                    theme = await discordViewBuilder.getThemeFromName(themeName, client)
+                    currentTheme.setTheme(theme)
+                    await currentTheme.resolveEmojis(client)
+                    for role in loadedRoles:
+                        role.update(currentTheme, client)
+                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    await interaction.message.edit(embed=embed, view=refreshedView)
+                    await interaction.response.defer()
 
         themeSelect.callback = processThemeSelect
 
@@ -141,21 +146,96 @@ class discordViewBuilder:
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):
-            print(roleOptionSelect.label)
-            await interaction.response.defer()
+            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers')
+                refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Soldiers', loadedRoles, currentLobby.currentRules)
+                await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+                await interaction.response.defer()
 
         roleOptionSelect.callback = processRoleOptionSelect
         returnedView.add_item(roleOptionSelect)
-
-            
+      
         return returnedView
     
+    @staticmethod
+    async def roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team):
+        returnedView = View()
 
-    def getThemeName(themeValues):
-        if themeValues == []:
-            return None
-        themeName = str(themeValues[0])
-        return themeName[14:]
+        if team == 'Soldiers':
+            targetedGroup = Role.soldierGroupOptional
+            teamName = currentTheme.soldierSingle
+        elif team == 'Warriors':
+            targetedGroup = Role.warriorGroupOptional
+            teamName = currentTheme.warriorSingle
+
+
+        focusedRoles = []
+        for role in loadedRoles:
+            if role.id in targetedGroup:
+                focusedRoles.append(role)
+
+        enableSelect = Select(placeholder= f'Choose to Enable {teamName} Roles', min_values=1, max_values=len(focusedRoles))
+        for role in focusedRoles:
+            enableSelect.add_option(label = role.shortName, emoji=role.emoji)
+        async def enableRoles(interaction):
+            changedRoles = await discordViewBuilder.getRoleRequest(enableSelect.values, loadedRoles) 
+            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, True)
+            refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+            await interaction.response.defer()
+        enableSelect.callback = enableRoles
+        returnedView.add_item(enableSelect)
+
+        disableSelect = Select(placeholder= f'Choose to Disable {teamName} Roles', min_values=1, max_values=len(focusedRoles))
+        for role in focusedRoles:
+            disableSelect.add_option(label = role.shortName, emoji=role.emoji)
+        async def disableRoles(interaction):
+            changedRoles = await discordViewBuilder.getRoleRequest(disableSelect.values, loadedRoles) 
+            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, False)
+            refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+            await interaction.response.defer()
+        disableSelect.callback = disableRoles
+        returnedView.add_item(disableSelect)
+
+        backButton = Button(label = 'Go Back to Basic Options', emoji=currentTheme.emojiBackButton, style=discord.ButtonStyle.grey)
+
+        async def processBackButton(interaction):
+            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            await interaction.message.edit(embed=embed, view=refreshedView)
+            await interaction.response.defer()
+
+        backButton.callback = processBackButton
+        returnedView.add_item(backButton)
+
+        if team != 'Warriors':
+            warriorButton = Button(label = f'Go to {currentTheme.warriorSingle} Role Options', emoji=currentTheme.emojiWarrior, style=discord.ButtonStyle.grey)
+            async def processWarriorButton(interaction):
+                refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Warriors', loadedRoles, currentLobby.currentRules)
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Warriors')
+                await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+                await interaction.response.defer()
+            warriorButton.callback = processWarriorButton
+            returnedView.add_item(warriorButton)
+
+        elif team != 'Soldiers':
+            soldierButton = Button(label = f'Go to {currentTheme.soldierSingle} Role Options', emoji=currentTheme.emojiSoldier, style=discord.ButtonStyle.grey)
+            async def processSoldierButton(interaction):
+                refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Soldiers', loadedRoles, currentLobby.currentRules)
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers')
+                await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+                await interaction.response.defer()
+            soldierButton.callback = processSoldierButton
+            returnedView.add_item(soldierButton)
+
+        return returnedView
+    
+    async def changeRoleRules(currentGame, currentLobby, interaction, changedRoles, isEnabled):
+        if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            currentLobby.currentRules.changeRoles(changedRoles, isEnabled)
     
     async def getThemeFromName(themeName, client):
         selectedTheme = None
@@ -164,4 +244,13 @@ class discordViewBuilder:
                 selectedTheme = theme
                 break
         return selectedTheme
+    
+    async def getRoleRequest(shortNames, loadedRoles):
+        roleRequest = []
+        for shortName in shortNames:
+            for role in loadedRoles:
+                if role.shortName == shortName:
+                    roleRequest.append(role.id)
+                    break
+        return roleRequest
         

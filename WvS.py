@@ -17,6 +17,7 @@ from gameObjects.Theme import Theme
 from gameObjects.Game import Game
 from gameObjects.Player import Player
 from gameObjects.Rules import Rules
+from gameObjects.Role import Role
 
 #Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
@@ -56,17 +57,18 @@ def resetFunction():
 async def on_ready():
     global home, homeServer, userCategory
     global noMentions, withMentions
-    global currentTheme, currentRules, currentLobby, currentGame
+    global currentTheme, currentRules, currentLobby, currentGame, loadedRoles
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
+    await currentTheme.resolveEmojis(client)
     currentRules = Rules()
     currentLobby = Lobby()
     currentGame = Game()
-    await currentTheme.resolveEmojis(client)
+    loadedRoles = Role.loadRoles(currentTheme, client)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
 @client.command('reset')
@@ -85,7 +87,7 @@ async def reset(ctx):
 @client.command('host')
 async def host(ctx):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
+    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules)
 
 
 @client.command('join')
@@ -111,7 +113,7 @@ async def lobby(ctx):
 
 @client.command('options')
 async def options(ctx):
-    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client)
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
 
 @client.command('color')
 async def color(ctx, *, colorInput=None):
@@ -200,7 +202,7 @@ async def fill(ctx):
 #TEST COMMAND ONLY
 @client.command('test')
 async def test(ctx):
-    view = await discordViewBuilder.basicOptionsView(currentTheme, client)
+    view = await discordViewBuilder.roleOptionsView(loadedRoles)
     await ctx.send(view=view)
 
 

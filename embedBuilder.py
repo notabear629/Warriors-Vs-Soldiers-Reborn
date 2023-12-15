@@ -279,4 +279,34 @@ class embedBuilder:
                     returnedEmbed.add_field(name=f'{search.role.emoji}{search.role.name}{search.role.emoji}', value=f'{search.user.name}{addedEmoji}', inline=True)
         return returnedEmbed
     
+    async def roleSelection(currentTheme, team, loadedRoles, currentRules):
+        if team == 'Soldiers':
+            selectedPlural = currentTheme.soldierPlural
+            selectedColor = currentTheme.soldierColor
+            selectedThumbnail = currentTheme.soldierThumbnail
+            selectedSubgroup = Role.soldierGroupOptional
+            enabledGroup = currentRules.enabledSoldiers
+            disabledGroup = currentRules.disabledSoldiers
+        elif team == 'Warriors':
+            selectedPlural = currentTheme.warriorPlural
+            selectedColor = currentTheme.warriorColor
+            selectedThumbnail = currentTheme.warriorThumbnail
+            selectedSubgroup = Role.warriorGroupOptional
+            enabledGroup = currentRules.enabledWarriors
+            disabledGroup = currentRules.disabledWarriors
+        returnedEmbed = discord.Embed(title = f'Options for {selectedPlural} Roles', color = selectedColor)
+        returnedEmbed.set_thumbnail(url = selectedThumbnail)
+
+        for role in loadedRoles:
+            if role.id in selectedSubgroup:
+                if role.id in enabledGroup:
+                    selectedValue = f'{currentTheme.emojiRoleEnabled}`Enabled`'
+                elif role.id in disabledGroup:
+                    selectedValue = f'{currentTheme.emojiRoleDisabled}`Disabled`'
+                else:
+                    selectedValue = f'{currentTheme.emojiRoleDefault}`Default`'
+                returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value=selectedValue, inline=True)
+
+        return returnedEmbed
+    
 

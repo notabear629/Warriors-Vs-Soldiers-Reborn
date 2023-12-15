@@ -7,7 +7,7 @@ from discordViewBuilder import discordViewBuilder
 
 
 class lobbyFunctions:
-    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
+    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules):
         if home == ctx.channel:
             if currentLobby.online:     
                 if ctx.message.author in currentLobby.users:
@@ -19,7 +19,7 @@ class lobbyFunctions:
                     await ctx.message.reply(f'There is already a lobby! Why not `{prefix}join` instead?')
             else:
                 if currentGame.online == False:
-                    currentLobby.openLobby(ctx.message.author)
+                    currentLobby.openLobby(ctx.message.author, currentRules)
                     embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                     await home.send(embed=embed, allowed_mentions= noMentions)
                     await home.send('Lobby Created.')
@@ -114,14 +114,13 @@ class lobbyFunctions:
         else:
             await ctx.reply(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
 
-    async def options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client):
+    async def options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles):
         if home == ctx.channel:
             if currentLobby.online:
                 if ctx.message.author == currentLobby.host:
                     if currentGame.online == False:
-                        currentLobby.clearUsers()
                         embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                        view = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, prefix)
+                        view = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
                         await home.send(embed=embed, allowed_mentions= noMentions, view = view)
                     else:
                         await ctx.message.reply('You cannot change options mid-game.')

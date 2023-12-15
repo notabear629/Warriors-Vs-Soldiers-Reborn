@@ -144,6 +144,8 @@ class eggplant:
         #If you are using a default emoji, like the crown emoji, you can just put a String ':crown:' and it will work fine. The code will check if the type is an integer or String so dont worry about mixing types.
         roleDict['emoji'] = str('🍆')
 
+        roleDict['imageURL'] = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
+
         #The roleMessage is the part of the message the bot sends that gives specific information regarding the role itself when you are assigned a role.
         #You may change any role message as you wish.
         roleDict['roleMessage'] = str('🍆')
@@ -172,6 +174,8 @@ class eggplant:
 
         roleDict['emoji'] = str('🍆')
 
+        roleDict['imageURL'] = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
+
         roleDict['roleMessage'] = str('🍆')
 
         roleDict['gameRole'] = str('🍆')
@@ -190,6 +194,8 @@ class eggplant:
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = str('🍆')
+
+        roleDict['imageURL'] = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
 
         roleDict['roleMessage'] = str('🍆')
 
@@ -210,6 +216,8 @@ class eggplant:
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = str('🍆')
+
+        roleDict['imageURL'] = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
 
         roleDict['roleMessage'] = str('🍆')
 

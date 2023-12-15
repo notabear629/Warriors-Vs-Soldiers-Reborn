@@ -56,3 +56,28 @@ class Role:
 
     def disableAbility(self):
         self.abilityActive = False
+
+    def loadRoles(currentTheme, client):
+        roleList = []
+        for role in Role.allRoles:
+            getRole = getattr(currentTheme, role)
+            newRole = Role(getRole)
+            if type(newRole.emoji) == int:
+                newRole.emoji = client.get_emoji(newRole.emoji)
+            roleList.append(newRole)
+        return roleList
+    
+    def update(self, currentTheme, client):
+        roleInfo = getattr(currentTheme, self.id)
+        self.id = roleInfo['roleID']
+        self.name = roleInfo['name']
+        self.shortName = roleInfo['shortName']
+        self.team = roleInfo['team']
+        self.isTitan = roleInfo['isTitan']
+        self.emoji = roleInfo['emoji']
+        self.imageURL = roleInfo['imageURL']
+        self.roleMessage = roleInfo['roleMessage']
+        self.gameRole = roleInfo['gameRole']
+        self.helpInfo = roleInfo['helpInfo']
+        if type(self.emoji) == int:
+            self.emoji = client.get_emoji(self.emoji)

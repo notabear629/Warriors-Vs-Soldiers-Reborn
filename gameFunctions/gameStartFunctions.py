@@ -39,8 +39,8 @@ class gameStartFunctions:
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
         roleList = []
 
-        roleList += await gameStartFunctions.getSoldierRoles(playerCounts['soldierCount'], currentTheme, client)
-        roleList += await gameStartFunctions.getWarriorRoles(playerCounts['warriorCount'], currentTheme, client)
+        roleList += await gameStartFunctions.getSoldierRoles(playerCounts['soldierCount'], currentTheme, client, currentLobby)
+        roleList += await gameStartFunctions.getWarriorRoles(playerCounts['warriorCount'], currentTheme, client, currentLobby)
 
         roleList = random.sample(roleList, len(roleList))
         players = []
@@ -60,16 +60,28 @@ class gameStartFunctions:
         warriorCount = playerCount-soldierCount
         return {'playerCount' : playerCount, 'soldierCount' : soldierCount, 'warriorCount' : warriorCount}
 
-    async def getSoldierRoles(soldierCount, currentTheme, client):
-        roleNames = ['Eren']
-        optionalSoldierRoles = Role.soldierGroupOptional
-        validSoldierRoles = optionalSoldierRoles.copy()
-        sampleLimit = int(soldierCount - 1)
-        if sampleLimit > len(validSoldierRoles):
-            sampleLimit = len(validSoldierRoles)
-        roleNames += random.sample(validSoldierRoles, sampleLimit)
-        while len(roleNames) < soldierCount:
-            roleNames.append('Soldier')
+    async def getSoldierRoles(soldierCount, currentTheme, client, currentLobby):
+        roleNames = [random.choice(Role.soldierGroupCoordinate)]
+        enabledRoles = currentLobby.currentRules.enabledSoldiers
+        index = 0
+        while (len(roleNames) < soldierCount and index < len(enabledRoles)):
+            roleNames.append(enabledRoles[index])
+            index += 1
+
+        sampleLimit = int(soldierCount - len(roleNames))
+        if sampleLimit > 0:
+            validRoles = Role.soldierGroupOptional.copy()
+            for role in roleNames:
+                if role in validRoles:
+                    validRoles.remove(role)
+            for role in currentLobby.currentRules.disabledSoldiers:
+                if role in validRoles:
+                    validRoles.remove(role)
+            if sampleLimit > len(validRoles):
+                sampleLimit = len(validRoles)
+            roleNames += random.sample(validRoles, len(validRoles))
+            while len(roleNames) < soldierCount:
+                roleNames.append('Soldier')
         
         returnedRoles = []
         for roleName in roleNames:
@@ -79,16 +91,28 @@ class gameStartFunctions:
             returnedRoles.append(Role(roleInfo))
         return returnedRoles
 
-    async def getWarriorRoles(warriorCount, currentTheme, client):
-        roleNames = ['Zeke']
-        optionalWarriorRoles = Role.warriorGroupOptional
-        validWarriorRoles = optionalWarriorRoles.copy()
-        sampleLimit = int(warriorCount - 1)
-        if sampleLimit > len(validWarriorRoles):
-            sampleLimit = len(validWarriorRoles)
-        roleNames += random.sample(validWarriorRoles, sampleLimit)
-        while len(roleNames) < warriorCount:
-            roleNames.append('Warrior')
+    async def getWarriorRoles(warriorCount, currentTheme, client, currentLobby):
+        roleNames = [random.choice(Role.warriorGroupWarchief)]
+        enabledRoles = currentLobby.currentRules.enabledWarriors
+        index = 0
+        while (len(roleNames) < warriorCount and index < len(enabledRoles)):
+            roleNames.append(enabledRoles[index])
+            index += 1
+
+        sampleLimit = int(warriorCount - len(roleNames))
+        if sampleLimit > 0:
+            validRoles = Role.warriorGroupOptional.copy()
+            for role in roleNames:
+                if role in validRoles:
+                    validRoles.remove(role)
+            for role in currentLobby.currentRules.disabledWarriors:
+                if role in validRoles:
+                    validRoles.remove(role)
+            if sampleLimit > len(validRoles):
+                sampleLimit = len(validRoles)
+            roleNames += random.sample(validRoles, len(validRoles))
+            while len(roleNames) < warriorCount:
+                roleNames.append('Warrior')
         
         returnedRoles = []
         for roleName in roleNames:
