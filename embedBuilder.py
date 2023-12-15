@@ -147,11 +147,19 @@ class embedBuilder:
     
     async def voteDM(currentGame, player, currentTheme):
         playerList = f'The current {currentTheme.expeditionTeam}:\n'
+        titansSmelled = 0
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
             if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
             playerList += '\n'
+            if expeditioner.role.isTitan:
+                titansSmelled += 1
+        if player.role.id == 'Mike' and player in currentGame.currentExpo.expeditionMembers:
+            titanName = currentTheme.titanPlural
+            if titansSmelled == 1:
+                titanName = currentTheme.titanSingle
+            playerList += f'\n{player.role.secondaryEmoji}You {currentTheme.mikeSmell} **{titansSmelled}** {titanName}!{player.role.secondaryEmoji}'
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
         if player.role.id == 'Jean' and currentGame.currentExpo.jeanActivated:
             voteDesc = f'You have voted to secure this {currentTheme.expeditionTeam}.'

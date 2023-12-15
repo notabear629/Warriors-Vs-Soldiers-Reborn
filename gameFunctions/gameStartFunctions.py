@@ -67,6 +67,12 @@ class gameStartFunctions:
     async def getSoldierRoles(soldierCount, currentTheme, client, currentLobby):
         roleNames = [random.choice(Role.soldierGroupCoordinate)]
         enabledRoles = currentLobby.currentRules.enabledSoldiers
+        scrambleIndex = len(enabledRoles)
+        if scrambleIndex < 0:
+            scrambleIndex = 0
+        enabledRoles = random.sample(enabledRoles, scrambleIndex)
+
+        
         index = 0
         while (len(roleNames) < soldierCount and index < len(enabledRoles)):
             roleNames.append(enabledRoles[index])
@@ -83,7 +89,7 @@ class gameStartFunctions:
                     validRoles.remove(role)
             if sampleLimit > len(validRoles):
                 sampleLimit = len(validRoles)
-            roleNames += random.sample(validRoles, len(validRoles))
+            roleNames += random.sample(validRoles, sampleLimit)
             while len(roleNames) < soldierCount:
                 roleNames.append('Soldier')
         
@@ -92,12 +98,18 @@ class gameStartFunctions:
             roleInfo = getattr(currentTheme, roleName)
             if type(roleInfo['emoji']) == int:
                 roleInfo['emoji'] = client.get_emoji(roleInfo['emoji'])
+            if type(roleInfo['secondaryEmoji']) == int:
+                roleInfo['secondaryEmoji'] = client.get_emoji(roleInfo['secondaryEmoji'])
             returnedRoles.append(Role(roleInfo))
         return returnedRoles
 
     async def getWarriorRoles(warriorCount, currentTheme, client, currentLobby):
         roleNames = [random.choice(Role.warriorGroupWarchief)]
         enabledRoles = currentLobby.currentRules.enabledWarriors
+        scrambleIndex = len(enabledRoles)
+        if scrambleIndex < 0:
+            scrambleIndex = 0
+        enabledRoles = random.sample(enabledRoles, scrambleIndex)
         index = 0
         while (len(roleNames) < warriorCount and index < len(enabledRoles)):
             roleNames.append(enabledRoles[index])
@@ -114,7 +126,7 @@ class gameStartFunctions:
                     validRoles.remove(role)
             if sampleLimit > len(validRoles):
                 sampleLimit = len(validRoles)
-            roleNames += random.sample(validRoles, len(validRoles))
+            roleNames += random.sample(validRoles, sampleLimit)
             while len(roleNames) < warriorCount:
                 roleNames.append('Warrior')
         
@@ -123,7 +135,10 @@ class gameStartFunctions:
             roleInfo = getattr(currentTheme, roleName)
             if type(roleInfo['emoji']) == int:
                 roleInfo['emoji'] = client.get_emoji(roleInfo['emoji'])
+            if type(roleInfo['secondaryEmoji']) == int:
+                roleInfo['secondaryEmoji'] = client.get_emoji(roleInfo['secondaryEmoji'])
             returnedRoles.append(Role(roleInfo))
+
         return returnedRoles
     
     async def sendRoleMessages(currentGame, currentTheme, client):

@@ -24,6 +24,8 @@ class Expedition:
         self.expeditionMembers = []
         self.currentlyPicking = True
         self.passed = False
+        self.jeanActivated = False
+        self.pieckActivated = False
 
     def addMember(self, member):
         self.expeditionMembers.append(member)

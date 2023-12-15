@@ -26,6 +26,8 @@ class defaultGameTheme:
     wallSingle = 'Wall'
     wallPlural = 'Walls'
     emojiTheme = 685785857609039873
+    titanSingle = 'Titan'
+    titanPlural = 'Titans'
 
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
@@ -108,6 +110,7 @@ class defaultGameTheme:
     acceptedExpeditionColor = discord.Color.green()
     rejectedExpeditionColor = discord.Color.red()
     jeanedExpeditionColor = discord.Color.gold()
+    mikeSmell = 'smell'
 
     #Expedition DM aesthetics
     expeditionDMColor = discord.Color.blue()
@@ -162,6 +165,10 @@ class defaultGameTheme:
         #If you are using a default emoji, like the crown emoji, you can just put a String ':crown:' and it will work fine. The code will check if the type is an integer or String so dont worry about mixing types.
         roleDict['emoji'] = 685785857609039873
 
+
+        #Not all roles actually use secondary emojis. If this is None, it's fine. Should be an int or emoji string like any other emoji.
+        roleDict['secondaryEmoji'] = None
+
         #If you are using a custom emoji, then make sure this is set to None. Otherwise set this to a URL of the emoji you are using. Unfortunately, Webhook images and thumbnails can only be made with urls and default emojis dont have urls.
         #Thus, if you are using a built in emoji, you will need to define this dictionary key.
         roleDict['imageURL'] = None
@@ -194,6 +201,8 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 695886874937524275
 
+        roleDict['secondaryEmoji'] = None
+
         roleDict['imageURL'] = None
 
         roleDict['roleMessage'] = f'You are given two names. One is Eren and one is Zeke, but you don\'t know which is which! Use this information to help guide you to victory, but be careful! Don\'t expose the identity of Eren to the Warriors!'
@@ -214,6 +223,8 @@ class defaultGameTheme:
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 1185201738815393833
+
+        roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = None
 
@@ -236,6 +247,8 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 686525460607401989
 
+        roleDict['secondaryEmoji'] = None
+
         roleDict['imageURL'] = None
 
         roleDict['roleMessage'] = 'You have the ability to force an expedition proposal to pass once! But be careful! If you miscalculate, you could easily allow the Warriors to get a wall!\n\n'
@@ -243,6 +256,29 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':white_check_mark:Voting Ackermann:white_check_mark:'
 
         roleDict['helpInfo'] = 'Jean has an excellent ability to rally his comrades! Thanks to this, he has the ability to force an expedition proposal to be passed one time.'
+
+    class Mike:
+        roleDict = {'roleID' : 'Mike'}
+
+        roleDict['name'] = 'Mike Zacharius'
+
+        roleDict['shortName'] = 'Mike'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 686833146787921940
+
+        roleDict['secondaryEmoji'] = 686528354886877253
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = 'You have the uncanny ability to smell Titans! When you are put on an expo, before voting even begins, you will know how many Titans are on the expedition. But be very careful! Not every Titan is a Warrior, in fact, the Coordinate is a Titan! In addition, not every Warrior is a Titan. Be very careful with how you use the information you gain, it will not always be useful.\n\n'
+
+        roleDict['gameRole'] = ':nose:Mike:nose:'
+
+        roleDict['helpInfo'] = 'Mike was born with the bizarre gift of being able to smell titans! Whenever an expedition is proposed that he is on, he will be able to smell how many titans are on board! But be careful, not EVERY warrior is a titan, and not EVERY titan is a warrior! In fact, Eren himself is a titan! Mike will be alerted as to which of the roles are considered titans, and must carefully deduce who to trust from that information, but be careful! You may accidentally tip off the identity of Eren to the Warriors if you are careless and share this information!'
 
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
@@ -256,6 +292,8 @@ class defaultGameTheme:
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = str('🛡️')
+
+        roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
 
@@ -277,6 +315,8 @@ class defaultGameTheme:
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 685785857617035327
+
+        roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = None
 
@@ -300,6 +340,8 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 1015918467167293440
 
+        roleDict['secondaryEmoji'] = None
+
         roleDict['imageURL'] = None
 
         roleDict['roleMessage'] = f'You are an expert inflitrator! As such, you have the ability to drop into the expedition voting and flip the results once. When properly used, this ability is incredibly powerful, so be wise in your use of it!\n\n'
@@ -321,6 +363,8 @@ class defaultGameTheme:
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = str('⚔️')
+
+        roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
 

@@ -17,7 +17,7 @@ class Role:
     soldierGroupAbility = ['Jean']
 
     #A group of all Analytical Soldiers
-    soldierGroupAnalyst = ['Hange']
+    soldierGroupAnalyst = ['Hange', 'Mike']
 
     #Combine all optional Soldier Roles
     soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupAnalyst
@@ -53,6 +53,7 @@ class Role:
         self.team = roleInfo['team']
         self.isTitan = roleInfo['isTitan']
         self.emoji = roleInfo['emoji']
+        self.secondaryEmoji = roleInfo['secondaryEmoji']
         self.imageURL = roleInfo['imageURL']
         self.roleMessage = roleInfo['roleMessage']
         self.gameRole = roleInfo['gameRole']
@@ -91,6 +92,8 @@ class Role:
         self.helpInfo = roleInfo['helpInfo']
         if type(self.emoji) == int:
             self.emoji = client.get_emoji(self.emoji)
+        if type(self.secondaryEmoji) == int:
+            self.secondaryEmoji = client.get(self.secondaryEmoji)
 
     async def generateAllTeams(self, currentGame):
         warriorAmount = len(currentGame.warriors)
@@ -129,7 +132,6 @@ class Role:
         self.possibleWarriorTeams = possibleTeams
 
     async def crossReference(self, currentGame):
-        print('MOTHER OF DEBUGGING')
         possibleTeams = self.possibleWarriorTeams.copy()
         requirements = await self.getRequirements(currentGame)
         for requirement in requirements:
