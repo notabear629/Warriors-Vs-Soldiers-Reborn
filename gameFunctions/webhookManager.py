@@ -47,7 +47,7 @@ class webhookManager:
         if currentGame.currentExpo.pieckActivated and Hitch != None:
             Pieck = await searchFunctions.roleIDToPlayer(currentGame, 'Pieck')
             hitchInfo['Pieck'] = Pieck
-        if Hitch != None and Hitch in currentGame.livingPlayers:
+        if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
             user = databaseManager.searchForUser(Hitch.user)
             userChannel = client.get_channel(user['channelID'])
             hitchMessage = currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)

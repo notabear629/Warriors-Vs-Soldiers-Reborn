@@ -82,6 +82,7 @@ class Expedition:
         if actCase == 'Armin':
             self.passedExpedition.append(player)
             self.arminActivated = True
+            player.role.disableAbility()
         elif actCase == 'y':
             self.passedExpedition.append(player)
         elif actCase == 'n':
