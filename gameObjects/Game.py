@@ -7,7 +7,7 @@ class Game:
         self.online = False
 
 
-    def start(self, lobby, players, currentRules):
+    def start(self, lobby, players, currentRules, loadedRoles):
         self.online = True
         self.lobby = lobby
         self.players = players
@@ -38,6 +38,7 @@ class Game:
         self.winners = []
         self.currentlyKidnapping = False
         self.kidnappedPlayer = None
+        self.loadedRoles = loadedRoles
 
         for player in players:
             if player.role.team == 'Soldiers':

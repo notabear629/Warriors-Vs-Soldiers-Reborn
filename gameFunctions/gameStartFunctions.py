@@ -17,13 +17,13 @@ from dataFunctions.databaseManager import databaseManager
 from embedBuilder import embedBuilder
 
 class gameStartFunctions:
-    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules):
+    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles):
         if home == ctx.channel:
             if currentGame.online == False:
                 if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
                         await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                        await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules)
+                        await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles)
                         expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
                         expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
                         currentGame.setExpedition(expo)
@@ -36,7 +36,7 @@ class gameStartFunctions:
             else:
                 await ctx.message.reply('There is already an active game!')
 
-    async def createGame(currentGame, currentLobby, currentTheme, client, currentRules):
+    async def createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles):
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
         roleList = []
 
@@ -50,7 +50,7 @@ class gameStartFunctions:
             newPlayer = Player(user, roleList[index])
             players.append(newPlayer)
             index += 1
-        currentGame.start(currentLobby, players, currentRules)
+        currentGame.start(currentLobby, players, currentRules, loadedRoles)
         search = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
         if search != None:
             await search.role.startHange(currentGame, search)

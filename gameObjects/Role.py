@@ -17,7 +17,7 @@ class Role:
     soldierGroupAbility = ['Jean']
 
     #A group of all Analytical Soldiers
-    soldierGroupAnalyst = ['Hange', 'Mike']
+    soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch']
 
     #Combine all optional Soldier Roles
     soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupAnalyst

@@ -280,6 +280,29 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Mike was born with the bizarre gift of being able to smell titans! Whenever an expedition is proposed that he is on, he will be able to smell how many titans are on board! But be careful, not EVERY warrior is a titan, and not EVERY titan is a warrior! In fact, Eren himself is a titan! Mike will be alerted as to which of the roles are considered titans, and must carefully deduce who to trust from that information, but be careful! You may accidentally tip off the identity of Eren to the Warriors if you are careless and share this information!'
 
+    class Hitch:
+        roleDict = {'roleID' : 'Hitch'}
+
+        roleDict['name'] = 'Hitch Dreyse'
+
+        roleDict['shortName'] = 'Hitch'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 696620790833217546
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = 'You have the ability to investigate who used special abilities! As such, at the end of a round, for every one-time-use special ability used in that round, you will be given two names, of which, one of those players was responsible for that ability being used.\n\n'
+
+        roleDict['gameRole'] = ':mag:Ability Investigator:mag:'
+
+        roleDict['helpInfo'] = 'Hitch is a part of the Military Police! Thanks to her enhanced access to investigative scenes and crime scene training, she is able to extract information based on who used a special ability. When a one-time special ability is used, Soldier or Warrior, She will be able to determine 2 players, of which one of them used the ability.'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -404,7 +427,22 @@ class defaultGameTheme:
                 continue
             hangeInfo += f'**{player.user.name}** - {getProbabilities[player]}%\n'
         return hangeInfo
-
+    
+    def getHitchInfo(currentGame, Hitch, hitchInfo):
+        hitchMessage = ''
+        for role, player in hitchInfo.items():
+            altPlayers = currentGame.livingPlayers.copy()
+            if Hitch in altPlayers:
+                altPlayers.remove(Hitch)
+            if player in altPlayers:
+                altPlayers.remove(player)
+            if len(altPlayers) <= 0:
+                hitchMessage += f'I have discovered that the identity of **{player.role.name}** must be **{player.user.name}**!\n\n'
+            else:
+                altPlayer = random.choice(altPlayers)
+                twoPossibilities = random.sample([player, altPlayer], 2)
+                hitchMessage += f'I have discovered that the identity of **{player.role.name}** must either be **{twoPossibilities[0].user.name}**  or **{twoPossibilities[1].user.name}**!\n\n'
+        return hitchMessage
 
     
     def getWarriorInfo(currentGame, player):
