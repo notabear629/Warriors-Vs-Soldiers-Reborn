@@ -121,6 +121,7 @@ class defaultGameTheme:
     #Expedition results aesthetics
     expoPassedColor = discord.Color.green()
     expoSabotagedColor = discord.Color.red()
+    arminNukeColor = discord.Color.default()
     wallMariaBreakMessage = str('💥Wall Maria has Fallen!💥')
     wallRoseBreakMessage = str('💥Wall Rose has Fallen!💥')
     wallSinaBreakMessage = str('💥Wall Sina has Fallen!💥')
@@ -138,7 +139,8 @@ class defaultGameTheme:
     #Webhook Message Aesthetics
     jeanMessage = f'I\'m securing this Expedition!'
     pieckMessageWithJean = f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Jean**!'
-    pieckMessageWithoutJean = f'I am flipping the votes!'
+    pieckMessageWithoutJean = f'I flipped the votes!'
+    arminMessage = f'I blew up the Expedition!'
 
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
@@ -303,6 +305,29 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Hitch is a part of the Military Police! Thanks to her enhanced access to investigative scenes and crime scene training, she is able to extract information based on who used a special ability. When a one-time special ability is used, Soldier or Warrior, She will be able to determine 2 players, of which one of them used the ability.'
 
+    class Armin:
+        roleDict = {'roleID' : 'Armin'}
+
+        roleDict['name'] = 'Armin Arlert'
+
+        roleDict['shortName'] = 'Armin'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 686831164102541314
+
+        roleDict['secondaryEmoji'] = 934886285254987846
+
+        roleDict['imageURL'] = None
+
+        roleDict['roleMessage'] = 'Your Colossal Titan has a terrible ability! While on an expedition, as long as there\'s 2 or more walls left, you can use your titan to explode and kill everybody else in the expedition! This could be useful to get rid of Warriors, but be EXTREMELY CAREFUL! An improperly played Colossal Titan can easily lose the game for the Soldiers.\n\n'
+
+        roleDict['gameRole'] = ':radioactive:Nuclear Bomb:radioactive:'
+
+        roleDict['helpInfo'] = 'Armin is an incredibly unique Soldier thanks to the destructive ability of his colossal titan! He is actually the only soldier which is capable of sabotaging the expedition by using his titan to blow it all up. If he does this, then every member of the expedition besides him will be killed! Therefore, use this ability VERY carefully! It is capable of eliminating warriors, but it\'s also capable of ending the game for the Soldiers!.'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -455,3 +480,16 @@ class defaultGameTheme:
             if warriorList.index(warrior) != len(warriorList) - 1:
                 warriorInfo += '\n'
         return warriorInfo
+    
+    def getArminDeathMessages(currentGame, currentTheme, Armin):
+        arminDeathMessages = ''
+        for killedPlayer, causeOfDeath in Armin.killed.items():
+            if causeOfDeath == 'Armin':
+                arminDeathMessages += f'**{killedPlayer.user.name}** perished in the Blast!\n'
+                if killedPlayer in currentGame.soldiers:
+                    arminDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    arminDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        return arminDeathMessages
+            
+

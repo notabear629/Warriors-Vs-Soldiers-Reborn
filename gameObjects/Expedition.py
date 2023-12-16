@@ -18,6 +18,7 @@ class Expedition:
         self.resultsAvailable = False
         self.jeanActivated = False
         self.pieckActivated = False
+        self.arminActivated = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -78,7 +79,10 @@ class Expedition:
 
     def actExpo(self, player, actCase):
         self.expeditioned.append(player)
-        if actCase == 'y':
+        if actCase == 'Armin':
+            self.passedExpedition.append(player)
+            self.arminActivated = True
+        elif actCase == 'y':
             self.passedExpedition.append(player)
         elif actCase == 'n':
             self.sabotagedExpedition.append(player)

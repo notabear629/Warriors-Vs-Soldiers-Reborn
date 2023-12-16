@@ -35,7 +35,7 @@ class expoProposalFunctions:
             else:
                 expeditionNumber = sixManCounts[currentGame.currentRound-1]
         elif currentGame.currentRound > 2 and (len(currentGame.players) >= 7):
-            dynamicOffset = currentGame.currentRoundWins
+            dynamicOffset = currentGame.passedRounds
             if 1 in currentGame.passedRounds:
                 dynamicOffset -= 1
             expeditionNumber = 3 + dynamicOffset
@@ -70,14 +70,14 @@ class expoProposalFunctions:
                         roundNumbers[index] = len(currentGame.livingSoldiers)
                     roundNumbers[index] = str(roundNumbers[index])
                 else:
-                    dynamicOffset = currentGame.currentRoundWins
+                    dynamicOffset = currentGame.roundWins
                     if 1 in currentGame.passedRounds:
                         dynamicOffset -= 1
-                    chancesRemaining = 3 - currentGame.currentRoundFails - 1
+                    chancesRemaining = 3 - currentGame.roundFails - 1
                     floor = currentGame.currentExpo.size + (roundPredicted - currentGame.currentRound) - chancesRemaining
                     if floor > len(currentGame.livingSoldiers):
                         floor = len(currentGame.livingSoldiers)
-                    delaysRemaining = 3 - currentGame.currentRoundWins - 1
+                    delaysRemaining = 3 - currentGame.roundWins - 1
                     ceiling = currentGame.currentExpo.size + (roundPredicted - currentGame.currentRound) - delaysRemaining
                     if ceiling > len(currentGame.livingSoldiers):
                         ceiling = len(currentGame.livingSoldiers)

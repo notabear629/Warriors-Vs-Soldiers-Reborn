@@ -5,6 +5,9 @@ from embedBuilder import embedBuilder
 from discordViewBuilder import discordViewBuilder
 
 from gameFunctions.timerManager import timerManager
+from gameFunctions.webhookManager import webhookManager
+from gameFunctions.searchFunctions import searchFunctions
+
 
 import random
 
@@ -35,7 +38,9 @@ class expoActiveFunctions:
 
     async def chooseExpo(currentGame, player, client, currentTheme, home, choice):
         if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
-            if choice == 'Sabotage' and player in currentGame.warriors:
+            if choice == 'Armin' and player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
+                expoChoice = 'Armin'
+            elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:
                 expoChoice = 'y'
@@ -46,15 +51,18 @@ class expoActiveFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
 
-    async def results(ctx, currentGame, currentTheme, home, expoPredictFunction):
+    async def results(ctx, currentGame, currentTheme, home, expoPredictFunction, client):
         if currentGame.online and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:
             result = await expoActiveFunctions.getExpeditionResult(currentGame)
-            embed = await embedBuilder.results(currentGame, currentTheme, result)
             await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
+            await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
+            await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home)
             
 
     async def getExpeditionResult(currentGame):
-        if len(currentGame.currentExpo.sabotagedExpedition) > 0:
+        if currentGame.currentExpo.arminActivated:
+            return 'Armin'
+        elif len(currentGame.currentExpo.sabotagedExpedition) > 0:
             return 'n'
         return 'y'
     
@@ -64,7 +72,7 @@ class expoActiveFunctions:
         await home.send(embed=embed)
         if result == 'y':
             await home.send(f'The {currentTheme.expeditionName} was a Success!')
-        elif result == 'n':
+        elif result == 'n' or result == 'Armin':
             failMessage = f'The {currentTheme.expeditionName} was a Failure!\n\n'
             if currentGame.roundFails == 1:
                 failMessage += f'{currentTheme.wallMariaBreakMessage}'
@@ -73,4 +81,12 @@ class expoActiveFunctions:
             elif currentGame.roundFails == 3:
                 failMessage += f'{currentTheme.wallSinaBreakMessage}'
             await home.send(failMessage)
+
+    async def processDeathMessages(currentGame, currentTheme, home):
+        if currentGame.currentExpo.arminActivated:
+            Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
+            arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin)
+            await home.send(arminMessage)
+
+        
 

@@ -55,6 +55,11 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', client)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hitch', client, embed)
 
+    async def processResultsWebhooks(currentGame, currentTheme, home, client):
+        if currentGame.currentExpo.arminActivated:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.arminMessage, 'Armin', client)
+
+
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):
         Hange = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
         if Hange != None and Hange in currentGame.livingPlayers:
@@ -65,4 +70,5 @@ class webhookManager:
             embed = await embedBuilder.infoUpdate(currentTheme, Hange, hangeInfo)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hange', client, embed)
+
     

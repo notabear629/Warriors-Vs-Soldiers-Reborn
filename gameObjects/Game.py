@@ -15,10 +15,10 @@ class Game:
         self.warriors = []
         self.wildcards = []
         self.deadPlayers = []
-        self.livingPlayers = players
-        self.livingSoldiers = self.soldiers
+        self.livingPlayers = []
+        self.livingSoldiers = []
         self.deadSoldiers = []
-        self.livingWarriors = self.warriors
+        self.livingWarriors = []
         self.deadWarriors = []
         self.currentRound = 1
         self.passedRounds = []
@@ -41,10 +41,13 @@ class Game:
         self.loadedRoles = loadedRoles
 
         for player in players:
+            self.livingPlayers.append(player)
             if player.role.team == 'Soldiers':
                 self.soldiers.append(player)
+                self.livingSoldiers.append(player)
             elif player.role.team == 'Warriors':
                 self.warriors.append(player)
+                self.livingWarriors.append(player)
             elif player.role.team == 'Wildcards':
                 self.wildcards.append(player)
     
@@ -60,6 +63,9 @@ class Game:
     def nextCommander(self):
         oldCommander = self.commanderOrder.pop(0)
         self.commanderOrder.append(oldCommander)
+        for player in self.deadPlayers:
+            if player in self.commanderOrder:
+                self.commanderOrder.remove(player)
         self.currentExpo.changeCommander(self.commanderOrder[0])
 
     async def sendTemporaryMessage(self, currentTheme, home):
@@ -72,10 +78,17 @@ class Game:
             self.temporaryMessage = await home.send(embed=embed)
 
     def processResult(self, result):
+        if result == 'Armin':
+            for player in self.currentExpo.expeditionMembers:
+                if player.role.id == 'Armin':
+                    Armin = player
+            for player in self.currentExpo.expeditionMembers:
+                if player.role.id != 'Armin':
+                    self.killPlayer(player, Armin, 'Armin')
         if result == 'y':
             self.passedRounds.append(self.currentRound)
             self.roundWins += 1
-        elif result == 'n':
+        elif result == 'n' or result == 'Armin':
             self.failedRounds.append(self.currentRound)
             self.roundFails += 1
         if self.roundWins == 3:
@@ -85,6 +98,20 @@ class Game:
             self.wallsBroken = True
             self.exposOver = True
         self.resultsAvailable = False
+
+    def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
+        if killedPlayer in self.livingPlayers:
+            self.livingPlayers.remove(killedPlayer)
+            self.deadPlayers.append(killedPlayer)
+        if killedPlayer in self.livingSoldiers:
+            self.livingSoldiers.remove(killedPlayer)
+            self.deadSoldiers.append(killedPlayer)
+        if killedPlayer in self.livingWarriors:
+            self.livingWarriors.remove(killedPlayer)
+            self.deadWarriors.append(killedPlayer)
+        killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
+        killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+        
 
     def advanceRound(self):
         self.currentRound += 1

@@ -174,7 +174,7 @@ async def clear(ctx):
         
 @client.command('results')
 async def results(ctx):
-    await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction)
+    await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client)
     if currentGame.online and currentGame.exposOver == False:
         await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix, client)
     if currentGame.online and currentGame.exposOver:

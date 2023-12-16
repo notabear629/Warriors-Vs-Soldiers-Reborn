@@ -221,8 +221,16 @@ class embedBuilder:
             if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
             playerList += '\n'
+        playerList += '\n'
+        playerList += f'{currentTheme.emojiPassExpedition} Select Pass to Pass this {currentTheme.expeditionName} normally\n'
+        if player in currentGame.warriors:
+            playerList += f'{currentTheme.emojiSabotageExpedition} Select Sabotage to Sabotage this {currentTheme.expeditionName}\n'
+        if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
+            playerList += f'{player.role.secondaryEmoji} Select Nuke to fail this {currentTheme.expeditionName}, and take its {currentTheme.expeditionTeamMembers} with it.\n'
 
-        if player in currentGame.currentExpo.passedExpedition:
+        if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
+            decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
+        elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:
             decisionString = f'You have chosen to sabotage this {currentTheme.expeditionName}.'
@@ -247,11 +255,21 @@ class embedBuilder:
             resultColor = currentTheme.expoPassedColor
         elif result == 'n':
             resultColor = currentTheme.expoSabotagedColor
+        elif result == 'Armin':
+            resultColor = currentTheme.arminNukeColor
         outcomeList = ''
-        for passer in currentGame.currentExpo.passedExpedition:
-            outcomeList += f'{currentTheme.emojiPassExpedition}\n'
-        for sabotager in currentGame.currentExpo.sabotagedExpedition:
-            outcomeList += f'{currentTheme.emojiSabotageExpedition}\n'
+        if currentGame.currentExpo.arminActivated:
+            for player in currentGame.currentExpo.expeditionMembers:
+                if player.role.id == 'Armin':
+                    Armin = player
+                    break
+            for player in currentGame.currentExpo.expeditionMembers:
+                outcomeList += f'{Armin.role.secondaryEmoji}\n'
+        else:
+            for passer in currentGame.currentExpo.passedExpedition:
+                outcomeList += f'{currentTheme.emojiPassExpedition}\n'
+            for sabotager in currentGame.currentExpo.sabotagedExpedition:
+                outcomeList += f'{currentTheme.emojiSabotageExpedition}\n'
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Results', description=outcomeList, color = resultColor)
 
         return returnedEmbed

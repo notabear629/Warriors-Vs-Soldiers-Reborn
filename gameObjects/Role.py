@@ -16,11 +16,14 @@ class Role:
     #A group of all optional Soldiers with one-time special abilities
     soldierGroupAbility = ['Jean']
 
+    #A group of all Lethal Soldiers
+    soldierGroupLethal = ['Armin']
+
     #A group of all Analytical Soldiers
     soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch']
 
     #Combine all optional Soldier Roles
-    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupAnalyst
+    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupLethal + soldierGroupAnalyst
 
     #We combine all the previous groups to create a complete list of soldier roles
     soldierRoles = soldierGroupCoordinate + soldierGroupOptional + soldierGroupDefault
@@ -110,10 +113,18 @@ class Role:
         self.confirmedWarriors.append(warrior)
 
     async def hangeProcess(self, currentGame):
+        await self.identifyDeadPlayers(currentGame)
         await self.indictWarriors()
         await self.absolveSoldiers()
         await self.crossReference(currentGame)
         await self.confirmFromPossibilities(currentGame)
+
+    async def identifyDeadPlayers(self, currentGame):
+        for player in currentGame.deadPlayers:
+            if player in currentGame.soldiers and player not in self.confirmedSoldiers:
+                self.confirmedSoldiers.append(player)
+            if player in currentGame.warriors and player not in self.confirmedWarriors:
+                self.confirmedWarriors.append(player)
 
     async def indictWarriors(self):
         possibleTeams = self.possibleWarriorTeams.copy()

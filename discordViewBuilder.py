@@ -106,6 +106,16 @@ class discordViewBuilder:
         returnedView.add_item(passButton)
         if player in currentGame.warriors:
             returnedView.add_item(sabotageButton)
+
+        if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
+            nukeButton = Button(label = 'Nuke', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processExpeditionNuke(interaction):
+                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Armin')
+                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
+            nukeButton.callback = processExpeditionNuke
+            returnedView.add_item(nukeButton)
+        
         return returnedView
     
     @staticmethod
