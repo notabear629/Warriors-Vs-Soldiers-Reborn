@@ -20,6 +20,14 @@ class webhookManager:
             ourWebhook = await channel.create_webhook(name = 'WvS Bot Webhook')
         if author == 'PATHS':
             pass
+        elif author.startswith('{ALTERNATE}'):
+            foundPlayer = await searchFunctions.roleIDToPlayer(currentGame, author.split('{ALTERNATE}')[1])
+            if foundPlayer != None:
+                authorName = foundPlayer.role.name
+                if type(foundPlayer.role.secondaryEmoji) == str:
+                    authorAvatar = foundPlayer.secondaryImageURL
+                else:
+                    authorAvatar = foundPlayer.role.secondaryEmoji.url
         else:
             foundPlayer = await searchFunctions.roleIDToPlayer(currentGame, author)
             if foundPlayer != None:
@@ -58,6 +66,26 @@ class webhookManager:
     async def processResultsWebhooks(currentGame, currentTheme, home, client):
         if currentGame.currentExpo.arminActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.arminMessage, 'Armin', client)
+        if currentGame.currentExpo.leviAttacked:
+            Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+            if Levi.killed != []:
+                await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviAttackMessage, '{ALTERNATE}Levi', client)
+                for player in currentGame.warriors:
+                    user = databaseManager.searchForUser(player.user)
+                    userChannel = client.get_channel(user['channelID'])
+                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}', 'Zeke', client)
+                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, currentTheme.getLeviRevealMessage(Levi), 'Zeke', client)
+        if currentGame.currentExpo.leviDefended and len(currentGame.currentExpo.sabotagedExpedition) > 0:
+            Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviDefendMessage, 'Levi', client)
+            for player in currentGame.warriors:
+                user = databaseManager.searchForUser(player.user)
+                userChannel = client.get_channel(user['channelID'])
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}', 'Zeke', client)
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, currentTheme.getLeviRevealMessage(Levi), 'Zeke', client)
+
+                
+
 
 
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):

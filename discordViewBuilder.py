@@ -115,6 +115,23 @@ class discordViewBuilder:
                 await interaction.message.edit(embed=embed, view = None)
             nukeButton.callback = processExpeditionNuke
             returnedView.add_item(nukeButton)
+
+        if player.role.id == 'Levi' and player.role.abilityActive:
+            if currentGame.roundFails < 2:
+                leviAttackButton = Button(label = 'Attack', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+                async def processLeviAttack(interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviAttack')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+                leviAttackButton.callback = processLeviAttack
+                returnedView.add_item(leviAttackButton)
+            leviDefendButton = Button(label = 'Defend', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
+            async def processLeviDefend(interaction):
+                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviDefend')
+                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
+            leviDefendButton.callback = processLeviDefend
+            returnedView.add_item(leviDefendButton)
         
         return returnedView
     

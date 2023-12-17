@@ -16,6 +16,9 @@ class Role:
     #A group of all optional Soldiers with one-time special abilities
     soldierGroupAbility = ['Jean']
 
+    #Group of all optional soldiers that are Defender class
+    soldierGroupDefender = ['Levi']
+
     #A group of all Lethal Soldiers
     soldierGroupLethal = ['Armin']
 
@@ -23,7 +26,7 @@ class Role:
     soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch']
 
     #Combine all optional Soldier Roles
-    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupLethal + soldierGroupAnalyst
+    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst
 
     #We combine all the previous groups to create a complete list of soldier roles
     soldierRoles = soldierGroupCoordinate + soldierGroupOptional + soldierGroupDefault

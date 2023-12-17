@@ -126,6 +126,17 @@ class embedBuilder:
                 else:
                     warriorList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = warriorList, inline = False)
+
+        if currentGame.deadPlayers != []:
+            deadList = ''
+            for player in currentGame.deadPlayers:
+                if player in currentGame.deadSoldiers:
+                    roleEmoji = currentTheme.emojiSoldier
+                elif player in currentGame.deadWarriors:
+                    roleEmoji = currentTheme.emojiWarrior
+                deadList += f'{roleEmoji}{player.user.name}{roleEmoji}\n'
+            returnedEmbed.add_field(name = f'{currentTheme.emojiDead}Dead Players{currentTheme.emojiDead}')
+            
         return returnedEmbed
     
     async def buildPlayers(currentGame, currentTheme):
@@ -227,9 +238,17 @@ class embedBuilder:
             playerList += f'{currentTheme.emojiSabotageExpedition} Select Sabotage to Sabotage this {currentTheme.expeditionName}\n'
         if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
             playerList += f'{player.role.secondaryEmoji} Select Nuke to fail this {currentTheme.expeditionName}, and take its {currentTheme.expeditionTeamMembers} with it.\n'
+        if player.role.id == 'Levi' and player.role.abilityActive and currentGame.roundFails < 2:
+            playerList += f'{player.role.secondaryEmoji} Select Attack to kill any {currentTheme.warriorPlural} that try to attack, but not defend the {currentTheme.expeditionName}\n'
+        if player.role.id == 'Levi' and player.role.abilityActive:
+            playerList += f'{player.role.emoji} Select Defend to defend the {currentTheme.expeditionName} and guarantee its success, but let any attackers survive.\n'
 
         if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
             decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
+        elif player.role.id == 'Levi' and currentGame.currentExpo.leviAttacked:
+            decisionString = f'You have chosen to attack all {currentTheme.warriorPlural} that dare to challenge you.'
+        elif player.role.id == 'Levi' and currentGame.currentExpo.leviDefended:
+            decisionString = f'You have chosen to defend this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:
@@ -252,7 +271,10 @@ class embedBuilder:
         
     async def results(currentGame, currentTheme, result):
         if result == 'y':
-            resultColor = currentTheme.expoPassedColor
+            if currentGame.currentExpo.leviDefended and len(currentGame.currentExpo.sabotagedExpedition) > 0:
+                resultColor = currentTheme.expoSecuredColor
+            else:
+                resultColor = currentTheme.expoPassedColor
         elif result == 'n':
             resultColor = currentTheme.expoSabotagedColor
         elif result == 'Armin':
@@ -265,6 +287,13 @@ class embedBuilder:
                     break
             for player in currentGame.currentExpo.expeditionMembers:
                 outcomeList += f'{Armin.role.secondaryEmoji}\n'
+        if currentGame.currentExpo.leviDefended:
+            if len(currentGame.currentExpo.sabotagedExpedition) > 0:
+                for player in currentGame.currentExpo.expeditionMembers:
+                    outcomeList += f'{currentTheme.emojiSecuredExpedition}\n'
+            else:
+                for player in currentGame.currentExpo.expeditionMembers:
+                    outcomeList += f'{currentTheme.emojiPassExpedition}\n'
         else:
             for passer in currentGame.currentExpo.passedExpedition:
                 outcomeList += f'{currentTheme.emojiPassExpedition}\n'

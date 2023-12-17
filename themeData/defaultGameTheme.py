@@ -28,6 +28,7 @@ class defaultGameTheme:
     emojiTheme = 685785857609039873
     titanSingle = 'Titan'
     titanPlural = 'Titans'
+    emojiDead = '☠️'
 
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
@@ -98,6 +99,7 @@ class defaultGameTheme:
     expeditionTeam = 'Expedition Team'
     emojiPassExpedition = str('✅')
     emojiSabotageExpedition = str('❌')
+    emojiSecuredExpedition = str('🛡️')
 
     #Pick expo member aesthetics
     pickColor = discord.Color.blue()
@@ -121,6 +123,7 @@ class defaultGameTheme:
     #Expedition results aesthetics
     expoPassedColor = discord.Color.green()
     expoSabotagedColor = discord.Color.red()
+    expoSecuredColor = discord.Color.blue()
     arminNukeColor = discord.Color.default()
     wallMariaBreakMessage = str('💥Wall Maria has Fallen!💥')
     wallRoseBreakMessage = str('💥Wall Rose has Fallen!💥')
@@ -141,6 +144,8 @@ class defaultGameTheme:
     pieckMessageWithJean = f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Jean**!'
     pieckMessageWithoutJean = f'I flipped the votes!'
     arminMessage = f'I blew up the Expedition!'
+    leviAttackMessage = f'I... Won\'t let a single one of you get away!'
+    leviDefendMessage = f'I will defend this expedition at all costs!'
 
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
@@ -175,6 +180,10 @@ class defaultGameTheme:
         #Thus, if you are using a built in emoji, you will need to define this dictionary key.
         roleDict['imageURL'] = None
 
+
+        #Overwhelming majority have no purpose for secondaryImgeURL. Mainly here in case you want to display secondaryEmoji as a thumbnail.
+        roleDict['secondaryImageURL'] = None
+
         #The roleMessage is the part of the message the bot sends that gives specific information regarding the role itself when you are assigned a role.
         #You may change any role message as you wish.
         roleDict['roleMessage'] = f'You know the identity of all of the other Warriors, except for Zeke. Remember to not make the fact you know who the Warriors are obvious, and do your best to protect your identity. If the Warriors can successfully identify you, the Soldiers will lose!'
@@ -207,6 +216,8 @@ class defaultGameTheme:
 
         roleDict['imageURL'] = None
 
+        roleDict['secondaryImageURL'] = None
+
         roleDict['roleMessage'] = f'You are given two names. One is Eren and one is Zeke, but you don\'t know which is which! Use this information to help guide you to victory, but be careful! Don\'t expose the identity of Eren to the Warriors!'
 
         roleDict['gameRole'] = ':angel:Queen:angel:'
@@ -229,6 +240,8 @@ class defaultGameTheme:
         roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
 
         roleDict['roleMessage'] = f'At the end of each round, you will be given a statistical analysis on each player that can help you figure out who to trust! Be careful though, this statistical analysis is NOT 100% guaranteed, merely a game of probabilities, and it doesn\'t take into account more "human" sides to the game like who you think is lying.'
 
@@ -253,6 +266,8 @@ class defaultGameTheme:
 
         roleDict['imageURL'] = None
 
+        roleDict['secondaryImageURL'] = None
+
         roleDict['roleMessage'] = 'You have the ability to force an expedition proposal to pass once! But be careful! If you miscalculate, you could easily allow the Warriors to get a wall!\n\n'
 
         roleDict['gameRole'] = ':white_check_mark:Voting Ackermann:white_check_mark:'
@@ -275,6 +290,8 @@ class defaultGameTheme:
         roleDict['secondaryEmoji'] = 686528354886877253
 
         roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
 
         roleDict['roleMessage'] = 'You have the uncanny ability to smell Titans! When you are put on an expo, before voting even begins, you will know how many Titans are on the expedition. But be very careful! Not every Titan is a Warrior, in fact, the Coordinate is a Titan! In addition, not every Warrior is a Titan. Be very careful with how you use the information you gain, it will not always be useful.\n\n'
 
@@ -299,6 +316,8 @@ class defaultGameTheme:
 
         roleDict['imageURL'] = None
 
+        roleDict['secondaryImageURL'] = None
+
         roleDict['roleMessage'] = 'You have the ability to investigate who used special abilities! As such, at the end of a round, for every one-time-use special ability used in that round, you will be given two names, of which, one of those players was responsible for that ability being used.\n\n'
 
         roleDict['gameRole'] = ':mag:Ability Investigator:mag:'
@@ -322,11 +341,41 @@ class defaultGameTheme:
 
         roleDict['imageURL'] = None
 
+        roleDict['secondaryImageURL'] = None
+
         roleDict['roleMessage'] = 'Your Colossal Titan has a terrible ability! While on an expedition, as long as there\'s 2 or more walls left, you can use your titan to explode and kill everybody else in the expedition! This could be useful to get rid of Warriors, but be EXTREMELY CAREFUL! An improperly played Colossal Titan can easily lose the game for the Soldiers.\n\n'
 
         roleDict['gameRole'] = ':radioactive:Nuclear Bomb:radioactive:'
 
         roleDict['helpInfo'] = 'Armin is an incredibly unique Soldier thanks to the destructive ability of his colossal titan! He is actually the only soldier which is capable of sabotaging the expedition by using his titan to blow it all up. If he does this, then every member of the expedition besides him will be killed! Therefore, use this ability VERY carefully! It is capable of eliminating warriors, but it\'s also capable of ending the game for the Soldiers!.'
+
+    class Levi:
+        roleDict = {'roleID' : 'Levi'}
+
+        roleDict['name'] = 'Levi Ackermann'
+
+        roleDict['shortName'] = 'Levi'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1185512895094726756
+
+        roleDict['secondaryEmoji'] = 1185515676392243302
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You have the ability to secure the walls for an expedition! But be careful! If there are more titans than soldiers attempting to secure the walls, you will fail!\n\n'
+
+        roleDict['gameRole'] = ':guard:Ackermann:guard:'
+
+        roleDict['helpInfo'] = 'Levi is the strongest Soldier of all time! He has an ability to secure an expedition and ensure that it will pass, even if a warrior sabotages! However, Levi is not strong enough to beat TWO warriors, so if 2 or more warriors try to sabotage the expedition, he will fail! In addition, when you use the ability to secure the walls and the warriors sabotage, they will be alerted as to your identity which may make it easier for them to track down Eren.'
+
+
+
 
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
@@ -344,6 +393,8 @@ class defaultGameTheme:
         roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
+
+        roleDict['secondaryImageURL'] = None
 
         roleDict['roleMessage'] = f'You are an average Soldier. You do not possess any special abilities or supplemental information.'
 
@@ -368,6 +419,8 @@ class defaultGameTheme:
 
         roleDict['imageURL'] = None
 
+        roleDict['secondaryImageURL'] = None
+
         roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You also may `{prefix}kidnap @mention` Eren at any time, but be warned, this will end the game just like a regular kidnap! In order to unlock this ability, first use `{prefix}unlock` in this DM, then you will be able to kidnap Eren.'
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
@@ -391,6 +444,8 @@ class defaultGameTheme:
         roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
 
         roleDict['roleMessage'] = f'You are an expert inflitrator! As such, you have the ability to drop into the expedition voting and flip the results once. When properly used, this ability is incredibly powerful, so be wise in your use of it!\n\n'
 
@@ -415,6 +470,8 @@ class defaultGameTheme:
         roleDict['secondaryEmoji'] = None
 
         roleDict['imageURL'] = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
+
+        roleDict['secondaryImageURL'] = None
 
         roleDict['roleMessage'] = f'You are an average Warrior. You do not possess any special abilities to aid you in breaking the walls.'
 
@@ -481,6 +538,9 @@ class defaultGameTheme:
                 warriorInfo += '\n'
         return warriorInfo
     
+    def getLeviRevealMessage(Levi):
+        return f'The identity of **Levi Ackermann** has been revealed to be **{Levi.user.name}**!'
+    
     def getArminDeathMessages(currentGame, currentTheme, Armin):
         arminDeathMessages = ''
         for killedPlayer, causeOfDeath in Armin.killed.items():
@@ -491,5 +551,16 @@ class defaultGameTheme:
                 elif killedPlayer in currentGame.warriors:
                     arminDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
         return arminDeathMessages
+    
+    def getLeviDeathMessages(currentGame, currentTheme, Levi):
+        leviDeathMessages = ''
+        for killedPlayer, causeOfDeath in Levi.killed.items():
+            if causeOfDeath == 'Levi':
+                leviDeathMessages += f'**{killedPlayer.user.name}** was slain by Levi!\n'
+                if killedPlayer in currentGame.soldiers:
+                    leviDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    leviDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        return leviDeathMessages
             
 

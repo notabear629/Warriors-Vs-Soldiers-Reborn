@@ -40,6 +40,10 @@ class expoActiveFunctions:
         if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:
             if choice == 'Armin' and player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
                 expoChoice = 'Armin'
+            elif choice == 'LeviAttack' and player.role.id == 'Levi' and player.role.abilityActive and currentGame.roundFails < 2:
+                expoChoice = 'LeviAttack'
+            elif choice == 'LeviDefend' and player.role.id == 'Levi' and player.role.abilityActive:
+                expoChoice = 'LeviDefend'
             elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:
@@ -56,13 +60,14 @@ class expoActiveFunctions:
             result = await expoActiveFunctions.getExpeditionResult(currentGame)
             await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
             await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
-            await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home)
+            await expoActiveFunctions.processDeaths(currentGame, currentTheme, home)
+            
             
 
     async def getExpeditionResult(currentGame):
         if currentGame.currentExpo.arminActivated:
             return 'Armin'
-        elif len(currentGame.currentExpo.sabotagedExpedition) > 0:
+        elif len(currentGame.currentExpo.sabotagedExpedition) > 0 and currentGame.currentExpo.leviDefended == False:
             return 'n'
         return 'y'
     
@@ -82,11 +87,33 @@ class expoActiveFunctions:
                 failMessage += f'{currentTheme.wallSinaBreakMessage}'
             await home.send(failMessage)
 
-    async def processDeathMessages(currentGame, currentTheme, home):
+    async def processDeaths(currentGame, currentTheme, home):
+        deathFlags = {'Armin': False, 'Levi': False}
         if currentGame.currentExpo.arminActivated:
+            Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
+            if Armin != None:
+                for player in currentGame.currentExpo.expeditionMembers:
+                    if player.role.id != 'Armin':
+                        currentGame.killPlayer(player, Armin, 'Armin')
+                        deathFlags['Armin'] = True
+        if currentGame.currentExpo.leviAttacked:
+            Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+            if Levi != None:
+                for player in currentGame.currentExpo.sabotagedExpedition:
+                    currentGame.killPlayer(player, Levi, 'Levi')
+                    deathFlags['Levi'] = True
+
+        await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home, deathFlags)
+
+    async def processDeathMessages(currentGame, currentTheme, home, deathFlags):
+        if deathFlags['Armin']:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin)
             await home.send(arminMessage)
+        if deathFlags['Levi']:
+            Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+            leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi)
+            await home.send(leviMessage)
 
         
 

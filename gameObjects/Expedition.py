@@ -19,6 +19,8 @@ class Expedition:
         self.jeanActivated = False
         self.pieckActivated = False
         self.arminActivated = False
+        self.leviAttacked = False
+        self.leviDefended = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -82,6 +84,14 @@ class Expedition:
         if actCase == 'Armin':
             self.passedExpedition.append(player)
             self.arminActivated = True
+            player.role.disableAbility()
+        elif actCase == 'LeviAttack':
+            self.passedExpedition.append(player)
+            self.leviAttacked = True
+            player.role.disableAbility()
+        elif actCase == 'LeviDefend':
+            self.passedExpedition.append(player)
+            self.leviDefended = True
             player.role.disableAbility()
         elif actCase == 'y':
             self.passedExpedition.append(player)

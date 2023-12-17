@@ -78,13 +78,6 @@ class Game:
             self.temporaryMessage = await home.send(embed=embed)
 
     def processResult(self, result):
-        if result == 'Armin':
-            for player in self.currentExpo.expeditionMembers:
-                if player.role.id == 'Armin':
-                    Armin = player
-            for player in self.currentExpo.expeditionMembers:
-                if player.role.id != 'Armin':
-                    self.killPlayer(player, Armin, 'Armin')
         if result == 'y':
             self.passedRounds.append(self.currentRound)
             self.roundWins += 1
@@ -100,17 +93,18 @@ class Game:
         self.resultsAvailable = False
 
     def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
-        if killedPlayer in self.livingPlayers:
-            self.livingPlayers.remove(killedPlayer)
-            self.deadPlayers.append(killedPlayer)
-        if killedPlayer in self.livingSoldiers:
-            self.livingSoldiers.remove(killedPlayer)
-            self.deadSoldiers.append(killedPlayer)
-        if killedPlayer in self.livingWarriors:
-            self.livingWarriors.remove(killedPlayer)
-            self.deadWarriors.append(killedPlayer)
-        killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
-        killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+        if killedPlayer not in self.deadPlayers:
+            if killedPlayer in self.livingPlayers:
+                self.livingPlayers.remove(killedPlayer)
+                self.deadPlayers.append(killedPlayer)
+            if killedPlayer in self.livingSoldiers:
+                self.livingSoldiers.remove(killedPlayer)
+                self.deadSoldiers.append(killedPlayer)
+            if killedPlayer in self.livingWarriors:
+                self.livingWarriors.remove(killedPlayer)
+                self.deadWarriors.append(killedPlayer)
+            killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
+            killerPlayer.killPlayer(killedPlayer, causeOfDeath)
         
 
     def advanceRound(self):
