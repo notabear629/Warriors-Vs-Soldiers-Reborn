@@ -136,6 +136,36 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
+    async def sashaTargetView(currentGame, currentTheme, Sasha):
+        returnedView = View()
+
+        sashaTargetSelection = Select(placeholder= 'Choose who to target!', min_values=1, max_values=1)
+        sashaTargetSelection.add_option(label = f'Remove Target')
+        for player in currentGame.livingPlayers:
+            if player != Sasha:
+                sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji)
+        
+        async def processSashaSelection(interaction):
+            if currentGame.online and interaction.user == Sasha.user and Sasha.abilityActive:
+                selection = str(sashaTargetSelection.values[0])
+                if selection == 'Remove Target':
+                    currentGame.sashaTarget(Sasha, None)
+                    await interaction.message.edit('You are no longer targeting anybody.')
+                else:
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    currentGame.sashaTarget(Sasha, selectedPlayer)
+                    await interaction.message.edit(f'Your target has been updated to: {player.user.name}')
+
+        sashaTargetSelection.callback = processSashaSelection
+
+        returnedView.add_item(sashaTargetSelection)
+
+        return returnedView
+    
+    @staticmethod
     async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
         returnedView = View()
 

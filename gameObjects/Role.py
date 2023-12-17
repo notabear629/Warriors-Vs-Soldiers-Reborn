@@ -20,7 +20,7 @@ class Role:
     soldierGroupDefender = ['Levi']
 
     #A group of all Lethal Soldiers
-    soldierGroupLethal = ['Armin']
+    soldierGroupLethal = ['Armin', 'Sasha']
 
     #A group of all Analytical Soldiers
     soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch']
@@ -99,7 +99,7 @@ class Role:
         if type(self.emoji) == int:
             self.emoji = client.get_emoji(self.emoji)
         if type(self.secondaryEmoji) == int:
-            self.secondaryEmoji = client.get(self.secondaryEmoji)
+            self.secondaryEmoji = client.get_emoji(self.secondaryEmoji)
 
     async def generateAllTeams(self, currentGame):
         warriorAmount = len(currentGame.warriors)

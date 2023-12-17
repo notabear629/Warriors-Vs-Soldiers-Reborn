@@ -375,6 +375,30 @@ class defaultGameTheme:
         roleDict['helpInfo'] = 'Levi is the strongest Soldier of all time! He has an ability to secure an expedition and ensure that it will pass, even if a warrior sabotages! However, Levi is not strong enough to beat TWO warriors, so if 2 or more warriors try to sabotage the expedition, he will fail! In addition, when you use the ability to secure the walls and the warriors sabotage, they will be alerted as to your identity which may make it easier for them to track down Eren.'
 
 
+    class Sasha:
+        roleDict = {'roleID' : 'Sasha'}
+
+        roleDict['name'] = 'Sasha Braus'
+
+        roleDict['shortName'] = 'Sasha'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 696271784777089024
+
+        roleDict['secondaryEmoji'] = str('🏹')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have the ability to attack from long range! You can set a target to fire at using `{prefix}target`, and the next time they are on an expedition that you are not, you\'ll fire an arrow at them and kill them! Be careful: This does NOT stop them from breaking the walls, and if you attack a soldier, they will still die!\n\n'
+
+        roleDict['gameRole'] = ':bow_and_arrow:Sniper:bow_and_arrow:'
+
+        roleDict['helpInfo'] = 'Sasha is a master at long range weapons! She is able to choose a target, and the next time they are in an expedition that goes through that she is NOT in, she will send an arrow to them, killing them! You can use this to eliminate someone you know is a warrior, but be careful, this will NOT stop them from sabotaging the walls!'
 
 
     class Soldier:

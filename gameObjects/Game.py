@@ -105,8 +105,10 @@ class Game:
                 self.deadWarriors.append(killedPlayer)
             killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
             killerPlayer.killPlayer(killedPlayer, causeOfDeath)
-        
 
+    def sashaTarget(self, Sasha, target):
+        self.sashaTargeted = target
+        
     def advanceRound(self):
         self.currentRound += 1
 

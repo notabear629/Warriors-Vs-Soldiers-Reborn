@@ -11,10 +11,12 @@ from gameObjects.Expedition import Expedition
 
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
+from gameFunctions.searchFunctions import searchFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
 from embedBuilder import embedBuilder
+from discordViewBuilder import discordViewBuilder
 
 class midGameFunctions:
     async def showStatus(currentGame, currentTheme, home):
@@ -50,3 +52,12 @@ class midGameFunctions:
             await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)
         else:
             await ctx.reply(f'There is no active lobby! Why not start one in <#{home.id}> with `{prefix}host`?')
+
+    async def target(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+            if Sasha.user == ctx.message.author and Sasha.role.abilityActive:
+                user = databaseManager.searchForUser(Sasha.user)
+                userChannel = client.get_channel(user['channelID'])
+                view = discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
+                await userChannel.send('Choose who to target!', view=view)
