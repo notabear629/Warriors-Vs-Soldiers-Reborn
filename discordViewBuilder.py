@@ -146,18 +146,20 @@ class discordViewBuilder:
                 sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji)
         
         async def processSashaSelection(interaction):
-            if currentGame.online and interaction.user == Sasha.user and Sasha.abilityActive:
+            if currentGame.online and interaction.user == Sasha.user and Sasha.role.abilityActive:
                 selection = str(sashaTargetSelection.values[0])
                 if selection == 'Remove Target':
                     currentGame.sashaTarget(Sasha, None)
-                    await interaction.message.edit('You are no longer targeting anybody.')
+                    await interaction.message.edit(content='You are no longer targeting anybody.')
+                    await interaction.response.defer()
                 else:
                     for player in currentGame.livingPlayers:
                         if player.user.name == selection:
                             selectedPlayer = player
                             break
                     currentGame.sashaTarget(Sasha, selectedPlayer)
-                    await interaction.message.edit(f'Your target has been updated to: {player.user.name}')
+                    await interaction.message.edit(content=f'Your target has been updated to: {player.user.name}')
+                    await interaction.response.defer()
 
         sashaTargetSelection.callback = processSashaSelection
 

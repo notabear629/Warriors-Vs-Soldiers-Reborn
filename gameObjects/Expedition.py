@@ -21,6 +21,7 @@ class Expedition:
         self.arminActivated = False
         self.leviAttacked = False
         self.leviDefended = False
+        self.sashaActivated = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -100,6 +101,9 @@ class Expedition:
         if len(self.expeditioned) == len(self.expeditionMembers):
             self.currentlyExpeditioning = False
             self.resultsAvailable = True
+
+    def activateSasha(self):
+        self.sashaActivated = True
 
 
 

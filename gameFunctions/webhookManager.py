@@ -83,6 +83,10 @@ class webhookManager:
                 userChannel = client.get_channel(user['channelID'])
                 await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}', 'Zeke', client)
                 await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, currentTheme.getLeviRevealMessage(Levi), 'Zeke', client)
+        Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+        if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
+
 
                 
 

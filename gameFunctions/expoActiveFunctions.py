@@ -88,7 +88,7 @@ class expoActiveFunctions:
             await home.send(failMessage)
 
     async def processDeaths(currentGame, currentTheme, home):
-        deathFlags = {'Armin': False, 'Levi': False}
+        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             if Armin != None:
@@ -100,8 +100,18 @@ class expoActiveFunctions:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             if Levi != None:
                 for player in currentGame.currentExpo.sabotagedExpedition:
-                    currentGame.killPlayer(player, Levi, 'Levi')
-                    deathFlags['Levi'] = True
+                    if player not in currentGame.deadPlayers:
+                        currentGame.killPlayer(player, Levi, 'Levi')
+                        deathFlags['Levi'] = True
+        if currentGame.sashaTargeted != None:
+            Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+            if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
+                if currentGame.sashaTarget not in currentGame.deadPlayers:
+                    currentGame.killPlayer(currentGame.sashaTargeted, Sasha, 'Sasha')
+                    deathFlags['Sasha'] = True
+                    Sasha.role.disableAbility()
+                    currentGame.currentExpo.activateSasha()
+
 
         await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home, deathFlags)
 
@@ -114,6 +124,10 @@ class expoActiveFunctions:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi)
             await home.send(leviMessage)
+        if deathFlags['Sasha']:
+            Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+            sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha)
+            await home.send(sashaMessage)
 
         
 

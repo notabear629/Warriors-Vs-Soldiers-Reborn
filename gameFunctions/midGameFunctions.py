@@ -56,8 +56,10 @@ class midGameFunctions:
     async def target(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
-            if Sasha.user == ctx.message.author and Sasha.role.abilityActive:
+            user = databaseManager.searchForUser(Sasha.user)
+            userChannel = client.get_channel(user['channelID'])
+            if Sasha.user == ctx.message.author and Sasha.role.abilityActive and ctx.message.channel == userChannel:
                 user = databaseManager.searchForUser(Sasha.user)
                 userChannel = client.get_channel(user['channelID'])
-                view = discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
+                view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
                 await userChannel.send('Choose who to target!', view=view)

@@ -146,6 +146,7 @@ class defaultGameTheme:
     arminMessage = f'I blew up the Expedition!'
     leviAttackMessage = f'I... Won\'t let a single one of you get away!'
     leviDefendMessage = f'I will defend this expedition at all costs!'
+    sashaMessage = f'I have fired an arrow!'
 
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
@@ -586,5 +587,16 @@ class defaultGameTheme:
                 elif killedPlayer in currentGame.warriors:
                     leviDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
         return leviDeathMessages
+    
+    def getSashaDeathMessages(currentGame, currentTheme, Sasha):
+        SashaDeathMessages = ''
+        for killedPlayer, causeOfDeath in Sasha.killed.items():
+            if causeOfDeath == 'Sasha':
+                SashaDeathMessages += f'{Sasha.role.secondaryEmoji}**{killedPlayer.user.name}** was struck by Sasha\'s Arrow!{Sasha.role.secondaryEmoji}\n'
+                if killedPlayer in currentGame.soldiers:
+                    SashaDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    SashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        return SashaDeathMessages
             
 

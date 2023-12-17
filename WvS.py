@@ -186,6 +186,10 @@ async def results(ctx):
 async def kidnap(ctx, *, kidnappedUser:discord.Member):
     await endGameFunctions.kidnap(ctx, kidnappedUser, currentGame, currentTheme, home)
 
+@client.command('target')
+async def target(ctx):
+    await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
+
 
 
 #TEST COMMAND ONLY
