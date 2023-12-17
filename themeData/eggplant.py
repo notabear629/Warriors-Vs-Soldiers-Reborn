@@ -210,7 +210,7 @@ class eggplant:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = str('🍆') 
+        roleDict['emoji'] = str('🍆🍆') 
 
         roleDict['secondaryEmoji'] = str('🍆') 
 
@@ -229,7 +229,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -254,7 +254,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -279,7 +279,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -304,7 +304,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -329,7 +329,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -354,7 +354,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -380,7 +380,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆🍆🍆🍆🍆🍆🍆🍆') 
 
         roleDict['team'] = 'Soldiers'
 
@@ -457,7 +457,7 @@ class eggplant:
 
         roleDict['name'] = str('🍆') 
 
-        roleDict['shortName'] = str('🍆') 
+        roleDict['shortName'] = str('🍆🍆') 
 
         roleDict['team'] = 'Warriors'
 
