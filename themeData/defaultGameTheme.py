@@ -150,6 +150,7 @@ class defaultGameTheme:
     sashaMessage = f'I have fired an arrow!'
     dazMessage = f'Waaaaaah! I\'m scared!'
     dazMessageFollowUp = 'The Expedition has been cancelled!'
+    mikasaMessage = 'My guard is unbreakable...'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -491,6 +492,31 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Floch is the quintessential Yeagerist. He will follow a complete rumbling to the bitter end, and will help it come to fruition. In addition, he has the ability to gain intel from Eren. After every Expedition proposed, he will be informed by Eren if he is in the expo or not.'
 
+    class Mikasa:
+        roleDict = {'roleID' : 'Mikasa'}
+
+        roleDict['name'] = 'Mikasa Ackermann'
+
+        roleDict['shortName'] = 'Mikasa'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 934547600621862922
+
+        roleDict['secondaryEmoji'] = str('🛡️')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You have the ability to act as a personal bodyguard to any **one** person on any expedition you are on (Inlcuding yourself if you choose yourself!) and prevent them from being killed. Use this ability wisely, only to protect yourself and Soldiers you really trust! If someone is saved by you, everyone will know Mikasa was in the expo and used the guard on them as well, so be careful about giving out role information!\n\n'
+
+        roleDict['gameRole'] = ':fencer:Bodyguard:fencer:'
+
+        roleDict['helpInfo'] = 'Mikasa is an extremely strong Soldier! Thanks to this and an unwavering ~~desire to be a pathetic fucking simp~~ loyal streak, every expedition she is on, she has the ability to protect 1 person on the expo INCLUDING herself to prevent them from being killed!'
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -658,7 +684,7 @@ class defaultGameTheme:
     def getErwinMessage(Erwin):
         return f'I, {Erwin.user.mention}, am activating a signal flare!'
     
-    def getArminDeathMessages(currentGame, currentTheme, Armin):
+    def getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa):
         arminDeathMessages = ''
         for killedPlayer, causeOfDeath in Armin.killed.items():
             if causeOfDeath == 'Armin':
@@ -667,9 +693,13 @@ class defaultGameTheme:
                     arminDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     arminDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Armin':
+                    arminDeathMessages += f'{Mikasa.role.emoji} Mikasa saved **{key.user.name}** from the Blast!{Mikasa.role.emoji}'
         return arminDeathMessages
     
-    def getLeviDeathMessages(currentGame, currentTheme, Levi):
+    def getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa):
         leviDeathMessages = ''
         for killedPlayer, causeOfDeath in Levi.killed.items():
             if causeOfDeath == 'Levi':
@@ -678,18 +708,26 @@ class defaultGameTheme:
                     leviDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     leviDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Levi':
+                    leviDeathMessages += f'**{key.user.name}** was attacked by Levi!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}'
         return leviDeathMessages
     
-    def getSashaDeathMessages(currentGame, currentTheme, Sasha):
-        SashaDeathMessages = ''
+    def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa):
+        sashaDeathMessages = ''
         for killedPlayer, causeOfDeath in Sasha.killed.items():
             if causeOfDeath == 'Sasha':
-                SashaDeathMessages += f'{Sasha.role.secondaryEmoji}**{killedPlayer.user.name}** was struck by Sasha\'s Arrow!{Sasha.role.secondaryEmoji}\n'
+                sashaDeathMessages += f'{Sasha.role.secondaryEmoji}**{killedPlayer.user.name}** was struck by Sasha\'s Arrow!{Sasha.role.secondaryEmoji}\n'
                 if killedPlayer in currentGame.soldiers:
-                    SashaDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                    sashaDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
-                    SashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
-        return SashaDeathMessages
+                    sashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Sasha':
+                    sashaDeathMessages += f'{Mikasa.role.emoji}Mikasa deflected Sasha\'s Arrow away from **{key.user.name}**!{Mikasa.role.emoji}'
+        return sashaDeathMessages
 
             
 

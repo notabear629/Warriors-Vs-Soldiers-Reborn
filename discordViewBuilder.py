@@ -91,16 +91,18 @@ class discordViewBuilder:
 
         passButton = Button(label = 'Pass', emoji = currentTheme.emojiPassExpedition, style = discord.ButtonStyle.grey)
         async def processExpeditionPass(interaction):
-            await chooseExpoFunction(currentGame, player, client, currentTheme, home, passButton.label)
-            embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-            await interaction.message.edit(embed=embed, view = None)
+            if await discordViewBuilder.isInteractionIntended(player, interaction):
+                await chooseExpoFunction(currentGame, player, client, currentTheme, home, passButton.label)
+                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
         passButton.callback = processExpeditionPass
 
         sabotageButton = Button(label = 'Sabotage', emoji = currentTheme.emojiSabotageExpedition, style=discord.ButtonStyle.grey)
         async def processExpeditionSabotage(interaction):
-            await chooseExpoFunction(currentGame, player, client, currentTheme, home, sabotageButton.label)
-            embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-            await interaction.message.edit(embed=embed, view = None)
+            if await discordViewBuilder.isInteractionIntended(player, interaction):
+                await chooseExpoFunction(currentGame, player, client, currentTheme, home, sabotageButton.label)
+                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
         sabotageButton.callback = processExpeditionSabotage
 
         returnedView.add_item(passButton)
@@ -110,9 +112,10 @@ class discordViewBuilder:
         if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
             nukeButton = Button(label = 'Nuke', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processExpeditionNuke(interaction):
-                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Armin')
-                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                await interaction.message.edit(embed=embed, view = None)
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Armin')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
             nukeButton.callback = processExpeditionNuke
             returnedView.add_item(nukeButton)
 
@@ -120,27 +123,45 @@ class discordViewBuilder:
             if currentGame.roundFails < 2:
                 leviAttackButton = Button(label = 'Attack', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
                 async def processLeviAttack(interaction):
-                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviAttack')
-                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                    await interaction.message.edit(embed=embed, view = None)
+                    if await discordViewBuilder.isInteractionIntended(player, interaction):
+                        await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviAttack')
+                        embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                        await interaction.message.edit(embed=embed, view = None)
                 leviAttackButton.callback = processLeviAttack
                 returnedView.add_item(leviAttackButton)
             leviDefendButton = Button(label = 'Defend', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
             async def processLeviDefend(interaction):
-                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviDefend')
-                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                await interaction.message.edit(embed=embed, view = None)
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'LeviDefend')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
             leviDefendButton.callback = processLeviDefend
             returnedView.add_item(leviDefendButton)
 
         if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             dazButton = Button(label = 'Chicken Out', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processDazButton(interaction):
-                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Daz')
-                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                await interaction.message.edit(embed=embed, view = None)
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Daz')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
             dazButton.callback = processDazButton
             returnedView.add_item(dazButton)
+
+        if player.role.id == 'Mikasa':
+            mikasaSelect = Select(placeholder=f'Choose Player to Guard')
+            for expeditioner in currentGame.currentExpo.expeditionMembers:
+                mikasaSelect.add_option(label = expeditioner.user.name, emoji= player.role.secondaryEmoji)
+            async def processMikasaSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for expeditioner in currentGame.currentExpo.expeditionMembers:
+                        if expeditioner.user.name == str(mikasaSelect.values[0]):
+                            guardedPlayer = expeditioner
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Mikasa':guardedPlayer})
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            mikasaSelect.callback = processMikasaSelection
+            returnedView.add_item(mikasaSelect)
         
         return returnedView
     
@@ -155,20 +176,21 @@ class discordViewBuilder:
                 sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji)
         
         async def processSashaSelection(interaction):
-            if currentGame.online and interaction.user == Sasha.user and Sasha.role.abilityActive:
-                selection = str(sashaTargetSelection.values[0])
-                if selection == 'Remove Target':
-                    currentGame.sashaTarget(Sasha, None)
-                    await interaction.message.edit(content='You are no longer targeting anybody.')
-                    await interaction.response.defer()
-                else:
-                    for player in currentGame.livingPlayers:
-                        if player.user.name == selection:
-                            selectedPlayer = player
-                            break
-                    currentGame.sashaTarget(Sasha, selectedPlayer)
-                    await interaction.message.edit(content=f'Your target has been updated to: {player.user.name}')
-                    await interaction.response.defer()
+            if await discordViewBuilder.isInteractionIntended(Sasha, interaction):
+                if currentGame.online and interaction.user == Sasha.user and Sasha.role.abilityActive:
+                    selection = str(sashaTargetSelection.values[0])
+                    if selection == 'Remove Target':
+                        currentGame.sashaTarget(Sasha, None)
+                        await interaction.message.edit(content='You are no longer targeting anybody.')
+                        await interaction.response.defer()
+                    else:
+                        for player in currentGame.livingPlayers:
+                            if player.user.name == selection:
+                                selectedPlayer = player
+                                break
+                        currentGame.sashaTarget(Sasha, selectedPlayer)
+                        await interaction.message.edit(content=f'Your target has been updated to: {player.user.name}')
+                        await interaction.response.defer()
 
         sashaTargetSelection.callback = processSashaSelection
 
@@ -278,6 +300,16 @@ class discordViewBuilder:
 
         backButton.callback = processBackButton
         returnedView.add_item(backButton)
+
+        resetButton = Button(label = 'Reset Role Selection', emoji = str('🔄'), style=discord.ButtonStyle.grey)
+        async def processResetButton(interaction):
+            currentLobby.currentRules.clearRoles(team)
+            refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+            await interaction.response.defer()
+        resetButton.callback = processResetButton
+        returnedView.add_item(resetButton)
 
         if team != 'Warriors':
             warriorButton = Button(label = f'Go to {currentTheme.warriorSingle} Role Options', emoji=currentTheme.emojiWarrior, style=discord.ButtonStyle.grey)

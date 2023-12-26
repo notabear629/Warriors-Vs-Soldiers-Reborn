@@ -110,5 +110,8 @@ class webhookManager:
     async def dazWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.dazMessage, 'Daz', client)
 
+    async def mikasaWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.mikasaMessage, 'Mikasa', client)
+
 
     

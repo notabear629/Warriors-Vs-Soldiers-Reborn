@@ -17,7 +17,7 @@ class Role:
     soldierGroupAbility = ['Jean', 'Erwin', 'Daz']
 
     #Group of all optional soldiers that are Defender class
-    soldierGroupDefender = ['Levi']
+    soldierGroupDefender = ['Levi', 'Mikasa']
 
     #A group of all Lethal Soldiers
     soldierGroupLethal = ['Armin', 'Sasha']

@@ -101,18 +101,24 @@ class Game:
         self.resultsAvailable = False
 
     def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
-        if killedPlayer not in self.deadPlayers:
-            if killedPlayer in self.livingPlayers:
-                self.livingPlayers.remove(killedPlayer)
-                self.deadPlayers.append(killedPlayer)
-            if killedPlayer in self.livingSoldiers:
-                self.livingSoldiers.remove(killedPlayer)
-                self.deadSoldiers.append(killedPlayer)
-            if killedPlayer in self.livingWarriors:
-                self.livingWarriors.remove(killedPlayer)
-                self.deadWarriors.append(killedPlayer)
-            killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
-            killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+        if self.currentExpo.mikasaGuarded == killedPlayer:
+            self.updateMikasaTarget(killedPlayer, causeOfDeath)
+        else:
+            if killedPlayer not in self.deadPlayers:
+                if killedPlayer in self.livingPlayers:
+                    self.livingPlayers.remove(killedPlayer)
+                    self.deadPlayers.append(killedPlayer)
+                if killedPlayer in self.livingSoldiers:
+                    self.livingSoldiers.remove(killedPlayer)
+                    self.deadSoldiers.append(killedPlayer)
+                if killedPlayer in self.livingWarriors:
+                    self.livingWarriors.remove(killedPlayer)
+                    self.deadWarriors.append(killedPlayer)
+                killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
+                killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+
+    def updateMikasaTarget(self, target, causeOfDeath):
+        self.currentExpo.mikasaGuarded = {target: causeOfDeath}
 
     def sashaTarget(self, Sasha, target):
         self.sashaTargeted = target

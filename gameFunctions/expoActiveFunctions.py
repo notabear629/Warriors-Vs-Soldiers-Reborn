@@ -46,6 +46,8 @@ class expoActiveFunctions:
                 expoChoice = 'LeviDefend'
             elif choice == 'Daz' and player.role.id == 'Daz' and player.role.abilityActive:
                 expoChoice = 'Daz'
+            elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
+                expoChoice = choice
             elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:
@@ -67,7 +69,7 @@ class expoActiveFunctions:
                 result = await expoActiveFunctions.getExpeditionResult(currentGame)
                 await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
                 await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
-                await expoActiveFunctions.processDeaths(currentGame, currentTheme, home)
+                await expoActiveFunctions.processDeaths(currentGame, currentTheme, home, client)
             
             
 
@@ -94,7 +96,7 @@ class expoActiveFunctions:
                 failMessage += f'{currentTheme.wallSinaBreakMessage}'
             await home.send(failMessage)
 
-    async def processDeaths(currentGame, currentTheme, home):
+    async def processDeaths(currentGame, currentTheme, home, client):
         deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
@@ -120,20 +122,23 @@ class expoActiveFunctions:
                     currentGame.currentExpo.activateSasha()
 
 
-        await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home, deathFlags)
+        await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home, deathFlags, client)
 
-    async def processDeathMessages(currentGame, currentTheme, home, deathFlags):
+    async def processDeathMessages(currentGame, currentTheme, home, deathFlags, client):
+        Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            await webhookManager.mikasaWebhook(currentGame, currentTheme, home, client)
         if deathFlags['Armin']:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
-            arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin)
+            arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa)
             await home.send(arminMessage)
         if deathFlags['Levi']:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
-            leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi)
+            leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa)
             await home.send(leviMessage)
         if deathFlags['Sasha']:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
-            sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha)
+            sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa)
             await home.send(sashaMessage)
 
         

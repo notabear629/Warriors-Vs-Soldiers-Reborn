@@ -252,6 +252,8 @@ class embedBuilder:
             playerList += f'{player.role.emoji} Select Defend to defend the {currentTheme.expeditionName} and guarantee its success, but let any attackers survive.\n'
         if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             playerList += f'{player.role.secondaryEmoji} Select Chicken Out to cancel this {currentTheme.expeditionName} and go back to the picking phase.\n'
+        if player.role.id == 'Mikasa':
+            playerList += f'{player.role.emoji} Select a player from the "Choose Player to Guard to Pass this {currentTheme.expeditionName}, and guard that player.\n'
 
         if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
             decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
@@ -261,6 +263,8 @@ class embedBuilder:
             decisionString = f'You have chosen to defend this {currentTheme.expeditionName}.'
         elif player.role.id == 'Daz' and currentGame.currentExpo.dazActivated:
             decisionString = f'You have chosen to chicken out from going on this {currentTheme.expeditionName}.'
+        elif player.role.id == 'Mikasa' and currentGame.currentExpo.mikasaGuarded != None and type(currentGame.currentExpo.mikasaGuarded) != dict:
+            decisionString = f'You have chosen to pass the expedition while guarding **{currentGame.currentExpo.mikasaGuarded.user.name}**.'
         elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:
@@ -299,7 +303,7 @@ class embedBuilder:
                     break
             for player in currentGame.currentExpo.expeditionMembers:
                 outcomeList += f'{Armin.role.secondaryEmoji}\n'
-        if currentGame.currentExpo.leviDefended:
+        elif currentGame.currentExpo.leviDefended:
             if len(currentGame.currentExpo.sabotagedExpedition) > 0:
                 for player in currentGame.currentExpo.expeditionMembers:
                     outcomeList += f'{currentTheme.emojiSecuredExpedition}\n'

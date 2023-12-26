@@ -42,6 +42,13 @@ class Rules:
         setattr(self, primaryAttribute, primaryGroup)
         setattr(self, secondaryAttribute, secondaryGroup)
 
+    def clearRoles(self, team):
+        if team == 'Soldiers':
+            self.disabledSoldiers = []
+            self.enabledSoldiers = []
+        elif team == 'Warriors':
+            self.enabledWarriors = []
+            self.disabledWarriors = []
 
 
     

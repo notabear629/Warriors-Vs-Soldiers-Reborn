@@ -24,6 +24,7 @@ class Expedition:
         self.sashaActivated = False
         self.erwinActivated = False
         self.dazActivated = False
+        self.mikasaGuarded = None
         self.usedExpoAbilities = []
 
     def changeCommander(self, commander):
@@ -37,6 +38,11 @@ class Expedition:
         self.pieckActivated = False
         self.erwinActivated = False
         self.dazActivated = False
+        self.sashaActivated = False
+        self.leviAttacked = False
+        self.leviDefended = False
+        self.mikasaGuarded = None
+        self.arminActivated = False
     
     def activateErwin(self, Erwin):
         self.erwinActivated = True
@@ -113,6 +119,9 @@ class Expedition:
             self.passedExpedition.append(player)
             self.dazActivated = True
             player.role.disableAbility()
+        if type(actCase) == dict and 'Mikasa' in actCase:
+            self.passedExpedition.append(player)
+            self.mikasaGuarded = actCase['Mikasa']
         elif actCase == 'y':
             self.passedExpedition.append(player)
         elif actCase == 'n':
