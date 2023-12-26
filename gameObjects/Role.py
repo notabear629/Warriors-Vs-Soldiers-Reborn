@@ -35,7 +35,7 @@ class Role:
     warriorGroupWarchief = ['Zeke']
 
     #The group of all option Warriors with one-time special abilities
-    warriorGroupAbility = ['Pieck']
+    warriorGroupAbility = ['Pieck', 'Annie']
 
     #The group of all option Warriors with multi-use perks
     warriorGroupPerk = ['Reiner', 'Bertholdt']

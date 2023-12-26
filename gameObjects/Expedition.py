@@ -27,6 +27,7 @@ class Expedition:
         self.mikasaGuarded = None
         self.reinerBlocked = None
         self.bertholdtCloaked = False
+        self.annieMessage = None
         self.usedExpoAbilities = []
 
     def changeCommander(self, commander):
@@ -47,6 +48,7 @@ class Expedition:
         self.arminActivated = False
         self.reinerBlocked = None
         self.bertholdtCloaked = False
+        self.annieMessage = None
     
     def activateErwin(self, Erwin):
         self.erwinActivated = True
@@ -129,6 +131,11 @@ class Expedition:
         elif type(actCase) == dict and 'Mikasa' in actCase:
             self.passedExpedition.append(player)
             self.mikasaGuarded = actCase['Mikasa']
+        elif type(actCase) == dict and 'Annie' in actCase:
+            self.sabotagedExpedition.append(player)
+            self.annieMessage = actCase['Annie']
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
         elif actCase == 'y':
             self.passedExpedition.append(player)
         elif actCase == 'n':

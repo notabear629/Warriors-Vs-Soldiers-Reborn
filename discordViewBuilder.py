@@ -172,6 +172,25 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             bertholdtButton.callback = processBertholdtButton
             returnedView.add_item(bertholdtButton)
+
+        if player.role.id == 'Annie':
+            annieButton = Button(label = 'Input Scream Message', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
+            async def processAnnieButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    annieModal = Modal(title = 'Scream Message')
+                    annieInput = TextInput(label='Type Scream Message Here', style=discord.TextStyle.paragraph)
+                    annieModal.add_item(annieInput)
+                    async def processAnnieInput(newInteraction):
+                        if await discordViewBuilder.isInteractionIntended(player, newInteraction):
+                            await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Annie':str(annieInput.value)})
+                            embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                            await interaction.message.edit(embed=embed, view = None)
+                            await newInteraction.response.defer()
+                    annieModal.on_submit = processAnnieInput
+                    await interaction.response.send_modal(annieModal)
+                    
+            annieButton.callback = processAnnieButton
+            returnedView.add_item(annieButton)
         
         return returnedView
     

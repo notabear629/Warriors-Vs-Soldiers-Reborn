@@ -75,19 +75,23 @@ class webhookManager:
                 for player in currentGame.warriors:
                     user = databaseManager.searchForUser(player.user)
                     userChannel = client.get_channel(user['channelID'])
-                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}', 'Zeke', client)
-                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, currentTheme.getLeviRevealMessage(Levi), 'Zeke', client)
+                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', 'Zeke', client)
         if currentGame.currentExpo.leviDefended and len(currentGame.currentExpo.sabotagedExpedition) > 0:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviDefendMessage, 'Levi', client)
             for player in currentGame.warriors:
                 user = databaseManager.searchForUser(player.user)
                 userChannel = client.get_channel(user['channelID'])
-                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}', 'Zeke', client)
-                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, currentTheme.getLeviRevealMessage(Levi), 'Zeke', client)
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', 'Zeke', client)
         Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
         if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
+        if currentGame.currentExpo.annieMessage != None:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.annieMessage, 'Annie', client)
+            for player in currentGame.warriors:
+                    user = databaseManager.searchForUser(player.user)
+                    userChannel = client.get_channel(user['channelID'])
+                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentGame.currentExpo.annieMessage}', 'Annie', client)
 
 
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):

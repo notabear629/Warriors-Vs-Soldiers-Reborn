@@ -50,6 +50,8 @@ class expoActiveFunctions:
                 expoChoice = 'Bertholdt'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
+            elif type(choice) == dict and 'Annie' in choice and player.role.id == 'Annie':
+                expoChoice = choice
             elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:

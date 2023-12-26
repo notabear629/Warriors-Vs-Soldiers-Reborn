@@ -153,6 +153,7 @@ class defaultGameTheme:
     mikasaMessage = 'My guard is unbreakable...'
     reinerMessage = 'Marley\'s Shield is not broken so easily...'
     bertholdtMessage = 'I\'ll deploy a cloak of steam!'
+    annieMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -645,6 +646,31 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':hotsprings:Sabotage Cloaker:hotsprings:'
 
         roleDict['helpInfo'] = 'Bertholdt is an owner of the Colossal Titan! Thanks to this, he is able to completely cloak the evidence of what transpired on an expedition thanks to an immense cloud of steam blocking the view and immense heat burning away key evidence. Because of this, when he chooses to hide evidence, the Soldiers won\'t know how many Warriors sabotaged the expedition! Just that it got broken.'
+
+    class Annie:
+        roleDict = {'roleID' : 'Annie'}
+
+        roleDict['name'] = 'Annie Leonhart'
+
+        roleDict['shortName'] = 'Annie'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 685777947906277380
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use `{prefix}scream insert message here` to send a message to all of your Warrior comrades! When you use this ability, an alert will be shown in the home channel.\n\n'
+
+        roleDict['gameRole'] = ':speaking_head:Screaming Titan:speaking_head:'
+
+        roleDict['helpInfo'] = 'Annie is the owner of the Female Titan! One of this titan\'s abilities is its scream can be used to attract titans. However, it can also be used to convey hidden messages! Once per game, Annie can send ONE message to all of the Warriors, and the Soldiers will only know that a message was sent, but not what it was!'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
