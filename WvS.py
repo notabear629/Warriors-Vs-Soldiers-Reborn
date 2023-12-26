@@ -51,7 +51,7 @@ def resetFunction():
     if currentGame.online:
         currentGame.turnOffline()
     currentLobby = Lobby()
-    currentGame = Game()
+    currentGame = Game(client)
 
 @client.event
 async def on_ready():

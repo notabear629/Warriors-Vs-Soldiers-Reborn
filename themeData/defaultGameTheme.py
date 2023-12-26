@@ -148,6 +148,14 @@ class defaultGameTheme:
     leviDefendMessage = f'I will defend this expedition at all costs!'
     sashaMessage = f'I have fired an arrow!'
 
+    #Timeout Messages
+    timeoutCoreStart = 'You have '
+    timeoutCoreEnd = ' left to'
+    timeoutPick = ' pick your Expedition Team!'
+    timeoutVote = ' vote on the Expedition Team!'
+    timeoutExpo = ' act on the Expedition!'
+    timeoutKidnap = ' kidnap the Coordinate!'
+
 
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
     class Eren:

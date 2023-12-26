@@ -26,7 +26,7 @@ class endGameFunctions:
     async def reachBasement(currentGame, currentTheme, home):
         currentGame.activateKidnap()
         await home.send(currentTheme.basementMessage)
-        timeout = await timerManager.setTimer(currentGame, 'Kidnap')
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Kidnap')
         if timeout == None:
             return
         elif timeout:

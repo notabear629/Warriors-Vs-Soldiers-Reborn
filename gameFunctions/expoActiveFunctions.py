@@ -22,7 +22,7 @@ class expoActiveFunctions:
             view = await discordViewBuilder.expeditionChoiceView(currentGame, currentTheme, player, client, home, expoActiveFunctions.chooseExpo)
             await userChannel.send(f'{player.user.mention}')
             await userChannel.send(view=view, embed=embed)
-        timeout = await timerManager.setTimer(currentGame, 'Expo')
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Expo')
         if timeout == None:
             return
         elif timeout:

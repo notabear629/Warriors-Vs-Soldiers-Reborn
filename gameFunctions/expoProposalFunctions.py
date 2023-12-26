@@ -97,7 +97,7 @@ class expoProposalFunctions:
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
         await home.send(commanderMessage)
-        timeout = await timerManager.setTimer(currentGame, 'Pick')
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Pick')
         if timeout == None:
             return
         elif timeout:
@@ -154,7 +154,7 @@ class expoProposalFunctions:
             view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.voteExpo)
             await userChannel.send(player.user.mention)
             await userChannel.send(embed=embed, view=view)
-        timeout = await timerManager.setTimer(currentGame, 'Vote')
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Vote')
         if timeout == None:
             return
         elif timeout:
