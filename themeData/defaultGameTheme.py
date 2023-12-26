@@ -151,6 +151,7 @@ class defaultGameTheme:
     dazMessage = f'Waaaaaah! I\'m scared!'
     dazMessageFollowUp = 'The Expedition has been cancelled!'
     mikasaMessage = 'My guard is unbreakable...'
+    reinerMessage = 'Marley\'s Shield is not broken so easily...'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -594,6 +595,31 @@ class defaultGameTheme:
         roleDict['helpInfo'] = 'Pieck is great at inflitrating enemy lines undetected. Thanks to this spying ability, she has the ability to mess with the votes for an expedition once and flip them all! This is an incredibly powerful ability when used properly, as it can turn a rejected expo into a free wall for the Warriors!'
 
 
+    class Reiner:
+        roleDict = {'roleID' : 'Reiner'}
+
+        roleDict['name'] = 'Reiner Braun'
+
+        roleDict['shortName'] = 'Reiner'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 685785857596457016
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You have extremely durable levels of armor. As such, You are unkillable! If a soldier tries to kill you, you will still be exposed, but you will be allowed to keep playing.\n\n'
+
+        roleDict['gameRole'] = ':rock:Invincible Shield:rock:'
+
+        roleDict['helpInfo'] = 'Reiner is the owner of the Armored Titan! Thanks to his impressive armor, he will not be able to be killed by killer Soldiers, however, he will still be exposed! The ability to stay in the game and keep your ability to vote and be a commander is important though, so make sure to support your comrades even if you are exposed!'
+
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
 
@@ -684,7 +710,7 @@ class defaultGameTheme:
     def getErwinMessage(Erwin):
         return f'I, {Erwin.user.mention}, am activating a signal flare!'
     
-    def getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa):
+    def getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa, Reiner):
         arminDeathMessages = ''
         for killedPlayer, causeOfDeath in Armin.killed.items():
             if causeOfDeath == 'Armin':
@@ -696,10 +722,14 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Armin':
-                    arminDeathMessages += f'{Mikasa.role.emoji} Mikasa saved **{key.user.name}** from the Blast!{Mikasa.role.emoji}'
+                    arminDeathMessages += f'{Mikasa.role.emoji} Mikasa saved **{key.user.name}** from the Blast!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Armin':
+                    arminDeathMessages += f'{Reiner.role.emoji}**{key.user.name}** Survived the Blast!{Reiner.role.emoji}\n\n'
         return arminDeathMessages
     
-    def getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa):
+    def getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa, Reiner):
         leviDeathMessages = ''
         for killedPlayer, causeOfDeath in Levi.killed.items():
             if causeOfDeath == 'Levi':
@@ -711,10 +741,14 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Levi':
-                    leviDeathMessages += f'**{key.user.name}** was attacked by Levi!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}'
+                    leviDeathMessages += f'**{key.user.name}** was attacked by Levi!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Levi':
+                    leviDeathMessages += f'{Reiner.role.emoji}**{key.user.name}**\'s Armor protected them from Levi\'s onslaught!{Reiner.role.emoji}\n\n'
         return leviDeathMessages
     
-    def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa):
+    def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner):
         sashaDeathMessages = ''
         for killedPlayer, causeOfDeath in Sasha.killed.items():
             if causeOfDeath == 'Sasha':
@@ -726,7 +760,11 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Sasha':
-                    sashaDeathMessages += f'{Mikasa.role.emoji}Mikasa deflected Sasha\'s Arrow away from **{key.user.name}**!{Mikasa.role.emoji}'
+                    sashaDeathMessages += f'{Mikasa.role.emoji}Mikasa deflected Sasha\'s Arrow away from **{key.user.name}**!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Sasha':
+                    sashaDeathMessages += f'{Reiner.role.emoji}The Arrow merely bounced off **{key.user.name}**\'s Armor!{Reiner.role.emoji}\n\n'
         return sashaDeathMessages
 
             

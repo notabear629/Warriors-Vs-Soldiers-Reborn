@@ -103,6 +103,8 @@ class Game:
     def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
         if self.currentExpo.mikasaGuarded == killedPlayer:
             self.updateMikasaTarget(killedPlayer, causeOfDeath)
+        elif killedPlayer.role.id == 'Reiner':
+            self.updateReinerDefense(killedPlayer, causeOfDeath)
         else:
             if killedPlayer not in self.deadPlayers:
                 if killedPlayer in self.livingPlayers:
@@ -119,6 +121,9 @@ class Game:
 
     def updateMikasaTarget(self, target, causeOfDeath):
         self.currentExpo.mikasaGuarded = {target: causeOfDeath}
+
+    def updateReinerDefense(self,Reiner, causeOfDeath):
+        self.currentExpo.reinerBlocked = {Reiner: causeOfDeath}
 
     def sashaTarget(self, Sasha, target):
         self.sashaTargeted = target

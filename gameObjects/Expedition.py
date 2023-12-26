@@ -25,6 +25,7 @@ class Expedition:
         self.erwinActivated = False
         self.dazActivated = False
         self.mikasaGuarded = None
+        self.reinerBlocked = None
         self.usedExpoAbilities = []
 
     def changeCommander(self, commander):
@@ -43,6 +44,7 @@ class Expedition:
         self.leviDefended = False
         self.mikasaGuarded = None
         self.arminActivated = False
+        self.reinerBlocked = None
     
     def activateErwin(self, Erwin):
         self.erwinActivated = True

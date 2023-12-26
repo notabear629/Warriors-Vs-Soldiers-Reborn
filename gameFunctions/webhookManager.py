@@ -113,5 +113,8 @@ class webhookManager:
     async def mikasaWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.mikasaMessage, 'Mikasa', client)
 
+    async def reinerWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.reinerMessage, 'Reiner', client)
+
 
     

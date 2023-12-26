@@ -70,6 +70,8 @@ class expoActiveFunctions:
                 await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
                 await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
                 await expoActiveFunctions.processDeaths(currentGame, currentTheme, home, client)
+            return True
+        return False
             
             
 
@@ -126,19 +128,22 @@ class expoActiveFunctions:
 
     async def processDeathMessages(currentGame, currentTheme, home, deathFlags, client):
         Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
+        Reiner = await searchFunctions.roleIDToPlayer(currentGame, 'Reiner')
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             await webhookManager.mikasaWebhook(currentGame, currentTheme, home, client)
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            await webhookManager.reinerWebhook(currentGame, currentTheme, home, client)
         if deathFlags['Armin']:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
-            arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa)
+            arminMessage = currentTheme.getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa, Reiner)
             await home.send(arminMessage)
         if deathFlags['Levi']:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
-            leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa)
+            leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa, Reiner)
             await home.send(leviMessage)
         if deathFlags['Sasha']:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
-            sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa)
+            sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner)
             await home.send(sashaMessage)
 
         

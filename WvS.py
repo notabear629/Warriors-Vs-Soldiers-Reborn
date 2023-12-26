@@ -174,16 +174,17 @@ async def clear(ctx):
         
 @client.command('results')
 async def results(ctx):
-    await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client)
-    if currentGame.currentExpo.dazActivated:
-        await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
-    else:
-        if currentGame.online and currentGame.exposOver == False:
-            await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix, client)
-        if currentGame.online and currentGame.exposOver:
-            await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
-        if currentGame.online and currentGame.winCondition != None:
-            resetFunction()
+    resultsRead = await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client)
+    if resultsRead:
+        if currentGame.currentExpo.dazActivated:
+            await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+        else:
+            if currentGame.online and currentGame.exposOver == False:
+                await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix, client)
+            if currentGame.online and currentGame.exposOver:
+                await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
+            if currentGame.online and currentGame.winCondition != None:
+                resetFunction()
 
 @client.command('kidnap')
 async def kidnap(ctx, *, kidnappedUser:discord.Member):

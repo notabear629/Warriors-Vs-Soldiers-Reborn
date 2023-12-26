@@ -37,11 +37,14 @@ class Role:
     #The group of all option Warriors with one-time special abilities
     warriorGroupAbility = ['Pieck']
 
+    #The group of all option Warriors with multi-use perks
+    warriorGroupPerk = ['Reiner']
+
     #The default Warrior classes.
     warriorGroupDefault = ['Warrior']
 
     #Combine all optional Warrior Roles
-    warriorGroupOptional = warriorGroupAbility
+    warriorGroupOptional = warriorGroupAbility + warriorGroupPerk
 
     #Combine all warrior groups to make a complete warrior list
     warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault

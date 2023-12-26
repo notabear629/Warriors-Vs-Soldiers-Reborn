@@ -171,7 +171,7 @@ class embedBuilder:
             if titansSmelled == 1:
                 titanName = currentTheme.titanSingle
             playerList += f'\n{player.role.secondaryEmoji}You {currentTheme.mikeSmell} **{titansSmelled}** {titanName}!{player.role.secondaryEmoji}'
-        if player.role.id == 'Floch':
+        if player.role.id == 'Floch' and player in currentGame.currentExpo.expeditionMembers:
             Eren = await searchFunctions.roleIDToPlayer(currentGame, 'Eren')
             erenEmoji = Eren.role.emoji
             playerList += '\n'
