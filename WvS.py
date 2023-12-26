@@ -67,7 +67,7 @@ async def on_ready():
     await currentTheme.resolveEmojis(client)
     currentRules = Rules()
     currentLobby = Lobby()
-    currentGame = Game()
+    currentGame = Game(client)
     loadedRoles = Role.loadRoles(currentTheme, client)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
@@ -189,6 +189,10 @@ async def kidnap(ctx, *, kidnappedUser:discord.Member):
 @client.command('target')
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
+
+@client.command('flare')
+async def flare(ctx):
+    await expoProposalFunctions.flare(ctx, currentGame, client)
 
 
 

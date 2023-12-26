@@ -38,7 +38,7 @@ class timerManager:
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition}
     
     async def pickWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed:
+        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated:
             return True
         return False
     

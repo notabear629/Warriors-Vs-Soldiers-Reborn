@@ -401,6 +401,30 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Sasha is a master at long range weapons! She is able to choose a target, and the next time they are in an expedition that goes through that she is NOT in, she will send an arrow to them, killing them! You can use this to eliminate someone you know is a warrior, but be careful, this will NOT stop them from sabotaging the walls!'
 
+    class Erwin:
+        roleDict = {'roleID' : 'Erwin'}
+
+        roleDict['name'] = 'Erwin Smith'
+
+        roleDict['shortName'] = 'Erwin'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 685790521205325825
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have the ability to reveal your role once and instantly become the commander by using `{prefix}flare`! But be careful, while this will prove you are who you say you are, this will also make identifying Eren easier for the warriors!\n\n'
+
+        roleDict['gameRole'] = ':dizzy:True Commander:dizzy:'
+
+        roleDict['helpInfo'] = 'Erwin is one of the greatest leaders of all time and the true commander for the Soldiers! Thanks to this, for one time, he is able to prove his identity to everyone, and take control of being the expedition commander. Use this wisely, however! Because your role being exposed makes getting to Eren easier!'
 
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
@@ -566,6 +590,9 @@ class defaultGameTheme:
     def getLeviRevealMessage(Levi):
         return f'The identity of **Levi Ackermann** has been revealed to be **{Levi.user.name}**!'
     
+    def getErwinMessage(Erwin):
+        return f'I, {Erwin.user.mention}, am activating a signal flare!'
+    
     def getArminDeathMessages(currentGame, currentTheme, Armin):
         arminDeathMessages = ''
         for killedPlayer, causeOfDeath in Armin.killed.items():
@@ -598,5 +625,6 @@ class defaultGameTheme:
                 elif killedPlayer in currentGame.warriors:
                     SashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
         return SashaDeathMessages
+
             
 

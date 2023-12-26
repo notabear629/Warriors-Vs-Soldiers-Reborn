@@ -14,7 +14,7 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean']
+    soldierGroupAbility = ['Jean', 'Erwin']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi']

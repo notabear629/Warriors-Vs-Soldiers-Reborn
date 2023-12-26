@@ -3,8 +3,9 @@ import random
 from embedBuilder import embedBuilder
 
 class Game:
-    def __init__(self):
+    def __init__(self, client):
         self.online = False
+        self.client = client
 
 
     def start(self, lobby, players, currentRules, loadedRoles):
@@ -39,6 +40,7 @@ class Game:
         self.currentlyKidnapping = False
         self.kidnappedPlayer = None
         self.loadedRoles = loadedRoles
+        self.sashaTargeted = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -67,6 +69,12 @@ class Game:
             if player in self.commanderOrder:
                 self.commanderOrder.remove(player)
         self.currentExpo.changeCommander(self.commanderOrder[0])
+
+    def erwinCommander(self, Erwin):
+        oldCommanderOrder = self.commanderOrder.copy()
+        oldCommanderOrder.remove(Erwin)
+        self.commanderOrder = [Erwin] + oldCommanderOrder
+        self.currentExpo.changeCommander(Erwin)
 
     async def sendTemporaryMessage(self, currentTheme, home):
         embed = await embedBuilder.temporaryMessage(self, currentTheme)

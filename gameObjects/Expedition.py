@@ -22,6 +22,7 @@ class Expedition:
         self.leviAttacked = False
         self.leviDefended = False
         self.sashaActivated = False
+        self.erwinActivated = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -30,6 +31,12 @@ class Expedition:
         self.passed = False
         self.jeanActivated = False
         self.pieckActivated = False
+        self.erwinActivated = False
+    
+    def activateErwin(self, Erwin):
+        self.erwinActivated = True
+        Erwin.role.disableAbility()
+        
 
     def addMember(self, member):
         self.expeditionMembers.append(member)

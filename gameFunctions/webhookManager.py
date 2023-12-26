@@ -88,10 +88,6 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
 
 
-                
-
-
-
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):
         Hange = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
         if Hange != None and Hange in currentGame.livingPlayers:
@@ -102,5 +98,14 @@ class webhookManager:
             embed = await embedBuilder.infoUpdate(currentTheme, Hange, hangeInfo)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hange', client, embed)
+
+    async def erwinWebhook(currentGame, currentTheme, home, client):
+        Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
+        if Erwin != None and currentGame.currentExpo.erwinActivated:
+            user = databaseManager.searchForUser(Erwin.user)
+            userChannel = client.get_channel(user['channelID'])
+            erwinMessage = currentTheme.getErwinMessage(Erwin)
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, erwinMessage, 'Erwin', client)
+
 
     

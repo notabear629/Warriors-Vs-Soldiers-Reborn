@@ -90,7 +90,10 @@ class expoProposalFunctions:
         return roundNumbers
     
     async def resetExpedition(currentGame, currentTheme, noMentions, home, prefix):
-        currentGame.nextCommander()
+        if currentGame.currentExpo.erwinActivated:
+            await expoProposalFunctions.erwinTakeover(currentGame, currentTheme, home, currentGame.client)
+        else:
+            currentGame.nextCommander()
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
         await home.send(commanderMessage)
@@ -103,6 +106,8 @@ class expoProposalFunctions:
         else:
             if currentGame.currentExpo.passed:
                 await home.send(f'You have passed the responsibility of choice to the next {currentTheme.commanderName}.')
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif currentGame.currentExpo.erwinActivated:
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             else:
                 return
@@ -213,6 +218,22 @@ class expoProposalFunctions:
         await home.send(embed=embed)
         await webhookManager.processNewRoundWebhooks(currentGame, currentTheme, home, client)
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+
+
+    async def flare(ctx, currentGame, client):
+        if currentGame.online:
+            Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
+            user = databaseManager.searchForUser(Erwin.user)
+            userChannel = client.get_channel(user['channelID'])
+            if Erwin.user == ctx.message.author and Erwin.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                currentGame.currentExpo.activateErwin(Erwin)
+
+    async def erwinTakeover(currentGame, currentTheme, home, client):
+        await webhookManager.erwinWebhook(currentGame, currentTheme, home, client)
+        Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
+        currentGame.erwinCommander(Erwin)
+
+                
 
 
 
