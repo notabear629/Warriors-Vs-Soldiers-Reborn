@@ -171,6 +171,14 @@ class embedBuilder:
             if titansSmelled == 1:
                 titanName = currentTheme.titanSingle
             playerList += f'\n{player.role.secondaryEmoji}You {currentTheme.mikeSmell} **{titansSmelled}** {titanName}!{player.role.secondaryEmoji}'
+        if player.role.id == 'Floch':
+            Eren = await searchFunctions.roleIDToPlayer(currentGame, 'Eren')
+            erenEmoji = Eren.role.emoji
+            playerList += '\n'
+            if Eren in currentGame.currentExpo.expeditionMembers:
+                playerList += f'{erenEmoji}{currentTheme.flochMessageEren}{erenEmoji}'
+            else:
+                playerList += f'{currentTheme.emojiNoEren}{currentTheme.flochMessageNoEren}{currentTheme.emojiNoEren}'
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
         if player.role.id == 'Jean' and currentGame.currentExpo.jeanActivated:
             voteDesc = f'You have voted to secure this {currentTheme.expeditionTeam}.'

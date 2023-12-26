@@ -113,6 +113,7 @@ class defaultGameTheme:
     rejectedExpeditionColor = discord.Color.red()
     jeanedExpeditionColor = discord.Color.gold()
     mikeSmell = 'smell'
+    emojiNoEren = str('✖️')
 
     #Expedition DM aesthetics
     expeditionDMColor = discord.Color.blue()
@@ -149,6 +150,10 @@ class defaultGameTheme:
     sashaMessage = f'I have fired an arrow!'
     dazMessage = f'Waaaaaah! I\'m scared!'
     dazMessageFollowUp = 'The Expedition has been cancelled!'
+
+    #Other role messages
+    flochMessageEren = 'Eren Yeager is on the expedition team!'
+    flochMessageNoEren = 'Eren Yeager is not on the expedition team.'
 
     #Timeout Messages
     timeoutCoreStart = 'You have '
@@ -460,7 +465,32 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':scream:Coward:scream:'
 
         roleDict['helpInfo'] = 'Daz is a known coward... When rations are low, there\'s rumors in the barracks that he\'s such a chicken that he tastes exactly like KFC when deepfried. ~~He has already had to be saved from Sasha on 4 separate occassions~~ But this cowardice has a plus. When on any expedition he rejects, he has a one time ability to abort the expedition and cancel the whole thing altogether. Note, this applies REGARDLESS of if a spy flips the vote. If you rejected but got flipped, you are allowed to abort the mission. If you accepted but flipped to a reject, you are not.'
-    
+
+    class Floch:
+        roleDict = {'roleID' : 'Floch'}
+
+        roleDict['name'] = 'Floch Forster'
+
+        roleDict['shortName'] = 'Floch'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 936052973480607774
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'When voting for an expedition, you will be told if Eren is in the expedition or not.\n\n'
+
+        roleDict['gameRole'] = ':punch:Coordinate\'s Fist:punch:'
+
+        roleDict['helpInfo'] = 'Floch is the quintessential Yeagerist. He will follow a complete rumbling to the bitter end, and will help it come to fruition. In addition, he has the ability to gain intel from Eren. After every Expedition proposed, he will be informed by Eren if he is in the expo or not.'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 

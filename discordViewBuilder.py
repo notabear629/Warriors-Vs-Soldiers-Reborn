@@ -242,7 +242,7 @@ class discordViewBuilder:
             if role.id in targetedGroup:
                 focusedRoles.append(role)
 
-        enableSelect = Select(placeholder= f'Choose to Enable {teamName} Roles', min_values=1, max_values=len(focusedRoles))
+        enableSelect = Select(placeholder= f'Choose to Enable {teamName} Roles', min_values=0, max_values=len(focusedRoles))
         for role in focusedRoles:
             enableSelect.add_option(label = role.shortName, emoji=role.emoji)
         async def enableRoles(interaction):
@@ -255,7 +255,7 @@ class discordViewBuilder:
         enableSelect.callback = enableRoles
         returnedView.add_item(enableSelect)
 
-        disableSelect = Select(placeholder= f'Choose to Disable {teamName} Roles', min_values=1, max_values=len(focusedRoles))
+        disableSelect = Select(placeholder= f'Choose to Disable {teamName} Roles', min_values=0, max_values=len(focusedRoles))
         for role in focusedRoles:
             disableSelect.add_option(label = role.shortName, emoji=role.emoji)
         async def disableRoles(interaction):

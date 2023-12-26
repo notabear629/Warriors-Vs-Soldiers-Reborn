@@ -23,7 +23,7 @@ class Role:
     soldierGroupLethal = ['Armin', 'Sasha']
 
     #A group of all Analytical Soldiers
-    soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch']
+    soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch', 'Floch']
 
     #Combine all optional Soldier Roles
     soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst
