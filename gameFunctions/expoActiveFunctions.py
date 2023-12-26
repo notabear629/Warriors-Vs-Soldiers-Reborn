@@ -44,6 +44,8 @@ class expoActiveFunctions:
                 expoChoice = 'LeviAttack'
             elif choice == 'LeviDefend' and player.role.id == 'Levi' and player.role.abilityActive:
                 expoChoice = 'LeviDefend'
+            elif choice == 'Daz' and player.role.id == 'Daz' and player.role.abilityActive:
+                expoChoice = 'Daz'
             elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:
@@ -57,10 +59,15 @@ class expoActiveFunctions:
 
     async def results(ctx, currentGame, currentTheme, home, expoPredictFunction, client):
         if currentGame.online and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:
-            result = await expoActiveFunctions.getExpeditionResult(currentGame)
-            await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
-            await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
-            await expoActiveFunctions.processDeaths(currentGame, currentTheme, home)
+            if currentGame.currentExpo.dazActivated:
+                await webhookManager.dazWebhook(currentGame, currentTheme, home, client)
+                await home.send(currentTheme.dazMessageFollowUp)
+                currentGame.refundAbilities()
+            else:
+                result = await expoActiveFunctions.getExpeditionResult(currentGame)
+                await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
+                await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
+                await expoActiveFunctions.processDeaths(currentGame, currentTheme, home)
             
             
 

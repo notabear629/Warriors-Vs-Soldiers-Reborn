@@ -147,6 +147,8 @@ class defaultGameTheme:
     leviAttackMessage = f'I... Won\'t let a single one of you get away!'
     leviDefendMessage = f'I will defend this expedition at all costs!'
     sashaMessage = f'I have fired an arrow!'
+    dazMessage = f'Waaaaaah! I\'m scared!'
+    dazMessageFollowUp = 'The Expedition has been cancelled!'
 
     #Timeout Messages
     timeoutCoreStart = 'You have '
@@ -434,6 +436,31 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Erwin is one of the greatest leaders of all time and the true commander for the Soldiers! Thanks to this, for one time, he is able to prove his identity to everyone, and take control of being the expedition commander. Use this wisely, however! Because your role being exposed makes getting to Eren easier!'
 
+    class Daz:
+        roleDict = {'roleID' : 'Daz'}
+
+        roleDict['name'] = 'Daz'
+
+        roleDict['shortName'] = 'Daz'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1024922371804647465
+
+        roleDict['secondaryEmoji'] = str('🐔')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have the one time ability to abort any expedition you are on in which you rejected! To use this ability, simply select `Chicken Out` while on an expedition you rejected to abort and cancel the expedition!\n\n'
+
+        roleDict['gameRole'] = ':scream:Coward:scream:'
+
+        roleDict['helpInfo'] = 'Daz is a known coward... When rations are low, there\'s rumors in the barracks that he\'s such a chicken that he tastes exactly like KFC when deepfried. ~~He has already had to be saved from Sasha on 4 separate occassions~~ But this cowardice has a plus. When on any expedition he rejects, he has a one time ability to abort the expedition and cancel the whole thing altogether. Note, this applies REGARDLESS of if a spy flips the vote. If you rejected but got flipped, you are allowed to abort the mission. If you accepted but flipped to a reject, you are not.'
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 

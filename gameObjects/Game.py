@@ -140,4 +140,7 @@ class Game:
         elif self.winCondition == 'kidnapFail':
             self.winners = self.soldiers.copy()
 
+    def refundAbilities(self):
+        for player in self.currentExpo.usedExpoAbilities:
+            player.role.refundAbility()
         

@@ -242,6 +242,8 @@ class embedBuilder:
             playerList += f'{player.role.secondaryEmoji} Select Attack to kill any {currentTheme.warriorPlural} that try to attack, but not defend the {currentTheme.expeditionName}\n'
         if player.role.id == 'Levi' and player.role.abilityActive:
             playerList += f'{player.role.emoji} Select Defend to defend the {currentTheme.expeditionName} and guarantee its success, but let any attackers survive.\n'
+        if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
+            playerList += f'{player.role.secondaryEmoji} Select Chicken Out to cancel this {currentTheme.expeditionName} and go back to the picking phase.\n'
 
         if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
             decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
@@ -249,6 +251,8 @@ class embedBuilder:
             decisionString = f'You have chosen to attack all {currentTheme.warriorPlural} that dare to challenge you.'
         elif player.role.id == 'Levi' and currentGame.currentExpo.leviDefended:
             decisionString = f'You have chosen to defend this {currentTheme.expeditionName}.'
+        elif player.role.id == 'Daz' and currentGame.currentExpo.dazActivated:
+            decisionString = f'You have chosen to chicken out from going on this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:

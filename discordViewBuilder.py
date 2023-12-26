@@ -132,6 +132,15 @@ class discordViewBuilder:
                 await interaction.message.edit(embed=embed, view = None)
             leviDefendButton.callback = processLeviDefend
             returnedView.add_item(leviDefendButton)
+
+        if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
+            dazButton = Button(label = 'Chicken Out', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processDazButton(interaction):
+                await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Daz')
+                embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                await interaction.message.edit(embed=embed, view = None)
+            dazButton.callback = processDazButton
+            returnedView.add_item(dazButton)
         
         return returnedView
     

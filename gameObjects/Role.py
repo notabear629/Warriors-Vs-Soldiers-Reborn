@@ -14,7 +14,7 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean', 'Erwin']
+    soldierGroupAbility = ['Jean', 'Erwin', 'Daz']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi']
@@ -68,6 +68,9 @@ class Role:
 
     def disableAbility(self):
         self.abilityActive = False
+
+    def refundAbility(self):
+        self.abilityActive = True
 
     async def startHange(self, currentGame, Hange):
         self.confirmedSoldiers = [Hange]

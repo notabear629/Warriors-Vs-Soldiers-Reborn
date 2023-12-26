@@ -107,5 +107,8 @@ class webhookManager:
             erwinMessage = currentTheme.getErwinMessage(Erwin)
             await webhookManager.sendWebhook(currentGame, currentTheme, home, erwinMessage, 'Erwin', client)
 
+    async def dazWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.dazMessage, 'Daz', client)
+
 
     
