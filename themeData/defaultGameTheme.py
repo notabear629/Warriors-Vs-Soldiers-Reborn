@@ -152,6 +152,7 @@ class defaultGameTheme:
     dazMessageFollowUp = 'The Expedition has been cancelled!'
     mikasaMessage = 'My guard is unbreakable...'
     reinerMessage = 'Marley\'s Shield is not broken so easily...'
+    bertholdtMessage = 'I\'ll deploy a cloak of steam!'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -619,6 +620,31 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':rock:Invincible Shield:rock:'
 
         roleDict['helpInfo'] = 'Reiner is the owner of the Armored Titan! Thanks to his impressive armor, he will not be able to be killed by killer Soldiers, however, he will still be exposed! The ability to stay in the game and keep your ability to vote and be a commander is important though, so make sure to support your comrades even if you are exposed!'
+
+    class Bertholdt:
+        roleDict = {'roleID' : 'Bertholdt'}
+
+        roleDict['name'] = 'Bertholdt Hoover'
+
+        roleDict['shortName'] = 'Bertholdt'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 685785857487142944
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'Your Titan can produce an immense amount of steam, as such, you have the ability to cloak how many x\'s there were in an expo if you so choose! This ability would gracefully allow for doubling, but be careful with how you use it. If it is used, the Soldiers would see it and will know Bert is in the expo! Making you look incredibly suspicious if you were on 2 blocked expos. In addition, a successful double without using this ability makes a double seem more implausible. Keep all of this in mind when you choose how to break the walls!\n\n'
+
+        roleDict['gameRole'] = ':hotsprings:Sabotage Cloaker:hotsprings:'
+
+        roleDict['helpInfo'] = 'Bertholdt is an owner of the Colossal Titan! Thanks to this, he is able to completely cloak the evidence of what transpired on an expedition thanks to an immense cloud of steam blocking the view and immense heat burning away key evidence. Because of this, when he chooses to hide evidence, the Soldiers won\'t know how many Warriors sabotaged the expedition! Just that it got broken.'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}

@@ -41,6 +41,7 @@ class Game:
         self.kidnappedPlayer = None
         self.loadedRoles = loadedRoles
         self.sashaTargeted = None
+        self.exposedReiner = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -105,6 +106,7 @@ class Game:
             self.updateMikasaTarget(killedPlayer, causeOfDeath)
         elif killedPlayer.role.id == 'Reiner':
             self.updateReinerDefense(killedPlayer, causeOfDeath)
+            self.exposedReiner = killedPlayer
         else:
             if killedPlayer not in self.deadPlayers:
                 if killedPlayer in self.livingPlayers:

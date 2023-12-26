@@ -46,6 +46,8 @@ class expoActiveFunctions:
                 expoChoice = 'LeviDefend'
             elif choice == 'Daz' and player.role.id == 'Daz' and player.role.abilityActive:
                 expoChoice = 'Daz'
+            elif choice == 'Bertholdt' and player.role.id == 'Bertholdt':
+                expoChoice = 'Bertholdt'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
             elif choice == 'Sabotage' and player in currentGame.warriors:

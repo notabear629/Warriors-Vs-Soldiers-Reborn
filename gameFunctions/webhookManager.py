@@ -66,6 +66,8 @@ class webhookManager:
     async def processResultsWebhooks(currentGame, currentTheme, home, client):
         if currentGame.currentExpo.arminActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.arminMessage, 'Armin', client)
+        if currentGame.currentExpo.bertholdtCloaked:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.bertholdtMessage, 'Bertholdt', client)
         if currentGame.currentExpo.leviAttacked:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             if Levi.killed != []:

@@ -162,6 +162,16 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             mikasaSelect.callback = processMikasaSelection
             returnedView.add_item(mikasaSelect)
+
+        if player.role.id == 'Bertholdt':
+            bertholdtButton = Button(label = 'Cloak', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
+            async def processBertholdtButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Bertholdt')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            bertholdtButton.callback = processBertholdtButton
+            returnedView.add_item(bertholdtButton)
         
         return returnedView
     

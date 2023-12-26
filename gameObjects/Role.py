@@ -38,7 +38,7 @@ class Role:
     warriorGroupAbility = ['Pieck']
 
     #The group of all option Warriors with multi-use perks
-    warriorGroupPerk = ['Reiner']
+    warriorGroupPerk = ['Reiner', 'Bertholdt']
 
     #The default Warrior classes.
     warriorGroupDefault = ['Warrior']
@@ -78,6 +78,8 @@ class Role:
     async def startHange(self, currentGame, Hange):
         self.confirmedSoldiers = [Hange]
         self.confirmedWarriors = []
+        self.possibleBertholdts = currentGame.players.copy()
+        self.possibleBertholdts.remove(Hange)
         await self.generateAllTeams(currentGame)
 
     def loadRoles(currentTheme, client):
@@ -123,6 +125,7 @@ class Role:
 
     async def hangeProcess(self, currentGame):
         await self.identifyDeadPlayers(currentGame)
+        await self.processBertholdtIdentification(currentGame)
         await self.indictWarriors()
         await self.absolveSoldiers()
         await self.crossReference(currentGame)
@@ -134,6 +137,19 @@ class Role:
                 self.confirmedSoldiers.append(player)
             if player in currentGame.warriors and player not in self.confirmedWarriors:
                 self.confirmedWarriors.append(player)
+        if currentGame.exposedReiner != None and currentGame.exposedReiner not in self.confirmedWarriors:
+            self.confirmedWarriors.append(currentGame.exposedReiner)
+
+    async def processBertholdtIdentification(self, currentGame):
+        bertholdtList = self.possibleBertholdts.copy()
+        for expo in currentGame.expeditionHistory:
+            if expo.bertholdtCloaked:
+                for player in currentGame.players:
+                    if player not in expo.expeditionMembers and player in bertholdtList:
+                        bertholdtList.remove(player)
+        self.possibleBertholdts = bertholdtList
+        if len(bertholdtList) == 1:
+            self.confirmedWarriors.append(bertholdtList[0])
 
     async def indictWarriors(self):
         possibleTeams = self.possibleWarriorTeams.copy()
@@ -181,19 +197,23 @@ class Role:
         requirements = []
 
         for expo in currentGame.expeditionHistory:
+            if expo.bertholdtCloaked:
+                warriorReq = 1
+            else:
+                warriorReq = len(expo.sabotagedExpedition)
             newRequirement = {}
             shiftedExpo = expo.expeditionMembers.copy()
             for member in expo.expeditionMembers:
                 if member in self.confirmedSoldiers:
                     shiftedExpo.remove(member)
             newRequirement['expoTeam'] = shiftedExpo
-            newRequirement['minWarrior'] = len(expo.sabotagedExpedition)
+            newRequirement['minWarrior'] = warriorReq
             benchSquad = []
             for player in currentGame.players:
                 if player not in expo.expeditionMembers:
                     benchSquad.append(player)
             newRequirement['benchSquad'] = benchSquad
-            newRequirement['maxWarriorBenched'] = len(currentGame.warriors) - len(expo.sabotagedExpedition)
+            newRequirement['maxWarriorBenched'] = len(currentGame.warriors) - warriorReq
             requirements.append(newRequirement)
         return requirements
 
