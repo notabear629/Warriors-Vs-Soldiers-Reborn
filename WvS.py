@@ -40,11 +40,12 @@ prefix = os.getenv('BOT_PREFIX')
 HOME_ID = int(os.getenv('BOT_HOME_CHANNEL_ID'))
 HOME_SERVER_ID = int(os.getenv('BOT_HOME_SERVER_ID'))
 USER_CHANNEL_CATEGORY_ID = int(os.getenv('BOT_USER_CHANNEL_CATEGORY_ID'))
+GAG_ROLE_ID = int(os.getenv('BOT_WVS_GAG_ROLE_ID'))
 
 client = discord.Client(intents=intents)
 client = commands.Bot(command_prefix = prefix, intents = intents, help_command = None, case_insensitive=True)
 
-def resetFunction():
+async def resetFunction():
     global currentLobby, currentGame
     if currentLobby.online:
         currentLobby.turnOffline()
@@ -52,15 +53,18 @@ def resetFunction():
         currentGame.turnOffline()
     currentLobby = Lobby()
     currentGame = Game(client)
+    for player in gagRole.members:
+        await player.remove_roles(gagRole)
 
 @client.event
 async def on_ready():
-    global home, homeServer, userCategory
+    global home, homeServer, userCategory, gagRole
     global noMentions, withMentions
     global currentTheme, currentRules, currentLobby, currentGame, loadedRoles
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
+    gagRole = homeServer.get_role(GAG_ROLE_ID)
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
@@ -78,7 +82,7 @@ async def reset(ctx):
             if currentGame.online and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
-                resetFunction()
+                await resetFunction()
                 embed = await embedBuilder.buildReset(prefix)
                 await home.send(embed=embed)
         else:
@@ -142,7 +146,7 @@ async def fixme(ctx):
 
 @client.command('start')
 async def start(ctx):
-    newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles)
+    newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole)
     if newGame:
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
         await midGameFunctions.showRoles(currentGame, currentTheme, home)
@@ -166,7 +170,7 @@ async def pick(ctx, *, pickedUser:discord.Member):
 
 @client.command('pass')
 async def passExpo(ctx):
-    await expoProposalFunctions.passExpo(ctx, currentGame, home, prefix, currentTheme)
+    await expoProposalFunctions.passExpo(ctx, currentGame, home)
 
 @client.command('clear')
 async def clear(ctx):
@@ -184,7 +188,7 @@ async def results(ctx):
             if currentGame.online and currentGame.exposOver:
                 await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
             if currentGame.online and currentGame.winCondition != None:
-                resetFunction()
+                await resetFunction()
 
 @client.command('kidnap')
 async def kidnap(ctx, *, kidnappedUser:discord.Member):
@@ -194,9 +198,13 @@ async def kidnap(ctx, *, kidnappedUser:discord.Member):
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
 
+@client.command('gag')
+async def gag(ctx):
+    await midGameFunctions.gag(ctx, currentGame, currentTheme, prefix, client, gagRole, midGameFunctions.executeGag)
+
 @client.command('flare')
 async def flare(ctx):
-    await expoProposalFunctions.flare(ctx, currentGame, client)
+    await expoProposalFunctions.flare(ctx, currentGame, client, gagRole)
 
 
 

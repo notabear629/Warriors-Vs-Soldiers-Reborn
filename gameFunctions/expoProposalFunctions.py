@@ -110,6 +110,9 @@ class expoProposalFunctions:
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.currentExpo.erwinActivated:
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif currentGame.porcoGagged == currentGame.currentExpo.commander:
+                await home.send(f'The {currentTheme.commanderName} is under a gag order and will be skipped!')
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             else:
                 return
 
@@ -211,6 +214,10 @@ class expoProposalFunctions:
 
     async def advanceRound(currentGame, currentTheme, home, noMentions, prefix, client):
         currentGame.advanceRound()
+        if currentGame.porcoGagged != None:
+            for user in currentGame.gagRole.members:
+                await user.remove_roles(currentGame.gagRole)
+            currentGame.removeGag()
         expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
         expo = Expedition(currentGame.currentExpo.commander, expoSize, currentGame.players)
         currentGame.setExpedition(expo)
@@ -221,12 +228,15 @@ class expoProposalFunctions:
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 
-    async def flare(ctx, currentGame, client):
+    async def flare(ctx, currentGame, client, gagRole):
         if currentGame.online:
             Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
             user = databaseManager.searchForUser(Erwin.user)
             userChannel = client.get_channel(user['channelID'])
             if Erwin.user == ctx.message.author and Erwin.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                if gagRole in Erwin.user.roles:
+                    await Erwin.user.remove_roles(gagRole)
+                    currentGame.removeGag()
                 currentGame.currentExpo.activateErwin(Erwin)
 
     async def erwinTakeover(currentGame, currentTheme, home, client):

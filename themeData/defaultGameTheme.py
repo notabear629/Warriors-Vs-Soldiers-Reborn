@@ -666,11 +666,36 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use `{prefix}scream insert message here` to send a message to all of your Warrior comrades! When you use this ability, an alert will be shown in the home channel.\n\n'
+        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use the scream option to send a message to all of your Warrior comrades! When you use this ability, an alert will be shown in the home channel.\n\n'
 
         roleDict['gameRole'] = ':speaking_head:Screaming Titan:speaking_head:'
 
         roleDict['helpInfo'] = 'Annie is the owner of the Female Titan! One of this titan\'s abilities is its scream can be used to attract titans. However, it can also be used to convey hidden messages! Once per game, Annie can send ONE message to all of the Warriors, and the Soldiers will only know that a message was sent, but not what it was!'
+
+    class Porco:
+        roleDict = {'roleID' : 'Porco'}
+
+        roleDict['name'] = 'Porco Galliard'
+
+        roleDict['shortName'] = 'Porco'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 935338374850547712
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the "Shut-Your-Jaw" Titan! Use `{prefix}gag` to open the menu to choose to gag a player. When a player is gagged, they are not able to speak and their commander turn gets skipped! However, there is an important exception! A flared Erwin is ungaggable, and you are not allowed to gag players when there is 2 walls down with an active spy.\n\n'
+
+        roleDict['gameRole'] = ':shushing_face:Gag Orderer:shushing_face:'
+
+        roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, you are prohibited from gagging players when 2 walls are broken and the spy is active. Finally, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers.'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}

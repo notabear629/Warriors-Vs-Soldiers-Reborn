@@ -61,3 +61,27 @@ class midGameFunctions:
             if Sasha != None and Sasha.user == ctx.message.author and Sasha.role.abilityActive and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
                 await userChannel.send('Choose who to target!', view=view)
+
+    async def gag(ctx, currentGame, currentTheme, prefix, client, gagRole, gagFunction):
+        if currentGame.online:
+            Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
+            user = databaseManager.searchForUser(Porco.user)
+            userChannel = client.get_channel(user['channelID'])
+            if Porco != None and Porco.user == ctx.message.author and Porco.role.abilityActive and ctx.message.channel == userChannel:
+                view = await discordViewBuilder.porcoTargetView(currentGame, currentTheme, Porco, gagRole, gagFunction, client)
+                await userChannel.send('Choose who to gag!', view=view)
+
+    async def executeGag(Porco, gagRole, gaggedPlayer, currentGame, client):
+        if Porco.role.abilityActive:
+            if gaggedPlayer.role.id == 'Erwin' and (currentGame.currentExpo.erwinActivated or gaggedPlayer.role.abilityActive == False):
+                user = databaseManager.searchForUser(Porco.user)
+                userChannel = client.get_channel(user['channelID'])
+                await userChannel.send(f'{Porco.user.mention}, You cannot gag a player who fired a flare!')
+            else:
+                if gagRole not in gaggedPlayer.user.roles:
+                    await gaggedPlayer.user.add_roles(gagRole)
+                    user = databaseManager.searchForUser(Porco.user)
+                    userChannel = client.get_channel(user['channelID'])
+                    await userChannel.send(f'{Porco.user.mention}, You have successfully carried out a gag order.')
+                    Porco.role.disableAbility()
+                    currentGame.porcoGag(gaggedPlayer)

@@ -228,6 +228,32 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
+    async def porcoTargetView(currentGame, currentTheme, Porco, gagRole, gagFunction, client):
+        returnedView = View()
+
+        porcoTargetSelection = Select(placeholder= 'Player Selection', min_values=1, max_values=1)
+        for player in currentGame.livingPlayers:
+            porcoTargetSelection.add_option(label = f'{player.user.name}', emoji=Porco.role.secondaryEmoji)
+        
+        async def processPorcoSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(Porco, interaction):
+                if currentGame.online and interaction.user == Porco.user and Porco.role.abilityActive:
+                    selection = str(porcoTargetSelection.values[0])
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    await gagFunction(Porco, gagRole, selectedPlayer, currentGame, client)
+                    await interaction.message.edit(content=f'You have set out a gag order for: {player.user.name}', view=None)
+                    await interaction.response.defer()
+
+        porcoTargetSelection.callback = processPorcoSelection
+
+        returnedView.add_item(porcoTargetSelection)
+
+        return returnedView
+    
+    @staticmethod
     async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
         returnedView = View()
 

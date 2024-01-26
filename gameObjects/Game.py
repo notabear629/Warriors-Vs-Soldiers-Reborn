@@ -8,7 +8,7 @@ class Game:
         self.client = client
 
 
-    def start(self, lobby, players, currentRules, loadedRoles):
+    def start(self, lobby, players, currentRules, loadedRoles, gagRole):
         self.online = True
         self.lobby = lobby
         self.players = players
@@ -42,6 +42,8 @@ class Game:
         self.loadedRoles = loadedRoles
         self.sashaTargeted = None
         self.exposedReiner = None
+        self.porcoGagged = None
+        self.gagRole = gagRole
 
         for player in players:
             self.livingPlayers.append(player)
@@ -129,6 +131,12 @@ class Game:
 
     def sashaTarget(self, Sasha, target):
         self.sashaTargeted = target
+
+    def porcoGag(self, gaggedPlayer):
+        self.porcoGagged = gaggedPlayer
+
+    def removeGag(self):
+        self.porcoGagged = None
         
     def advanceRound(self):
         self.currentRound += 1
