@@ -186,6 +186,8 @@ class embedBuilder:
             voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
         elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.accepted:
             voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
+        elif player.role.id == 'Falco' and currentGame.currentExpo.falcoActivated and player in currentGame.currentExpo.voted:
+            voteDesc = f'You have chosen to intercept the votes on this {currentTheme.expeditionTeam}.'
         elif player in currentGame.currentExpo.accepted:
             voteDesc = f'You have voted to accept this {currentTheme.expeditionTeam}.'
         elif player in currentGame.currentExpo.rejected:
@@ -196,6 +198,8 @@ class embedBuilder:
             voteDesc = f'You have not yet voted on this {currentTheme.expeditionTeam}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {currentTheme.expeditionTeam}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {currentTheme.expeditionTeam}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {currentTheme.expeditionTeam}'
             if player.role.id == 'Jean' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji} Click the Secure Button to Secure the {currentTheme.expeditionTeam}.'
+            if player.role.id == 'Falco' and player.role.abilityActive:
+                voteDesc += f'\n{player.role.emoji} Click the Intercept Button to Intercept the {currentTheme.expeditionTeam} votes, which will turn to an accept ONLY IF it will pass.'
             elif player.role.id == 'Pieck' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {currentTheme.expeditionTeam}. Click this if you want to stay accepted after flip.'
                 voteDesc += f'\n{player.role.emoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {currentTheme.expeditionTeam}. Click this if you want to stay rejected after flip.'

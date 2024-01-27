@@ -24,6 +24,7 @@ class Expedition:
         self.sashaActivated = False
         self.erwinActivated = False
         self.dazActivated = False
+        self.falcoActivated = False
         self.mikasaGuarded = None
         self.reinerBlocked = None
         self.bertholdtCloaked = False
@@ -39,6 +40,7 @@ class Expedition:
         self.passed = False
         self.jeanActivated = False
         self.pieckActivated = False
+        self.falcoActivated = False
         self.erwinActivated = False
         self.dazActivated = False
         self.sashaActivated = False
@@ -94,6 +96,9 @@ class Expedition:
             self.accepted.append(player)
             player.role.disableAbility()
             self.pieckActivated = True
+        elif voteCase == 'Falco':
+            self.falcoActivated = True
+            player.role.disableAbility()
         if len(self.voted) == len(self.eligibleVoters):
             self.currentlyVoting = False
 
@@ -146,6 +151,12 @@ class Expedition:
 
     def activateSasha(self):
         self.sashaActivated = True
+
+    def processFalco(self, Falco):
+        if len(self.accepted) >= len(self.rejected):
+            self.accepted.append(Falco)
+        else:
+            self.rejected.append(Falco)
 
 
 

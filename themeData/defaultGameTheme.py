@@ -697,6 +697,31 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, you are prohibited from gagging players when 2 walls are broken and the spy is active. Finally, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers.'
 
+    class Falco:
+        roleDict = {'roleID' : 'Falco'}
+
+        roleDict['name'] = 'Falco Grice'
+
+        roleDict['shortName'] = 'Falco'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 696273842028413049
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You often find yourself around letters, so you will have the ability to do a special kind of a vote on the expedition ONCE. This vote works such that, if the expedition would pass if you accepted it, it will make you accept, otherwise, you will reject. This can be a game winning play if used tactically!\n\n'
+
+        roleDict['gameRole'] = ':mailbox:Mail Interceptor:mailbox:'
+
+        roleDict['helpInfo'] =  'Falco spends a lot of time with mail and the letters thanks to Eren\'s shenanigans. As such, he has learned how to intercept letters and receive notice as what is to come. Thanks to this, he has the 1 time ability to use a special vote when voting for an expedition proposal. What this vote will do, is that it will reject the expedition UNLESS it would pass with your vote! This ability is powerful when used properly, as it allows you the chance to accept one of your teammates, while not blowing your cover if it fails!'
+
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
 

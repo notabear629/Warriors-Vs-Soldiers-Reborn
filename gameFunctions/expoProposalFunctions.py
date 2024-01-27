@@ -181,6 +181,8 @@ class expoProposalFunctions:
                 voteToProcess = 'PieckAccept'
             elif 'Flip and Reject' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
                 voteToProcess = 'PieckReject'
+            elif vote == 'Intercept' and player.role.id == 'Falco' and player.role.abilityActive:
+                voteToProcess = 'Falco'
             else:
                 voteToProcess = 'a'
             currentGame.currentExpo.voteExpo(player, voteToProcess)
@@ -201,6 +203,9 @@ class expoProposalFunctions:
         return False
     
     async def showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client):
+        if currentGame.currentExpo.falcoActivated:
+            Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
+            currentGame.currentExpo.processFalco(Falco)
         voteResult = await expoProposalFunctions.getVotingResults(currentGame)
         embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)
         await home.send(embed=embed)

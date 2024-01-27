@@ -64,6 +64,16 @@ class discordViewBuilder:
             jeanButton.callback = processExpeditionJean
             returnedView.add_item(jeanButton)
 
+        if player.role.id == 'Falco' and player.role.abilityActive:
+            falcoButton = Button(label = 'Intercept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processExpeditionFalco(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, falcoButton.label)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view = None)
+            falcoButton.callback = processExpeditionFalco
+            returnedView.add_item(falcoButton)
+
         if player.role.id == 'Pieck' and player.role.abilityActive:
             pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processPieckAccept(interaction):
