@@ -12,3 +12,6 @@ class defaultRules:
     enabledWarriors = []
     disabledWarriors = []
 
+    #Rules that define game options
+    multikidnap = False
+

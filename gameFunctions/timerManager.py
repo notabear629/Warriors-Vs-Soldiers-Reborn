@@ -49,25 +49,35 @@ class timerManager:
             timerValue = currentGame.currentRules.kidnapTimer
             breakoutCondition = timerManager.kidnapWillBreakOut
             timerMessage = currentTheme.timeoutKidnap
+
+        elif context == 'Multikidnap':
+            timerValue = currentGame.currentRules.kidnapTimer
+            breakoutCondition = timerManager.multiKidnapWillBreakout
+            timerMessage = currentTheme.timeoutKidnap
         
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition, 'timerMessage' : timerMessage}
     
     async def pickWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False):
+        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or currentGame.exposOver:
             return True
         return False
     
     async def voteWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.eligibleVoters) == len(currentGame.currentExpo.voted):
+        if len(currentGame.currentExpo.eligibleVoters) == len(currentGame.currentExpo.voted) or currentGame.exposOver:
             return True
         return False
     
     async def expoWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers):
+        if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers) or currentGame.exposOver:
             return True
         return False
     
     async def kidnapWillBreakOut(currentGame):
         if currentGame.kidnappedPlayer != None:
+            return True
+        return False
+    
+    async def multiKidnapWillBreakout(currentGame):
+        if len(currentGame.multikidnapRecord) == len(currentGame.warriors):
             return True
         return False

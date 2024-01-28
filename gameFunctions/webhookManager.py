@@ -122,5 +122,8 @@ class webhookManager:
     async def reinerWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.reinerMessage, 'Reiner', client)
 
+    async def basementSkipWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.retreatMessage, 'Zeke', client)
+
 
     

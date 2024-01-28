@@ -14,6 +14,13 @@ class embedBuilder:
             playerList += f'**{player.mention}**\n'
         returnedEmbed.add_field(name = 'Players', value = playerList, inline = False)
         returnedEmbed.add_field(name = 'Current Theme', value = f'{currentTheme.emojiTheme}`{currentTheme.themeName}`', inline = False)
+        if currentLobby.currentRules.multikidnap:
+            kidnapEmoji = str('♾️')
+            kidnapVal = 'Multi-kidnap'
+        else:
+            kidnapEmoji = str('🌐')
+            kidnapVal = 'Standard Rules'
+        returnedEmbed.add_field(name = 'Kidnap Rules', value = f'{kidnapEmoji}`{kidnapVal}`', inline = False)
         return returnedEmbed
     
     async def buildReset(prefix):
@@ -291,6 +298,9 @@ class embedBuilder:
             return returnedEmbed
         elif currentGame.currentExpo.currentlyExpeditioning:
             returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionTeamMembers}', description= f'{len(currentGame.currentExpo.expeditioned)}/{len(currentGame.currentExpo.expeditionMembers)}', color = currentTheme.temporaryMessageColor)
+            return returnedEmbed
+        elif currentGame.currentlyKidnapping and currentGame.currentRules.multikidnap:
+            returnedEmbed = discord.Embed(title = f'Kidnap Decision', description= f'{len(currentGame.multikidnapRecord)}/{len(currentGame.warriors)}', color = currentTheme.temporaryMessageColor)
             return returnedEmbed
         
     async def results(currentGame, currentTheme, result):

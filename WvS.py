@@ -194,6 +194,12 @@ async def results(ctx):
 async def kidnap(ctx, *, kidnappedUser:discord.Member):
     await endGameFunctions.kidnap(ctx, kidnappedUser, currentGame, currentTheme, home)
 
+@client.command('retreat')
+async def retreat(ctx):
+    await endGameFunctions.skipToBasement(ctx, currentGame, currentTheme, home, client)
+    if currentGame.online and currentGame.winCondition != None:
+        await resetFunction()
+
 @client.command('target')
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)

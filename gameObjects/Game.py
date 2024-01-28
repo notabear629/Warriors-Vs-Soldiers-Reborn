@@ -39,6 +39,7 @@ class Game:
         self.winners = []
         self.currentlyKidnapping = False
         self.kidnappedPlayer = None
+        self.multikidnapRecord = {}
         self.loadedRoles = loadedRoles
         self.sashaTargeted = None
         self.exposedReiner = None
@@ -148,6 +149,12 @@ class Game:
         self.kidnappedPlayer = player
         self.currentlyKidnapping = False
 
+    def multikidnapPlayer(self, warrior, player):
+        self.multikidnapRecord[warrior] = player
+        if len(self.multikidnapRecord) == len(self.warriors):
+            self.currentlyKidnapping = False
+
+
     def setWinCondition(self, condition):
         self.winCondition = condition
 
@@ -160,8 +167,17 @@ class Game:
             self.winners = self.warriors.copy()
         elif self.winCondition == 'kidnapFail':
             self.winners = self.soldiers.copy()
+        elif self.winCondition == 'multikidnapSuccess' or self.winCondition == 'multikidnapFail':
+            if self.winCondition == 'multikidnapFail':
+                self.winners = self.soldiers.copy()
+            for warrior, target in self.multikidnapRecord.items():
+                if target.role.id == 'Eren':
+                    self.winners.append(warrior)
 
     def refundAbilities(self):
         for player in self.currentExpo.usedExpoAbilities:
             player.role.refundAbility()
+
+    def skipExpos(self):
+        self.exposOver = True
         

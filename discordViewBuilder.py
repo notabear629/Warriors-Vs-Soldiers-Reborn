@@ -298,6 +298,25 @@ class discordViewBuilder:
 
         returnedView.add_item(themeSelect)
 
+        multikidnapSelect = Select(placeholder = 'Kidnap Rules', min_values=1, max_values=1)
+
+        multikidnapSelect.add_option(label = f'Standard Rules', emoji = str('🌐'))
+        multikidnapSelect.add_option(label = f'Multi-Kidnap', emoji = str('♾️'))
+
+        async def processMultikidnapSelect(interaction):
+            option = str(multikidnapSelect.values[0])
+            if option != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                if option.startswith('Multi'):
+                    currentLobby.currentRules.toggleMultikidnap(True)
+                else:
+                    currentLobby.currentRules.toggleMultikidnap(False)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+        multikidnapSelect.callback = processMultikidnapSelect
+        returnedView.add_item(multikidnapSelect)
+
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):

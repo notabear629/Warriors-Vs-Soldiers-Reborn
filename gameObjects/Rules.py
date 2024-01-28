@@ -49,6 +49,12 @@ class Rules:
         elif team == 'Warriors':
             self.enabledWarriors = []
             self.disabledWarriors = []
+    
+    def toggleMultikidnap(self, toggle):
+        if toggle:
+            self.multikidnap = True
+        else:
+            self.multikidnap = False
 
 
     

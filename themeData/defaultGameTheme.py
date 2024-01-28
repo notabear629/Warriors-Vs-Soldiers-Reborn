@@ -134,8 +134,11 @@ class defaultGameTheme:
     wallBreakMessage = str('⚔️All the Walls have Fallen and Paradis has been destroyed!⚔️\n\n⚔️Warriors Win!⚔️')
     basementMessage = str(f'The Soldiers have reached the Basement. The Warriors still have one final chance to win! Use `{prefix}kidnap @mention` to kidnap who you think is the Coordinate for one final chance at victory!')
     kidnapTimeoutMessage = str(f'The Warriors have failed to identify the Coordinate in time...\n\n🛡️Soldiers Win!🛡️')
+    multikidnapTimeoutMessage = str(f'At least some of the Warriors have failed to select their choice for the Coordinate in time...\n\nThey will be given a loss')
+    multikidnapSuccessMessage = str('⚔️The Warriors have successfully chosen the Coordinate as their popular choice!⚔️\n\n⚔️Soldiers Lose!⚔️')
     kidnapSuccessMessage = str('⚔️The Warriors have successfully identified the Coordinate!⚔️\n\n⚔️Warriors Win!⚔️')
     kidnapFailMessage = str('🛡️The Warriors did not manage to successfully identify the Coordinate and Eren\'s identity was kept secret.🛡️\n\n🛡️Soldiers Win!🛡️')
+    multikidnapFailMessage = str('🛡️The Warriors did not manage to successfully identify the Coordinate as the single most popular choice.🛡️\n\n🛡️Soldiers Win!🛡️')
     endgameCardColor = discord.Color.blue()
     emojiWinner ='🏅'
     emojiLoser = '☠️'
@@ -154,6 +157,7 @@ class defaultGameTheme:
     reinerMessage = 'Marley\'s Shield is not broken so easily...'
     bertholdtMessage = 'I\'ll deploy a cloak of steam!'
     annieMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
+    retreatMessage = 'I\'m ordering a retreat! Pull back from the assault on the walls, and allow the Soldiers to advance to the basement!'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -868,6 +872,19 @@ class defaultGameTheme:
                 if value == 'Sasha':
                     sashaDeathMessages += f'{Reiner.role.emoji}The Arrow merely bounced off **{key.user.name}**\'s Armor!{Reiner.role.emoji}\n\n'
         return sashaDeathMessages
+    
+    def getVictoriousWarriors(currentGame, currentTheme):
+        victoriousWarriors = []
+        for winner in currentGame.winners:
+            if winner in currentGame.warriors:
+                victoriousWarriors.append(winner)
+        if len(victoriousWarriors) == 0:
+            return None
+        else:
+            returnMessage = f'The Following {currentTheme.warriorPlural} have reigned victorious:\n'
+            for warrior in victoriousWarriors:
+                returnMessage += f'**{currentTheme.emojiWarrior}{warrior.user.name}{currentTheme.emojiWarrior}**\n'
+            return returnMessage
 
             
 
