@@ -35,7 +35,7 @@ class expoProposalFunctions:
             else:
                 expeditionNumber = sixManCounts[currentGame.currentRound-1]
         elif currentGame.currentRound > 2 and (len(currentGame.players) >= 7):
-            dynamicOffset = currentGame.passedRounds
+            dynamicOffset = currentGame.roundWins
             if 1 in currentGame.passedRounds:
                 dynamicOffset -= 1
             expeditionNumber = 3 + dynamicOffset
@@ -70,23 +70,45 @@ class expoProposalFunctions:
                         roundNumbers[index] = len(currentGame.livingSoldiers)
                     roundNumbers[index] = str(roundNumbers[index])
                 else:
-                    dynamicOffset = currentGame.roundWins
-                    if 1 in currentGame.passedRounds:
-                        dynamicOffset -= 1
-                    chancesRemaining = 3 - currentGame.roundFails - 1
-                    floor = currentGame.currentExpo.size + (roundPredicted - currentGame.currentRound) - chancesRemaining
-                    if floor > len(currentGame.livingSoldiers):
-                        floor = len(currentGame.livingSoldiers)
-                    delaysRemaining = 3 - currentGame.roundWins - 1
-                    ceiling = currentGame.currentExpo.size + (roundPredicted - currentGame.currentRound) - delaysRemaining
-                    if ceiling > len(currentGame.livingSoldiers):
-                        ceiling = len(currentGame.livingSoldiers)
-                    if floor == ceiling:
-                        roundNumbers[index] = str(floor)
+                    if roundPredicted == 5:
+                        if currentGame.currentRound == 1:
+                            minimumFloor = 4
+                            maximumCeiling = 5
+                        elif 1 in currentGame.passedRounds:
+                            minimumFloor = 4
+                            maximumCeiling = 4
+                        else:
+                            minimumFloor = 5
+                            maximumCeiling = 5
+                    elif roundPredicted == 4:
+                        if currentGame.currentRound == 1:
+                            minimumFloor = 3
+                            maximumCeiling = 5
+                        elif currentGame.currentRound == 2 and 1 in currentGame.passedRounds:
+                            minimumFloor = 3
+                            maximumCeiling = 4
+                        elif currentGame.currentRound == 2 and 1 in currentGame.failedRounds:
+                            minimumFloor = 4
+                            maximumCeiling = 5
+                        elif currentGame.currentRound == 3:
+                            minimumFloor = currentGame.currentExpo.size
+                            maximumCeiling = currentGame.currentExpo.size
+                            if currentGame.roundFails >= 2:
+                                minimumFloor += 1
+                            if currentGame.roundWins < 2:
+                                maximumCeiling += 1
+                    elif roundPredicted == 3:
+                        minimumFloor = 3
+                        maximumCeiling = 4
+                    if minimumFloor > len(currentGame.livingSoldiers):
+                        minimumFloor = len(currentGame.livingSoldiers)
+                    if maximumCeiling > len(currentGame.livingSoldiers):
+                        maximumCeiling = len(currentGame.livingSoldiers)
+                    if minimumFloor == maximumCeiling:
+                        roundNumbers[index] = str(minimumFloor)
                     else:
-                        roundNumbers[index] = f'({floor}-{ceiling})'
+                        roundNumbers[index] = f'({minimumFloor}-{maximumCeiling})'                   
                 index += 1
-
         return roundNumbers
     
     async def resetExpedition(currentGame, currentTheme, noMentions, home, prefix):
