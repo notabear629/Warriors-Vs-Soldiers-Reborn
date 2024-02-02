@@ -54,6 +54,11 @@ class timerManager:
             timerValue = currentGame.currentRules.kidnapTimer
             breakoutCondition = timerManager.multiKidnapWillBreakout
             timerMessage = currentTheme.timeoutKidnap
+
+        elif context == 'RumblingFight':
+            timerValue = currentGame.currentRules.rumblingFightTimer
+            breakoutCondition = timerManager.rumblingFightWillBreakout
+            timerMessage = currentTheme.timeoutRumblingFight
         
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition, 'timerMessage' : timerMessage}
     
@@ -79,5 +84,10 @@ class timerManager:
     
     async def multiKidnapWillBreakout(currentGame):
         if len(currentGame.multikidnapRecord) == len(currentGame.warriors):
+            return True
+        return False
+    
+    async def rumblingFightWillBreakout(currentGame):
+        if currentGame.attackedPlayer != None:
             return True
         return False

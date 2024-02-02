@@ -170,8 +170,47 @@ class defaultGameTheme:
     timeoutVote = ' vote on the Expedition Team!'
     timeoutExpo = ' act on the Expedition!'
     timeoutKidnap = ' kidnap the Coordinate!'
+    timeoutRumblingFight = ' to choose who to attack!'
 
+    # Rumbling Aesthetics
+    rumblingName = 'Rumbling'
+    emojiRumbling = 686466897365041154
+    emojiRumblingWallExterior = 686466897365041154
+    emojiRumblingWallInterior = str('💥')
+    yeageristSingle = 'Yeagerist'
+    yeageristPlural = 'Yeagerists'
+    yeageristTeam = 'Yeagerists'
+    allianceSingle = 'Alliance Member'
+    alliancePlural = 'Alliance Members'
+    allianceTeam = 'Alliance'
+    rumblingStatusColor = discord.Color.default()
+    rumblingAltStatusColor = discord.Color.brand_red()
+    rumblingStartAttachment = 'https://cdn.discordapp.com/attachments/751512233011445770/1202770592835567696/Untitled.gif?ex=65ceaa67&is=65bc3567&hm=72e1302afefb9b5ac7d926bca42bf84190a85499ef504baafb206479d0204a6a&'
+    rumblingFirstMessage = 'Eren and Zeke Yeager have made contact!'
+    rumblingSecondMessage = 'The Walls are coming down!'
+    rumblingThirdMessage = 'Eren and the Colossal Titans are on the move! It can\'t be stopped anymore!'
+    rumblingTimerOne = 12
+    rumblingTimerTwo = 13
+    rumblingTimerThree = 10
+    rumblingIntroMessage = 'An entirely new game has begun! Past allegiances have broken down, and the distinction between Warrior and Soldier is now meaningless! This battle is now fought between those who stand in favor of or oppose the Rumbling...'
+    allianceFormMessage = 'The Alliance has been formed! They begin their fight to get to the brothers...'
+    yeageristInTheWay = 'A Yeagerist Stands in the way to defend the path to the Yeager Brothers!'
+    allianceZekeClear = 'The Path to the Yeager Brothers has been cleared! The Alliance advances towards them, in search of Zeke...'
+    ZekeInTheWay = 'The Alliance has reached Zeke!'
+    allianceZekeDefeated = 'Zeke has been deafeated! The Alliance makes their way to Eren...'
+    ErenInTheWay = 'The Final Battle has begun! The Alliance has reached Eren!'
+    allianceMemberSlain = 'A member of the Alliance has been killed! The next steps up to take their place...'
+    newFightPrompt = 'It is up to you to fight the Alliance!'
+    genericYeageristWin = 'The Yeagerists have killed all of the Alliance fighters and reign victorious!'
+    genericAllianceWin = 'The Alliance successfully stopped the Rumbling and have achieved victory!'
 
+    standardYeageristWin = 'The Yeagerists have eliminated 95% of all life on Earth, sparing only a few pockets of civilization. The Titan Powers have been removed from Eldians, but the world has been so thoroughly smashed that Paradis can safely dominate what is left even without them. \n\nEnding Achieved: "The Grand Yeagerist Compromise" (Standard Yeagerist Win)'
+    flochDominationWin = 'The Yeagerists have completely wiped out every last human on Earth outside of Paradis, sparing absolutely no one. The Titan Powers continue to thrive, as an integral part of a new global-spanning Eldian Empire, which will claim the destroyed land for itself.\n\nEnding Achieved: "Empire of Ashes" (Floch Domination Win)'
+    zekeDominationWin = 'Approximately 20% of life on Earth, and the majority of it\'s military capacity was destroyed before Zeke took over the Rumbling, stopping it, and then enacting his Euthanasia plan. Successfully revoking the Eldian\'s right to reproduce, easily overcoming Eren\'s betrayal to do so. Zeke has achieved his dream. \n\nEnding Achieved: "A Longtime Dream, a Longtime Sleep" (Zeke Domination Win)'
+    erenDominationWin = 'The Yeagerists have completely wiped out every last human on Earth outside of Paradis, sparing absolutely no one. The Titan Powers have ended, and Ymir has been freed... But at a great cost. Eren now must return home with the weight of his actions on his shoulders for the remainder of his life.\n\nEnding Achieved: "Akatsuki No Requiem" (Eren Domination Win)'
+
+    standardAllianceWin = 'The Alliance ultimately achieved their goals, but at great cost. Approximately 80% of Humanity was destroyed in the Rumbling. The survivng Alliance members will do their best to try to negotiate peace, and while they are optimistic, it remains to be seen if they will be successful.\n\nEnding Achieved: "Wait, isn\'t this just 139 with some cringe removed?" (Standard Alliance Win)'
+    dominantAlliancewin = 'The Alliance completely devestated the Yeagerists and dominated the battle from the start. Thanks to their efforts, only 15% of humanity perished in the Rumbling. The Talk No Jitsuus worked, and everybody made peace and wars were ended, and everybody shat rainbows. Oh God, we somehow managed to get worse than 139.\n\nEnding Achieved: "Cringevengers, Assemble!" (Dominant Alliance win)'
     #DO NOT CHANGE THIS CLASS NAME! Even if you rename the role, keep the function as Eren. Apply this advice to all roles.
     class Eren:
         #Do not change this roleID key. The code will look for "Eren" even if you re-skin it, it is important to keep all roleIDs the same.
@@ -185,6 +224,12 @@ class defaultGameTheme:
 
         #Do not edit the team at all. Even if you rename the "Soldiers" team, the code will look for "Soldiers" and re-naming the team will break the code.
         roleDict['team'] = 'Soldiers'
+
+        #The purpose of this variable is to determine if the player is on the side of the yeagerists on the rumbling, or the alliance.
+        #There are 4 values this can/should be set to.
+        #yeageristFighter means they will be on the rumbling team, and will actively fight. yeageristBench means they will win if the rumbling team wins, but they will not fight.
+        #allianceFighter and allianceBench are the other possible values and well... You can probably figure the rest out.
+        roleDict['rumblingTeam'] = 'yeageristFighter'
 
         #isTitan is used for stuff like the Pure Titan (may or may not be implemented yet) and Mike (may or may not be implemented yet). You may actually edit these to being True or False depending on the logic for the "Titan" you use in your theme.
         #For example, if you were making a Fate Stay/Night based theme, you may decide that the "titan" logic should instead work on the basis of "Servants".
@@ -232,6 +277,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 695886874937524275
@@ -256,6 +303,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Hange'
 
         roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = False
 
@@ -282,6 +331,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 686525460607401989
@@ -306,6 +357,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Mike'
 
         roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = False
 
@@ -332,6 +385,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 696620790833217546
@@ -357,6 +412,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 686831164102541314
@@ -381,6 +438,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Levi'
 
         roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = False
 
@@ -408,6 +467,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 696271784777089024
@@ -432,6 +493,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Erwin'
 
         roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = False
 
@@ -458,6 +521,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 1024922371804647465
@@ -482,6 +547,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Floch'
 
         roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristFighter'
 
         roleDict['isTitan'] = False
 
@@ -508,6 +575,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = 934547600621862922
@@ -533,6 +602,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Soldiers'
 
+        roleDict['rumblingTeam'] = 'allianceBench'
+
         roleDict['isTitan'] = False
 
         roleDict['emoji'] = str('🛡️')
@@ -557,6 +628,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Zeke'
 
         roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'yeageristFighter'
 
         roleDict['isTitan'] = True
 
@@ -584,6 +657,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Warriors'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 1015918467167293440
@@ -610,6 +685,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Warriors'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 685785857596457016
@@ -634,6 +711,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Bertholdt'
 
         roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = True
 
@@ -660,6 +739,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Warriors'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 685777947906277380
@@ -684,6 +765,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Porco'
 
         roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = True
 
@@ -710,6 +793,8 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Warriors'
 
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
         roleDict['isTitan'] = True
 
         roleDict['emoji'] = 696273842028413049
@@ -734,6 +819,8 @@ class defaultGameTheme:
         roleDict['shortName'] = 'Warrior'
 
         roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
 
         roleDict['isTitan'] = False
 

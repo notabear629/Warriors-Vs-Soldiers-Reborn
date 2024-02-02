@@ -317,6 +317,25 @@ class discordViewBuilder:
         multikidnapSelect.callback = processMultikidnapSelect
         returnedView.add_item(multikidnapSelect)
 
+        rumblingSelect = Select(placeholder = 'Rumbling Settings', min_values=1, max_values=1)
+
+        rumblingSelect.add_option(label = f'{currentTheme.rumblingName} Enabled', emoji = currentTheme.emojiRumbling)
+        rumblingSelect.add_option(label = f'{currentTheme.rumblingName} Disabled', emoji = str('❌'))
+
+        async def processRumblingSelect(interaction):
+            option = str(rumblingSelect.values[0])
+            if option != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                if option.endswith(' Enabled'):
+                    currentLobby.currentRules.toggleRumbling(True)
+                else:
+                    currentLobby.currentRules.toggleRumbling(False)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+        rumblingSelect.callback = processRumblingSelect
+        returnedView.add_item(rumblingSelect)
+
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):

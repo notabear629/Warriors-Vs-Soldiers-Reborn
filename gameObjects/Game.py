@@ -29,6 +29,7 @@ class Game:
         self.roundFails = 0
         self.commanderOrder = random.sample(players, len(players))
         self.currentExpo = None
+        self.expoProjections = []
         self.expeditionHistory = []
         self.currentRules = currentRules
         self.temporaryMessage = None
@@ -45,6 +46,23 @@ class Game:
         self.exposedReiner = None
         self.porcoGagged = None
         self.gagRole = gagRole
+        self.rumblingActivated = False
+        self.yeagerists = []
+        self.deadYeagerists = []
+        self.livingYeagerists = []
+        self.alliance = []
+        self.deadAlliance = []
+        self.livingAlliance = []
+        self.rumblingFighters = []
+        self.yeageristFighters = []
+        self.allianceFighters = []
+        self.yeageristBench = []
+        self.allianceBench = []
+        self.attackedPlayer = None
+        self.fightingYeagerist = None
+        self.fightingAllianceMember = None
+        self.dominantYeagerist = None
+        self.allianceDomination = True
 
         for player in players:
             self.livingPlayers.append(player)
@@ -173,6 +191,10 @@ class Game:
             for warrior, target in self.multikidnapRecord.items():
                 if target.role.id == 'Eren':
                     self.winners.append(warrior)
+        elif self.winCondition == 'Yeagerists':
+            self.winners = self.yeagerists.copy()
+        elif self.winCondition == 'Alliance':
+            self.winners = self.alliance.copy()
 
     def refundAbilities(self):
         for player in self.currentExpo.usedExpoAbilities:
@@ -180,4 +202,92 @@ class Game:
 
     def skipExpos(self):
         self.exposOver = True
+
+    def activateRumbling(self):
+        self.exposOver = True
+        self.rumblingActivated = True
+        yeageristCandidates = []
+        allianceCandidates = []
+        for player in self.players:
+            if player.role.rumblingTeam.startswith('yeagerist'):
+                yeageristCandidates.append(player)
+            else:
+                allianceCandidates.append(player)
+            if player.role.rumblingTeam.endswith('Fighter'):
+                self.rumblingFighters.append(player)
+
+        self.alliance = random.sample(allianceCandidates, len(allianceCandidates))
+        yeageristCandidates = random.sample(yeageristCandidates, len(yeageristCandidates))
+        supportingCast = []
+        zeke = []
+        eren = []
+        for yeagerist in yeageristCandidates:
+            if yeagerist.role.id == 'Eren':
+                eren = [yeagerist]
+            elif yeagerist.role.id == 'Zeke':
+                zeke = [yeagerist]
+            else:
+                supportingCast.append(yeagerist)
+        returnedYeagerists = supportingCast + zeke + eren
+        self.yeagerists = returnedYeagerists
+        for yeagerist in self.yeagerists:
+            if yeagerist.role.rumblingTeam.endswith('Fighter'):
+                self.yeageristFighters.append(yeagerist)
+            else:
+                self.yeageristBench.append(yeagerist)
+            if yeagerist in self.livingPlayers:
+                self.livingYeagerists.append(yeagerist)
+            else:
+                self.deadYeagerists.append(yeagerist)
+        for allianceMember in self.alliance:
+            if allianceMember.role.rumblingTeam.endswith('Fighter'):
+                self.allianceFighters.append(allianceMember)
+            else:
+                self.allianceBench.append(allianceMember)
+            if allianceMember in self.livingPlayers:
+                self.livingAlliance.append(allianceMember)
+            else:
+                self.deadAlliance.append(allianceMember)
+
+    def setExpoProjections(self, projections):
+        self.expoProjections = projections
+
+    def rumblingKill(self, player, killer):
+        if player in self.livingPlayers:
+            self.livingPlayers.remove(player)
+            self.deadPlayers.append(player)
+        if player in self.livingSoldiers:
+            self.livingSoldiers.remove(player)
+            self.deadSoldiers.append(player)
+        if player in self.livingWarriors:
+            self.livingWarriors.remove(player)
+            self.deadWarriors.append(player)
+        if player in self.livingAlliance:
+            self.livingAlliance.remove(player)
+            self.deadAlliance.append(player)
+        if player in self.livingYeagerists:
+            self.livingYeagerists.remove(player)
+            self.deadYeagerists.append(player)
+        player.getKilledBy(killer, 'rumblingFight')
+        killer.killPlayer(player, 'rumblingFight')
+        if killer in self.yeagerists and self.dominantYeagerist == None:
+            self.dominantYeagerist = killer
+        if self.dominantYeagerist == player:
+            self.dominantYeagerist = False
+        if player in self.alliance:
+            self.allianceDomination = False
+
+    def setRumblingFight(self, yeagerist, allianceMember):
+        self.attackedPlayer = None
+        self.fightingYeagerist = yeagerist
+        self.fightingAllianceMember = allianceMember
+
+    def resetRumblingFight(self):
+        self.attackedPlayer = None
+        self.fightingYeagerist = None
+        self.fightingAllianceMember = None
+
+    def attackPlayer(self, player):
+        self.attackedPlayer = player
+
         

@@ -21,7 +21,10 @@ from discordViewBuilder import discordViewBuilder
 class midGameFunctions:
     async def showStatus(currentGame, currentTheme, home):
         futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
-        embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
+        if currentGame.rumblingActivated:
+            embed = await embedBuilder.rumblingStatusEmbed(currentGame, currentTheme, futureExpoCounts)
+        else:
+            embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
         await home.send(embed=embed)
 
     async def status(ctx, currentLobby, currentGame, currentTheme, home, prefix, noMentions):
@@ -38,7 +41,10 @@ class midGameFunctions:
             await midGameFunctions.showRoles(currentGame, currentTheme, ctx.message.channel)
 
     async def showRoles(currentGame, currentTheme, home):
-        embed = await embedBuilder.buildCurrentRoles(currentGame, currentTheme)
+        if currentGame.rumblingActivated:
+            embed = await embedBuilder.rumblingRolesEmbed(currentGame, currentTheme)
+        else:
+            embed = await embedBuilder.buildCurrentRoles(currentGame, currentTheme)
         await home.send(embed=embed)
 
     async def showPlayers(currentGame, currentTheme, noMentions, home):

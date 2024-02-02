@@ -10,6 +10,7 @@ from gameFunctions.searchFunctions import searchFunctions
 
 
 import random
+import asyncio
 
 class expoActiveFunctions:
     async def activateExpedition(currentGame, currentTheme, home, client, prefix):
@@ -63,13 +64,18 @@ class expoActiveFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
 
-    async def results(ctx, currentGame, currentTheme, home, expoPredictFunction, client):
+    async def results(ctx, currentGame, currentTheme, home, expoPredictFunction, client, homeServer, discord):
         if currentGame.online and currentGame.currentExpo.resultsAvailable and ctx.message.channel == home:
             if currentGame.currentExpo.dazActivated:
                 await webhookManager.dazWebhook(currentGame, currentTheme, home, client)
                 await home.send(currentTheme.dazMessageFollowUp)
                 currentGame.refundAbilities()
             else:
+                if currentGame.currentRules.rumbling:
+                    rumblingCheck = await expoActiveFunctions.checkRumblingClause(currentGame)
+                    if rumblingCheck:
+                        await expoActiveFunctions.startRumbling(currentGame, currentTheme, home, client, homeServer, discord)
+                        return True
                 result = await expoActiveFunctions.getExpeditionResult(currentGame)
                 await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
                 await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
@@ -149,6 +155,45 @@ class expoActiveFunctions:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
             sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner)
             await home.send(sashaMessage)
+
+    async def checkRumblingClause(currentGame):
+        if currentGame.currentRound >= 1:
+            rolesInExpo = []
+            for player in currentGame.currentExpo.expeditionMembers:
+                rolesInExpo.append(player.role.id)
+            if 'Eren' in rolesInExpo and 'Zeke' in rolesInExpo:
+                for player in currentGame.currentExpo.expeditionMembers:
+                    if player.role.rumblingTeam.startswith('alliance'):
+                        return False
+                return True
+        return False
+    
+    async def startRumbling(currentGame, currentTheme, home, client, homeServer, discord):
+        currentGame.activateRumbling()
+        await home.set_permissions(homeServer.default_role, send_messages=False)
+        standardStatusEmbed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, currentGame.expoProjections)
+        standardRumblingEmbed = await embedBuilder.rumblingStatusEmbed(currentGame, currentTheme, currentGame.expoProjections)
+        altRumblingEmbed = await embedBuilder.rumblingStatusEmbed(currentGame, currentTheme, currentGame.expoProjections, True)
+        embedMessage = await home.send(embed = standardStatusEmbed)
+        textMessage = await home.send(currentTheme.rumblingFirstMessage)
+        attachmentMessage = await home.send(currentTheme.rumblingStartAttachment)
+        await asyncio.sleep(currentTheme.rumblingTimerOne)
+        await embedMessage.edit(embed = altRumblingEmbed)
+        await textMessage.edit(content = currentTheme.rumblingSecondMessage)
+        await asyncio.sleep(currentTheme.rumblingTimerTwo)
+        await textMessage.edit(content = currentTheme.rumblingThirdMessage)
+        await asyncio.sleep(currentTheme.rumblingTimerThree)
+        await attachmentMessage.delete()
+        await embedMessage.delete()
+        await textMessage.delete()
+        await home.send(currentTheme.rumblingIntroMessage)
+        await home.send(embed=standardRumblingEmbed)
+        rumblingRolesEmbed = await embedBuilder.rumblingRolesEmbed(currentGame, currentTheme)
+        await home.send(embed=rumblingRolesEmbed)
+        await home.set_permissions(homeServer.default_role, send_messages=True)
+
+        
+
 
         
 

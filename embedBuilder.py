@@ -21,6 +21,13 @@ class embedBuilder:
             kidnapEmoji = str('🌐')
             kidnapVal = 'Standard Rules'
         returnedEmbed.add_field(name = 'Kidnap Rules', value = f'{kidnapEmoji}`{kidnapVal}`', inline = False)
+        if currentLobby.currentRules.rumbling:
+            rumblingEmoji = currentTheme.emojiRumbling
+            rumblingVal = 'Enabled'
+        else:
+            rumblingEmoji = str('❌')
+            rumblingVal = 'Disabled'
+        returnedEmbed.add_field(name = f'{currentTheme.rumblingName}', value = f'{rumblingEmoji}`{rumblingVal}`', inline = False)
         return returnedEmbed
     
     async def buildReset(prefix):
@@ -412,5 +419,132 @@ class embedBuilder:
             selectedColor = currentTheme.warriorColor
         returnedEmbed = discord.Embed(title= f'{player.role.name} Information Update', description=infoMessage, color = selectedColor)
         return returnedEmbed
+
+    async def rumblingStatusEmbed(currentGame, currentTheme, futureExpoCounts, altCase = None):
+        buildDescription = f'Number of Players: **{len(currentGame.players)}**'
+        if len(currentGame.deadPlayers) > 0:
+            buildDescription += f' (**{len(currentGame.livingPlayers)}** Alive)'
+        buildDescription += '\n'
+        if altCase == None:
+            buildDescription += f'**{len(currentGame.yeagerists)}** {currentTheme.yeageristPlural}'
+            if len(currentGame.deadYeagerists) > 0:
+                buildDescription += f' (**{len(currentGame.livingYeagerists)}** Alive)'
+            buildDescription += f' vs **{len(currentGame.alliance)}** {currentTheme.alliancePlural}'
+            if len(currentGame.deadAlliance) > 0:
+                buildDescription += f' (**{len(currentGame.livingAlliance)}** Alive)'
+            selectedColor = currentTheme.rumblingStatusColor
+        else:
+            buildDescription += '????? vs ?????'
+            selectedColor = currentTheme.rumblingAltStatusColor
+        returnedEmbed = discord.Embed(title = 'Current Game Status', description= buildDescription, color= selectedColor)
+        spaceEmoji = f'{currentTheme.emojiSpacer}'
+        spacer = spaceEmoji + spaceEmoji
+        bigSpacer = spacer + spacer
+        progressString = ''
+        for i in range(3):
+            progressString += bigSpacer + currentTheme.emojiRoundVictoryMarker
+            if i != 2:
+                progressString += '\n'
+            else:
+                progressString += currentTheme.emojiVictoryMarker
+        returnedEmbed.add_field(name = 'Progress to Annhilation', value=progressString, inline=True)
+        brokenWall = f'{currentTheme.emojiRumblingWallExterior}{currentTheme.emojiRumblingWallInterior}{currentTheme.emojiRumblingWallExterior}'
+        wallStatusString = ''
+        for i in range(3):
+            wallStatusString += spacer + brokenWall
+            if i != 2:
+                wallStatusString += '\n'
+        returnedEmbed.add_field(name = currentTheme.statusWalls, value = wallStatusString, inline = True)
+        previousExpoCounts = currentGame.previousExpeditionCounts
+        index = 0
+        for expo in previousExpoCounts:
+            previousExpoCounts[index] = str(previousExpoCounts[index])
+            index += 1
+        currentExpoCount = [str(currentGame.currentExpo.size)]
+        expoCounts = previousExpoCounts + currentExpoCount + futureExpoCounts
+        expeditionString = ''
+        for i in range(5):
+            currentRound =  i + 1
+            statusMarker = ''
+            if currentRound in currentGame.failedRounds:
+                statusMarker = f'{currentTheme.emojiFailMarker}'
+            elif currentRound in currentGame.passedRounds:
+                statusMarker = f'{currentTheme.emojiWinMarker}'
+            elif currentRound == currentGame.currentRound:
+                statusMarker = f'{currentTheme.emojiCurrentMarker}' 
+            expeditionString += f'{currentTheme.expeditionName} {currentRound}: **{expoCounts[i]}** {currentTheme.expoMembersName} {statusMarker}'
+            if i != 4:
+                expeditionString += '\n'
+        returnedEmbed.add_field(name = currentTheme.statusExpeditions, value = expeditionString, inline = False)
+        if altCase == None:
+            allianceVal = ''
+            for allianceMember in currentGame.allianceFighters:
+                if allianceMember in currentGame.deadPlayers:
+                    allianceVal += f'{currentTheme.emojiDead}{allianceMember.user.name}{currentTheme.emojiDead}'
+                elif allianceMember in currentGame.livingPlayers:
+                    allianceVal += f'{allianceMember.role.emoji}{allianceMember.role.shortName}{allianceMember.role.emoji}'
+                allianceVal += '\n'
+            returnedEmbed.add_field(name = f'{currentTheme.allianceTeam} Fighters', value=allianceVal, inline= False)
+            yeageristVal = ''
+            for yeagerist in currentGame.yeageristFighters:
+                if yeagerist in currentGame.deadPlayers:
+                    yeageristVal += f'{currentTheme.emojiDead}{yeagerist.user.name}{currentTheme.emojiDead}'
+                elif yeagerist in currentGame.livingPlayers:
+                    yeageristVal += f'{yeagerist.role.emoji}{yeagerist.role.shortName}{yeagerist.role.emoji}'
+                yeageristVal += '\n'
+            returnedEmbed.add_field(name = f'{currentTheme.yeageristTeam} Fighters', value=yeageristVal, inline= False)
+        return returnedEmbed
+    
+    async def rumblingRolesEmbed(currentGame, currentTheme):
+        returnedEmbed = discord.Embed(title = 'Current list of roles in game', color = currentTheme.rolesEmbedColor)
+        
+        altYeagerList = currentGame.yeagerists.copy()
+        altYeagerList.reverse()
+        Eren = altYeagerList[0]
+        Zeke = altYeagerList[1]
+
+        if len(currentGame.yeageristFighters) > 0:
+            teamYeageristFighters = await embedBuilder.getTeamList(currentGame.yeageristFighters, currentGame, currentTheme)
+            returnedEmbed.add_field(name = f'{Eren.role.emoji}{currentTheme.yeageristTeam} Fighters{Zeke.role.emoji}', value = teamYeageristFighters, inline = False)
+            for fighter in currentGame.yeageristFighters:
+                print(fighter.user.name)
+
+        if len(currentGame.yeageristBench) > 0:
+            teamYeageristBench = await embedBuilder.getTeamList(currentGame.yeageristBench, currentGame, currentTheme)
+            returnedEmbed.add_field(name = f'{Eren.role.emoji}{currentTheme.yeageristTeam} Bench{Zeke.role.emoji}', value = teamYeageristBench, inline = False)
+
+        if len(currentGame.allianceFighters) > 0:
+            teamAllianceFighters = await embedBuilder.getTeamList(currentGame.allianceFighters, currentGame, currentTheme)
+            returnedEmbed.add_field(name = f'{currentGame.livingAlliance[0].role.emoji}{currentTheme.allianceTeam} Fighters{currentGame.livingAlliance[0].role.emoji}', value = teamAllianceFighters, inline = False)
+
+        if len(currentGame.allianceBench) > 0:
+            teamAllianceBench = await embedBuilder.getTeamList(currentGame.allianceBench, currentGame, currentTheme)
+            returnedEmbed.add_field(name = f'{currentGame.livingAlliance[0].role.emoji}{currentTheme.allianceTeam} Bench{currentGame.livingAlliance[0].role.emoji}', value = teamAllianceBench, inline = False)
+
+        if currentGame.deadPlayers != []:
+            deadList = ''
+            for player in currentGame.deadPlayers:
+                if player in currentGame.deadYeagerists:
+                    deadList += f'{Eren.role.emoji}{player.user.name}{Zeke.role.emoji}\n'
+                elif player in currentGame.deadAlliance:
+                    roleEmoji = currentTheme.emojiWarrior
+                    deadList += f'{currentGame.livingAlliance[0].role.emoji}{player.user.name}{currentGame.livingAlliance[0].role.emoji}\n'
+            returnedEmbed.add_field(name = f'{currentTheme.emojiDead}Dead Players{currentTheme.emojiDead}', value=deadList, inline=False)
+            
+        return returnedEmbed
+    
+    async def getTeamList(team, currentGame, currentTheme):
+            teamList = ''
+            for member in team:
+                print(member.user.name)
+                if member in currentGame.livingPlayers:
+                    teamList += f'{member.role.emoji}{member.role.name}{member.role.emoji}'
+                else:
+                    teamList += f'{currentTheme.emojiDead}{member.role.name}{currentTheme.emojiDead}'
+                if member in currentGame.yeagerists:
+                    teamList += f'({member.user.name})'
+                teamList += '\n'
+            return teamList
+
     
 

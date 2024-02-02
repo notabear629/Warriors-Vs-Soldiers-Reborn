@@ -22,13 +22,16 @@ class gameStartFunctions:
             if currentGame.online == False:
                 if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
-                        await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                        await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole)
-                        expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
-                        expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
-                        currentGame.setExpedition(expo)
-                        await gameStartFunctions.sendRoleMessages(currentGame, currentTheme, client)
-                        return True
+                        if len(currentLobby.users) >= 5:
+                            await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
+                            await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole)
+                            expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+                            expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
+                            currentGame.setExpedition(expo)
+                            await gameStartFunctions.sendRoleMessages(currentGame, currentTheme, client)
+                            return True
+                        else:
+                            await ctx.message.reply('A minimum of **5** Players is required to start the game!') 
                     else:
                         await ctx.message.reply('Only the host may start the game!')
                 else:

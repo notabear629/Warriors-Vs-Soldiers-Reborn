@@ -109,6 +109,7 @@ class expoProposalFunctions:
                     else:
                         roundNumbers[index] = f'({minimumFloor}-{maximumCeiling})'                   
                 index += 1
+        currentGame.setExpoProjections(roundNumbers)
         return roundNumbers
     
     async def resetExpedition(currentGame, currentTheme, noMentions, home, prefix):

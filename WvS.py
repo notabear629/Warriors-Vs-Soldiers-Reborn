@@ -26,6 +26,7 @@ from gameFunctions.midGameFunctions import midGameFunctions
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.expoActiveFunctions import expoActiveFunctions
 from gameFunctions.endGameFunctions import endGameFunctions
+from gameFunctions.rumblingFunctions import rumblingFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -178,7 +179,7 @@ async def clear(ctx):
         
 @client.command('results')
 async def results(ctx):
-    resultsRead = await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client)
+    resultsRead = await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client, homeServer, discord)
     if resultsRead:
         if currentGame.currentExpo.dazActivated:
             await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
@@ -186,13 +187,22 @@ async def results(ctx):
             if currentGame.online and currentGame.exposOver == False:
                 await expoProposalFunctions.advanceRound(currentGame, currentTheme, home, noMentions, prefix, client)
             if currentGame.online and currentGame.exposOver:
-                await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
+                if currentGame.rumblingActivated:
+                    await rumblingFunctions.rumblingStart(currentGame, currentTheme, home, client, prefix)
+                else:
+                    await endGameFunctions.processExpeditionEnd(currentGame, currentTheme, home)
             if currentGame.online and currentGame.winCondition != None:
                 await resetFunction()
 
 @client.command('kidnap')
 async def kidnap(ctx, *, kidnappedUser:discord.Member):
     await endGameFunctions.kidnap(ctx, kidnappedUser, currentGame, currentTheme, home)
+
+@client.command('attack')
+async def attack(ctx, *, attackedUser:discord.Member):
+    await rumblingFunctions.attack(ctx, attackedUser, currentGame, currentTheme, home)
+    if currentGame.online and currentGame.winCondition != None:
+        await resetFunction()
 
 @client.command('retreat')
 async def retreat(ctx):
@@ -228,8 +238,18 @@ async def fill(ctx):
 #TEST COMMAND ONLY
 @client.command('test')
 async def test(ctx):
-    view = await discordViewBuilder.roleOptionsView(loadedRoles)
-    await ctx.send(view=view)
+    embed1 = await embedBuilder.testEmbed()
+    embed2 = await embedBuilder.altTestEmbed()
+    x = 0
+    while x < 10:
+        if x == 0:
+            message = await ctx.send(embed=embed1)
+        else:
+            if x % 2 == 0:
+                await message.edit(embed=embed1)
+            else:
+                await message.edit(embed=embed2)
+        x += 1
 
 
 client.run(BOT_TOKEN)

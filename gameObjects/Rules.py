@@ -51,10 +51,10 @@ class Rules:
             self.disabledWarriors = []
     
     def toggleMultikidnap(self, toggle):
-        if toggle:
-            self.multikidnap = True
-        else:
-            self.multikidnap = False
+        self.multikidnap = toggle
+
+    def toggleRumbling(self, toggle):
+        self.rumbling = toggle
 
 
     

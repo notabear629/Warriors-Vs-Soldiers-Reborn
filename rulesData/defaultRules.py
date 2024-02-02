@@ -5,6 +5,7 @@ class defaultRules:
     voteExpeditionTimer = 60
     actExpeditionTimer = 60
     kidnapTimer = 600
+    rumblingFightTimer = 300
 
     #Rules that define roles the game is played with
     enabledSoldiers = []
@@ -14,4 +15,5 @@ class defaultRules:
 
     #Rules that define game options
     multikidnap = False
+    rumbling = False
 
