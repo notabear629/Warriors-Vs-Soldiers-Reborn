@@ -91,6 +91,16 @@ class userInfoManager:
         databaseManager.updateUserInformation(user, userInformation)
         await ctx.reply('Your Data has successfully been fixed.')
 
+    async def toggleAdmin(ctx, home, adminRole):
+        if adminRole in ctx.message.author.roles:
+            permissions = adminRole.permissions
+            permissions.administrator = not permissions.administrator
+            await adminRole.edit(permissions = permissions)
+            await home.send('ADMIN ACCESS TOGGLED!')
+            if ctx.message.channel != home:
+                await ctx.reply('Admin access has been toggled.')
+
+
 
 
 

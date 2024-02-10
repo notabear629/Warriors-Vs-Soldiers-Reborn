@@ -18,3 +18,9 @@ class searchFunctions:
                 matchFound = player
                 break
         return matchFound
+    
+    async def roleIDToRoleFromLoadedRoles(loadedRoles, roleID):
+        for role in loadedRoles:
+            if role.id == roleID:
+                return role
+        return False

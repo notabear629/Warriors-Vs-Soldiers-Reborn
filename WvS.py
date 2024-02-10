@@ -27,6 +27,9 @@ from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.expoActiveFunctions import expoActiveFunctions
 from gameFunctions.endGameFunctions import endGameFunctions
 from gameFunctions.rumblingFunctions import rumblingFunctions
+from gameFunctions.infoFunctions import infoFunctions
+
+from dataFunctions.databaseManager import databaseManager
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -42,6 +45,7 @@ HOME_ID = int(os.getenv('BOT_HOME_CHANNEL_ID'))
 HOME_SERVER_ID = int(os.getenv('BOT_HOME_SERVER_ID'))
 USER_CHANNEL_CATEGORY_ID = int(os.getenv('BOT_USER_CHANNEL_CATEGORY_ID'))
 GAG_ROLE_ID = int(os.getenv('BOT_WVS_GAG_ROLE_ID'))
+ADMIN_ROLE_ID = int(os.getenv('ADMIN_ROLE_ID'))
 
 client = discord.Client(intents=intents)
 client = commands.Bot(command_prefix = prefix, intents = intents, help_command = None, case_insensitive=True)
@@ -59,13 +63,14 @@ async def resetFunction():
 
 @client.event
 async def on_ready():
-    global home, homeServer, userCategory, gagRole
+    global home, homeServer, userCategory, gagRole, adminRole
     global noMentions, withMentions
     global currentTheme, currentRules, currentLobby, currentGame, loadedRoles
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
     gagRole = homeServer.get_role(GAG_ROLE_ID)
+    adminRole = homeServer.get_role(ADMIN_ROLE_ID)
     noMentions = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False)
     withMentions = discord.AllowedMentions(everyone=True, users=True, roles=True, replied_user=True)
     currentTheme = Theme()
@@ -120,6 +125,10 @@ async def lobby(ctx):
 async def options(ctx):
     await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
 
+@client.command('rules')
+async def rules(ctx):
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
+
 @client.command('color')
 async def color(ctx, *, colorInput=None):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
@@ -159,7 +168,7 @@ async def status(ctx):
 
 @client.command('roles')
 async def roles(ctx):
-    await midGameFunctions.roles(ctx, currentGame, currentTheme, home)
+    await midGameFunctions.roles(ctx, currentGame, currentTheme, home, loadedRoles)
 
 @client.command('players')
 async def players(ctx):
@@ -222,34 +231,31 @@ async def gag(ctx):
 async def flare(ctx):
     await expoProposalFunctions.flare(ctx, currentGame, client, gagRole)
 
+@client.command('rolelist')
+async def rolelist(ctx):
+    await infoFunctions.rolelist(ctx, loadedRoles, currentTheme)
+
+@client.command('help')
+async def help(ctx):
+    await infoFunctions.help(ctx, currentTheme, loadedRoles, prefix)
+
+@client.command('admin')
+async def admin(ctx):
+    await userInfoManager.toggleAdmin(ctx, home, adminRole)
+
 
 
 #TEST COMMAND ONLY
 @client.command('fill')
 async def fill(ctx):
-    bozos = [663576295682080789, 571823508909195265, 663577459647840259, 650144793296633887]
-    bozoUsers = []
-    for bozo in bozos:
-        user = homeServer.get_member(bozo)
-        await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
-        bozoUsers.append(user)
-    await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
-
-#TEST COMMAND ONLY
-@client.command('test')
-async def test(ctx):
-    embed1 = await embedBuilder.testEmbed()
-    embed2 = await embedBuilder.altTestEmbed()
-    x = 0
-    while x < 10:
-        if x == 0:
-            message = await ctx.send(embed=embed1)
-        else:
-            if x % 2 == 0:
-                await message.edit(embed=embed1)
-            else:
-                await message.edit(embed=embed2)
-        x += 1
+    if ctx.message.author.name == 'cerberus629':
+        bozos = [663576295682080789, 571823508909195265, 663577459647840259, 650144793296633887]
+        bozoUsers = []
+        for bozo in bozos:
+            user = homeServer.get_member(bozo)
+            await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
+            bozoUsers.append(user)
+        await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
 
 
 client.run(BOT_TOKEN)

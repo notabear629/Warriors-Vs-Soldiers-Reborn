@@ -30,6 +30,7 @@ class Expedition:
         self.bertholdtCloaked = False
         self.annieMessage = None
         self.usedExpoAbilities = []
+        self.filledUp = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -51,6 +52,10 @@ class Expedition:
         self.reinerBlocked = None
         self.bertholdtCloaked = False
         self.annieMessage = None
+        self.filledUp = False
+
+    def fillUp(self):
+        self.filledUp = True
     
     def activateErwin(self, Erwin):
         self.erwinActivated = True

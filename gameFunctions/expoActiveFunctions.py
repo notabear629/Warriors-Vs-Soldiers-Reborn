@@ -157,7 +157,7 @@ class expoActiveFunctions:
             await home.send(sashaMessage)
 
     async def checkRumblingClause(currentGame):
-        if currentGame.currentRound >= 1:
+        if currentGame.currentRound >= 3:
             rolesInExpo = []
             for player in currentGame.currentExpo.expeditionMembers:
                 rolesInExpo.append(player.role.id)

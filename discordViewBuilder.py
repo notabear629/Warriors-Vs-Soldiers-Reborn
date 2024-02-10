@@ -15,7 +15,6 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
-        return True
         if player.user == interaction.user:
             return True
         return False
@@ -75,7 +74,7 @@ class discordViewBuilder:
             returnedView.add_item(falcoButton)
 
         if player.role.id == 'Pieck' and player.role.abilityActive:
-            pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.secondaryEmoji, style = discord.ButtonStyle.grey)
             async def processPieckAccept(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
                     await voteExpoFunction(currentGame, player, client, currentTheme, home, pieckButtonAccept.label)
@@ -84,7 +83,7 @@ class discordViewBuilder:
             pieckButtonAccept.callback = processPieckAccept
             returnedView.add_item(pieckButtonAccept)
 
-            pieckButtonReject = Button(label = f'{currentTheme.emojiRejectExpedition}Flip and Reject', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            pieckButtonReject = Button(label = f'{currentTheme.emojiRejectExpedition}Flip and Reject', emoji = player.role.secondaryEmoji, style = discord.ButtonStyle.grey)
             async def processPieckReject(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
                     await voteExpoFunction(currentGame, player, client, currentTheme, home, pieckButtonReject.label)
@@ -120,7 +119,7 @@ class discordViewBuilder:
             returnedView.add_item(sabotageButton)
 
         if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
-            nukeButton = Button(label = 'Nuke', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            nukeButton = Button(label = 'Nuke', emoji = currentTheme.emojiNuke, style=discord.ButtonStyle.grey)
             async def processExpeditionNuke(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
                     await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Armin')
@@ -174,7 +173,7 @@ class discordViewBuilder:
             returnedView.add_item(mikasaSelect)
 
         if player.role.id == 'Bertholdt':
-            bertholdtButton = Button(label = 'Cloak', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
+            bertholdtButton = Button(label = 'Cloak', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processBertholdtButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
                     await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Bertholdt')
@@ -184,7 +183,7 @@ class discordViewBuilder:
             returnedView.add_item(bertholdtButton)
 
         if player.role.id == 'Annie':
-            annieButton = Button(label = 'Input Scream Message', emoji = player.role.emoji, style=discord.ButtonStyle.grey)
+            annieButton = Button(label = 'Input Scream Message', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processAnnieButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
                     annieModal = Modal(title = 'Scream Message')

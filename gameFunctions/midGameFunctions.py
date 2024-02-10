@@ -12,6 +12,7 @@ from gameObjects.Expedition import Expedition
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 from gameFunctions.searchFunctions import searchFunctions
+from gameFunctions.infoFunctions import infoFunctions
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -36,9 +37,11 @@ class midGameFunctions:
             else:
                 await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)
 
-    async def roles(ctx, currentGame, currentTheme, home):
+    async def roles(ctx, currentGame, currentTheme, home, loadedRoles):
         if currentGame.online:
             await midGameFunctions.showRoles(currentGame, currentTheme, ctx.message.channel)
+        else:
+            await infoFunctions.rolelist(ctx, loadedRoles, currentTheme)
 
     async def showRoles(currentGame, currentTheme, home):
         if currentGame.rumblingActivated:

@@ -121,6 +121,8 @@ class expoProposalFunctions:
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
         await home.send(commanderMessage)
+        if len(currentGame.livingSoldiers) == len(currentGame.livingWarriors):
+            await home.send(f'⚠️Warning! Voting Gridlock detected because the amount of living {currentTheme.soldierPlural} and {currentTheme.warriorPlural} are the same! In the case of a tied vote, instead of a reject, the commander\'s vote will play as the tiebreaker!⚠️')
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Pick')
         if timeout == None:
             return
@@ -157,7 +159,8 @@ class expoProposalFunctions:
                 embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)
                 await home.send(embed=embed)
                 await home.send(f'{pickedPlayer.name} has been added to the {currentTheme.expeditionTeam}.')
-                if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size:
+                if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size and currentGame.currentExpo.filledUp == False:
+                    currentGame.currentExpo.fillUp()
                     await home.send(f'The {currentTheme.expeditionName} is now full. The time to vote on if it should be allowed to pass has come.')
                     await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
 
@@ -220,8 +223,12 @@ class expoProposalFunctions:
         elif currentGame.currentExpo.pieckActivated:
             if len(currentGame.currentExpo.rejected) > len(currentGame.currentExpo.accepted):
                 return True
+            elif len(currentGame.livingSoldiers) == len(currentGame.livingWarriors) and currentGame.currentExpo.commander in currentGame.currentExpo.rejected and len(currentGame.currentExpo.rejected) == len(currentGame.currentExpo.accepted):
+                return True
             return False
         elif len(currentGame.currentExpo.accepted) > len(currentGame.currentExpo.rejected):
+            return True
+        elif len(currentGame.livingSoldiers) == len(currentGame.livingWarriors) and len(currentGame.currentExpo.accepted) == len(currentGame.currentExpo.rejected) and currentGame.currentExpo.commander in currentGame.currentExpo.accepted:
             return True
         return False
     

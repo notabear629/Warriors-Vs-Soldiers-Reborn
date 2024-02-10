@@ -8,7 +8,7 @@ from gameFunctions.searchFunctions import searchFunctions
 class embedBuilder:
 
     async def buildLobby(currentLobby, currentTheme, prefix):
-        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help rules` for information on how to change the rules.', color = currentTheme.lobbyEmbedColor)
+        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help` for help and info about the game. Use `{prefix}options` or `{prefix}rules` as the host to change the game rules.', color = currentTheme.lobbyEmbedColor)
         playerList = ''
         for player in currentLobby.users:
             playerList += f'**{player.mention}**\n'
@@ -215,8 +215,8 @@ class embedBuilder:
             if player.role.id == 'Falco' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji} Click the Intercept Button to Intercept the {currentTheme.expeditionTeam} votes, which will turn to an accept ONLY IF it will pass.'
             elif player.role.id == 'Pieck' and player.role.abilityActive:
-                voteDesc += f'\n{player.role.emoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {currentTheme.expeditionTeam}. Click this if you want to stay accepted after flip.'
-                voteDesc += f'\n{player.role.emoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {currentTheme.expeditionTeam}. Click this if you want to stay rejected after flip.'
+                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {currentTheme.expeditionTeam}. Click this if you want to stay accepted after flip.'
+                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {currentTheme.expeditionTeam}. Click this if you want to stay rejected after flip.'
         returnedEmbed.add_field(name = f'Your Vote', value=voteDesc)
         return returnedEmbed
     
@@ -263,7 +263,7 @@ class embedBuilder:
         if player in currentGame.warriors:
             playerList += f'{currentTheme.emojiSabotageExpedition} Select Sabotage to Sabotage this {currentTheme.expeditionName}\n'
         if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
-            playerList += f'{player.role.secondaryEmoji} Select Nuke to fail this {currentTheme.expeditionName}, and take its {currentTheme.expeditionTeamMembers} with it.\n'
+            playerList += f'{currentTheme.emojiNuke} Select Nuke to fail this {currentTheme.expeditionName}, and take its {currentTheme.expeditionTeamMembers} with it.\n'
         if player.role.id == 'Levi' and player.role.abilityActive and currentGame.roundFails < 2:
             playerList += f'{player.role.secondaryEmoji} Select Attack to kill any {currentTheme.warriorPlural} that try to attack, but not defend the {currentTheme.expeditionName}\n'
         if player.role.id == 'Levi' and player.role.abilityActive:
@@ -273,7 +273,9 @@ class embedBuilder:
         if player.role.id == 'Mikasa':
             playerList += f'{player.role.emoji} Select a player from the "Choose Player to Guard to Pass this {currentTheme.expeditionName}, and guard that player.\n'
         if player.role.id == 'Bertholdt':
-            playerList += f'{player.role.emoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
+            playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
+        if player.role.id == 'Annie' and player.role.abilityActive:
+            playerList += f'{player.role.secondaryEmoji} Select Input Scream Message to sabotage this {currentTheme.expeditionName} and then pass a secret message to your fellow {currentTheme.warriorPlural}.\n'
 
         if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
             decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
@@ -286,7 +288,9 @@ class embedBuilder:
         elif player.role.id == 'Mikasa' and currentGame.currentExpo.mikasaGuarded != None and type(currentGame.currentExpo.mikasaGuarded) != dict:
             decisionString = f'You have chosen to pass the expedition while guarding **{currentGame.currentExpo.mikasaGuarded.user.name}**.'
         elif player.role.id == 'Bertholdt' and currentGame.currentExpo.bertholdtCloaked:
-            decisionString = 'You have chosen to cloak and sabotage this expedition.'
+            decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
+        elif player.role.id == 'Annie' and currentGame.currentExpo.annieMessage != None:
+            decisionString = f'You have chosen to sabotage the {currentTheme.expeditionName} and send a secret message to your fellow {currentTheme.warriorPlural}'
         elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:
@@ -323,11 +327,7 @@ class embedBuilder:
         outcomeList = ''
         if currentGame.currentExpo.arminActivated:
             for player in currentGame.currentExpo.expeditionMembers:
-                if player.role.id == 'Armin':
-                    Armin = player
-                    break
-            for player in currentGame.currentExpo.expeditionMembers:
-                outcomeList += f'{Armin.role.secondaryEmoji}\n'
+                outcomeList += f'{currentTheme.emojiNuke}\n'
         elif currentGame.currentExpo.leviDefended:
             if len(currentGame.currentExpo.sabotagedExpedition) > 0:
                 for player in currentGame.currentExpo.expeditionMembers:
@@ -341,7 +341,7 @@ class embedBuilder:
                     Bertholdt = player
                     break
             for player in currentGame.currentExpo.expeditionMembers:
-                outcomeList += f'{Bertholdt.role.emoji}\n'
+                outcomeList += f'{Bertholdt.role.secondaryEmoji}\n'
         else:
             for passer in currentGame.currentExpo.passedExpedition:
                 outcomeList += f'{currentTheme.emojiPassExpedition}\n'
@@ -505,13 +505,13 @@ class embedBuilder:
 
         if len(currentGame.yeageristFighters) > 0:
             teamYeageristFighters = await embedBuilder.getTeamList(currentGame.yeageristFighters, currentGame, currentTheme)
-            returnedEmbed.add_field(name = f'{Eren.role.emoji}{currentTheme.yeageristTeam} Fighters{Zeke.role.emoji}', value = teamYeageristFighters, inline = False)
+            returnedEmbed.add_field(name = f'{Eren.role.secondaryEmoji}{currentTheme.yeageristTeam} Fighters{Zeke.role.secondaryEmoji}', value = teamYeageristFighters, inline = False)
             for fighter in currentGame.yeageristFighters:
                 print(fighter.user.name)
 
         if len(currentGame.yeageristBench) > 0:
             teamYeageristBench = await embedBuilder.getTeamList(currentGame.yeageristBench, currentGame, currentTheme)
-            returnedEmbed.add_field(name = f'{Eren.role.emoji}{currentTheme.yeageristTeam} Bench{Zeke.role.emoji}', value = teamYeageristBench, inline = False)
+            returnedEmbed.add_field(name = f'{Eren.role.secondaryEmoji}{currentTheme.yeageristTeam} Bench{Zeke.role.secondaryEmoji}', value = teamYeageristBench, inline = False)
 
         if len(currentGame.allianceFighters) > 0:
             teamAllianceFighters = await embedBuilder.getTeamList(currentGame.allianceFighters, currentGame, currentTheme)
@@ -525,7 +525,7 @@ class embedBuilder:
             deadList = ''
             for player in currentGame.deadPlayers:
                 if player in currentGame.deadYeagerists:
-                    deadList += f'{Eren.role.emoji}{player.user.name}{Zeke.role.emoji}\n'
+                    deadList += f'{Eren.role.secondaryEmoji}{player.user.name}{Zeke.role.secondaryEmoji}\n'
                 elif player in currentGame.deadAlliance:
                     roleEmoji = currentTheme.emojiWarrior
                     deadList += f'{currentGame.livingAlliance[0].role.emoji}{player.user.name}{currentGame.livingAlliance[0].role.emoji}\n'
@@ -536,7 +536,6 @@ class embedBuilder:
     async def getTeamList(team, currentGame, currentTheme):
             teamList = ''
             for member in team:
-                print(member.user.name)
                 if member in currentGame.livingPlayers:
                     teamList += f'{member.role.emoji}{member.role.name}{member.role.emoji}'
                 else:
@@ -545,6 +544,25 @@ class embedBuilder:
                     teamList += f'({member.user.name})'
                 teamList += '\n'
             return teamList
+    
+    async def rolelistEmbed(loadedRoles, currentTheme):
+        soldierRoles = []
+        warriorRoles = []
+        for role in loadedRoles:
+            if role.team == 'Soldiers':
+                soldierRoles.append(role)
+            elif role.team == 'Warriors':
+                warriorRoles.append(role)
+        returnedEmbed = discord.Embed(title = 'Roles Implemented into the Game', color = currentTheme.rolesEmbedColor)
+        soldierList = ''
+        for role in soldierRoles:
+            soldierList += f'{role.emoji}{role.name}{role.emoji}\n'
+        warriorList = ''
+        for role in warriorRoles:
+            warriorList += f'{role.emoji}{role.name}{role.emoji}\n'
+        returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}', value = f'{soldierList}', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=True)
+        return returnedEmbed
 
     
 

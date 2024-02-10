@@ -25,7 +25,8 @@ class defaultGameTheme:
     emojiWarrior = str('⚔️')
     wallSingle = 'Wall'
     wallPlural = 'Walls'
-    emojiTheme = 685785857609039873
+    #By Default is the same as Eren Emoji
+    emojiTheme = 1205662731659780106
     titanSingle = 'Titan'
     titanPlural = 'Titans'
     emojiDead = '☠️'
@@ -44,6 +45,9 @@ class defaultGameTheme:
 
     #Lobby embed Aesthetics
     lobbyEmbedColor = discord.Color.blue()
+    
+    #Help Aesthetics
+    helpEmbedColor = discord.Color.blue()
 
     #Rule Selection Aesthetics
     emojiBackButton = str('◀️')
@@ -71,15 +75,15 @@ class defaultGameTheme:
     emojiWinMarkerOne = str('1️⃣')
     emojiWinMarkerTwo = str('2️⃣')
     emojiWinMarkerThree = str('3️⃣')
-    emojiSpacer = 686015611985461307
+    emojiSpacer = 1205660142402535465
     emojiRoundVictoryMarker = str('✅')
     emojiVictoryMarker = str('🏁')
     emojiMariaExterior = str('🏠')
-    emojiMariaInterior = 686009957233066004
+    emojiMariaInterior = 1205660141156835328
     emojiRoseExterior = str('🏦')
-    emojiRoseInterior = 686009957123883056
+    emojiRoseInterior = 1205660139927896084
     emojiSinaExterior = str('🏰')
-    emojiSinaInterior = 686009957509758996
+    emojiSinaInterior = 1205660138627928185
     emojiBrokenExterior = str('🏚️')
     emojiBrokenInterior = str('💥')
     emojiWinMarker = str('🛡️')
@@ -126,6 +130,7 @@ class defaultGameTheme:
     expoSabotagedColor = discord.Color.red()
     expoSecuredColor = discord.Color.blue()
     arminNukeColor = discord.Color.default()
+    emojiNuke = 1205687713429327952
     wallMariaBreakMessage = str('💥Wall Maria has Fallen!💥')
     wallRoseBreakMessage = str('💥Wall Rose has Fallen!💥')
     wallSinaBreakMessage = str('💥Wall Sina has Fallen!💥')
@@ -174,8 +179,8 @@ class defaultGameTheme:
 
     # Rumbling Aesthetics
     rumblingName = 'Rumbling'
-    emojiRumbling = 686466897365041154
-    emojiRumblingWallExterior = 686466897365041154
+    emojiRumbling = 1205660709162319922
+    emojiRumblingWallExterior = 1205660709162319922
     emojiRumblingWallInterior = str('💥')
     yeageristSingle = 'Yeagerist'
     yeageristPlural = 'Yeagerists'
@@ -239,11 +244,11 @@ class defaultGameTheme:
 
         #If you are using a custom emoji, just make this the integer emoji ID you wish to use. It is important your bot is in the server that the emoji is hosted in, or they will not be able to use the emoji and your game will break.
         #If you are using a default emoji, like the crown emoji, you can just put a String ':crown:' and it will work fine. The code will check if the type is an integer or String so dont worry about mixing types.
-        roleDict['emoji'] = 685785857609039873
+        roleDict['emoji'] = 1205662731659780106
 
 
         #Not all roles actually use secondary emojis. If this is None, it's fine. Should be an int or emoji string like any other emoji.
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205669634809012274
 
         #If you are using a custom emoji, then make sure this is set to None. Otherwise set this to a URL of the emoji you are using. Unfortunately, Webhook images and thumbnails can only be made with urls and default emojis dont have urls.
         #Thus, if you are using a built in emoji, you will need to define this dictionary key.
@@ -281,7 +286,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 695886874937524275
+        roleDict['emoji'] = 1205677062040326164
 
         roleDict['secondaryEmoji'] = None
 
@@ -308,7 +313,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 1185201738815393833
+        roleDict['emoji'] = 1205677240982183967
 
         roleDict['secondaryEmoji'] = None
 
@@ -335,7 +340,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 686525460607401989
+        roleDict['emoji'] = 1205684278596477000
 
         roleDict['secondaryEmoji'] = None
 
@@ -362,9 +367,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 686833146787921940
+        roleDict['emoji'] = 1205685715623485460
 
-        roleDict['secondaryEmoji'] = 686528354886877253
+        roleDict['secondaryEmoji'] = 1205684706431991818
 
         roleDict['imageURL'] = None
 
@@ -389,7 +394,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 696620790833217546
+        roleDict['emoji'] = 1205687306124791909
 
         roleDict['secondaryEmoji'] = None
 
@@ -416,9 +421,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 686831164102541314
+        roleDict['emoji'] = 1205689207696265216
 
-        roleDict['secondaryEmoji'] = 934886285254987846
+        roleDict['secondaryEmoji'] = 1205690550246965300
 
         roleDict['imageURL'] = None
 
@@ -471,7 +476,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 696271784777089024
+        roleDict['emoji'] = 1205694976520884284
 
         roleDict['secondaryEmoji'] = str('🏹')
 
@@ -498,7 +503,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 685790521205325825
+        roleDict['emoji'] = 1205696451301089341
 
         roleDict['secondaryEmoji'] = None
 
@@ -525,7 +530,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 1024922371804647465
+        roleDict['emoji'] = 1205696737210146847
 
         roleDict['secondaryEmoji'] = str('🐔')
 
@@ -552,7 +557,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 936052973480607774
+        roleDict['emoji'] = 1205696923076534272
 
         roleDict['secondaryEmoji'] = None
 
@@ -579,7 +584,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 934547600621862922
+        roleDict['emoji'] = 1205698006704197732
 
         roleDict['secondaryEmoji'] = str('🛡️')
 
@@ -633,15 +638,15 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 685785857617035327
+        roleDict['emoji'] = 1205673427311009863
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205674306177077328
 
         roleDict['imageURL'] = None
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You also may `{prefix}kidnap @mention` Eren at any time, but be warned, this will end the game just like a regular kidnap! In order to unlock this ability, first use `{prefix}unlock` in this DM, then you will be able to kidnap Eren.'
+        roleDict['roleMessage'] = f'Eren does not see you as a Warrior, in fact, you are the only Warrior to be hidden in this matter. Be mindful of this when deciding if you want to be flagrant about your identity as a Warrior or not. You may also use `{prefix}retreat` to end the expeditions early and cut straight to the kidnap phase, for that niche situation where it makes more sense just to get to kidnapping.'
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
 
@@ -661,9 +666,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 1015918467167293440
+        roleDict['emoji'] = 1205700461160701972
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205699056471375923
 
         roleDict['imageURL'] = None
         
@@ -689,9 +694,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 685785857596457016
+        roleDict['emoji'] = 1205702950593499198
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205702948533964870
 
         roleDict['imageURL'] = None
         
@@ -716,9 +721,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 685785857487142944
+        roleDict['emoji'] = 1205707375512920074
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205707556299874354
 
         roleDict['imageURL'] = None
         
@@ -743,9 +748,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 685777947906277380
+        roleDict['emoji'] = 1205712075587063878
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = 1205713542720782337
 
         roleDict['imageURL'] = None
         
@@ -770,7 +775,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 935338374850547712
+        roleDict['emoji'] = 1205716688268435506
 
         roleDict['secondaryEmoji'] = None
 
@@ -797,7 +802,7 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = True
 
-        roleDict['emoji'] = 696273842028413049
+        roleDict['emoji'] = 1205718045037961336
 
         roleDict['secondaryEmoji'] = None
 

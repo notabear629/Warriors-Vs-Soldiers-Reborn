@@ -18,6 +18,8 @@ class rumblingFunctions:
         await home.send(currentTheme.allianceFormMessage)
         yeageristVictory = False
         while True:
+            if currentGame.online == False:
+                return
             nextYeagerist = await rumblingFunctions.getNextYeagerist(currentGame)
             if nextYeagerist == False:
                 await rumblingFunctions.processRumblingEnd('Alliance', currentGame, currentTheme, home)
@@ -25,6 +27,8 @@ class rumblingFunctions:
             if nextYeagerist == None:
                 return
             else:
+                if currentGame.online == False:
+                    return
                 while True:
                     nextAllianceMember = await rumblingFunctions.getNextAllianceMember(currentGame)
                     if nextAllianceMember == False:
