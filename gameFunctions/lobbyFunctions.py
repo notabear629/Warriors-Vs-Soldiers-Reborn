@@ -7,7 +7,7 @@ from discordViewBuilder import discordViewBuilder
 
 
 class lobbyFunctions:
-    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules):
+    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles):
         if home == ctx.channel:
             if currentLobby.online:     
                 if ctx.message.author in currentLobby.users:
@@ -20,8 +20,7 @@ class lobbyFunctions:
             else:
                 if currentGame.online == False:
                     currentLobby.openLobby(ctx.message.author, currentRules)
-                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                    await home.send(embed=embed, allowed_mentions= noMentions)
+                    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
                     await home.send('Lobby Created.')
                 else:
                     await ctx.message.reply(f'There is already an active game! Please wait for it to finish before trying to host a new one.')
@@ -33,13 +32,13 @@ class lobbyFunctions:
                     await ctx.message.reply('Hey stinky, you are already in the lobby!')
                 else:
                     if currentGame.online == False:
-                        if len(currentLobby.users) < 19:
+                        if len(currentLobby.users) < 24:
                             currentLobby.addUser(ctx.message.author)
                             embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                             await home.send(embed=embed, allowed_mentions= noMentions)
                             await home.send(f'**{ctx.message.author.name}** has joined the Lobby.')
                         else:
-                            await ctx.message.reply('Only a maximum of **19** Players can join a game!')
+                            await ctx.message.reply('Only a maximum of **24** Players can join a game!')
                     else:
                         await ctx.message.reply('You may not join a currently active game! Please wait for the game to finish and a new one to begin.')
             else:

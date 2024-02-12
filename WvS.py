@@ -97,7 +97,7 @@ async def reset(ctx):
 @client.command('host')
 async def host(ctx):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules)
+    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles)
 
 
 @client.command('join')

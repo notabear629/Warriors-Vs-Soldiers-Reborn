@@ -21,6 +21,27 @@ class userInfoManager:
             await channel.send(embed=embed)
             userInformation = {'userID' : user.id, 'userName': user.name, 'roleID' : newPersonalRole.id, 'channelID' : channel.id}
             databaseManager.addUser(userInformation)
+        gameValidation = databaseManager.searchForWvsPlayer(user)
+        if gameValidation == None:
+            userInformation = {'userID' : user.id, 'userName' : user.name}
+            databaseManager.addWvsPlayer(userInformation)
+            gameValidation = databaseManager.searchForWvsPlayer(user)
+        defaultDB = await userInfoManager.getDefaultUserDatabase()
+        newDB = gameValidation.copy()
+        for key, value in defaultDB.items():
+            if key not in newDB:
+                newDB[key] = value
+        if newDB != gameValidation:
+            databaseManager.updateWvsPlayer(newDB)
+
+
+    async def getDefaultUserDatabase():
+        db = {}
+        savedRulesets = []
+        while len(savedRulesets) < 25:
+            savedRulesets.append(None)
+        db['savedRulesets'] = savedRulesets
+        return db
 
     async def changeColor(ctx, user, homeServer, color):
         userValidation = databaseManager.searchForUser(user)

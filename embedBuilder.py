@@ -382,6 +382,10 @@ class embedBuilder:
                     returnedEmbed.add_field(name=f'{search.role.emoji}{search.role.name}{search.role.emoji}', value=f'{search.user.name}{addedEmoji}', inline=True)
         return returnedEmbed
     
+    async def savedRulesets(currentTheme):
+        returnedEmbed = discord.Embed(title = 'Loaded Rulesets', description='This is a place to load in rulesets you have already saved. Use the load option to choose to load a ruleset you have previously saved. Use save and choose a slot to save a new ruleset, or overwrite an older ruleset to that slot.', color= currentTheme.lobbyEmbedColor)
+        return returnedEmbed
+    
     async def roleSelection(currentTheme, team, loadedRoles, currentRules):
         if team == 'Soldiers':
             selectedPlural = currentTheme.soldierPlural

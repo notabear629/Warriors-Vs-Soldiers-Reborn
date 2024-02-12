@@ -8,6 +8,8 @@ from embedBuilder import embedBuilder
 from gameObjects.Theme import Theme
 from gameObjects.Role import Role
 
+from dataFunctions.databaseManager import databaseManager
+
 class discordViewBuilder:
 
     #This is a method that basically checks to make sure that who presses the button is the same person that the button was intended for.
@@ -15,6 +17,7 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
+        return True
         if player.user == interaction.user:
             return True
         return False
@@ -346,6 +349,16 @@ class discordViewBuilder:
 
         roleOptionSelect.callback = processRoleOptionSelect
         returnedView.add_item(roleOptionSelect)
+
+        rulesetButton = Button(label = 'Go to your Saved Rulesets', style= discord.ButtonStyle.grey)
+        async def processRulesetButton(interaction):
+            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedEmbed = await embedBuilder.savedRulesets(currentTheme)
+                await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
+                await interaction.response.defer()
+        rulesetButton.callback = processRulesetButton
+        returnedView.add_item(rulesetButton)
       
         return returnedView
     
@@ -434,6 +447,84 @@ class discordViewBuilder:
             returnedView.add_item(soldierButton)
 
         return returnedView
+    
+    @staticmethod
+    async def savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
+
+        returnedView = View()
+        player = databaseManager.searchForWvsPlayer(currentLobby.host)
+        savedRulesets = player['savedRulesets']
+
+        backButton = Button(label = 'Go Back to Basic Options', emoji=currentTheme.emojiBackButton, style=discord.ButtonStyle.grey)
+
+        async def processBackButton(interaction):
+            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            await interaction.message.edit(embed=embed, view=refreshedView)
+            await interaction.response.defer()
+
+        backButton.callback = processBackButton
+        returnedView.add_item(backButton)
+
+        loadSelect = Select(placeholder = '🔃Load Saved Ruleset', min_values=1, max_values=1)
+
+        saveSelect = Select(placeholder = '💾Save/Overwrite Ruleset', min_values=1, max_values=1)
+
+        index = 1
+        for ruleset in savedRulesets:
+            if ruleset != None:
+                newName = f'{index} -  {ruleset['name']}'
+                loadSelect.add_option(label = newName, emoji= str('✅'))
+                saveSelect.add_option(label = newName, emoji= str('✅'))
+            else:
+                newName = f'{index} - EMPTY'
+                loadSelect.add_option(label = newName, emoji= str('❌'))
+                saveSelect.add_option(label = newName, emoji= str('❌'))
+            index += 1
+
+        async def processSaveSelect(interaction):
+            indexSaved = int(saveSelect.values[0][0]) - 1
+            rulesetModal = Modal(title = f'Choose Name for Ruleset {indexSaved + 1}')
+            nameInput = TextInput(label='Type Name Here', style=discord.TextStyle.short)
+            rulesetModal.add_item(nameInput)
+            async def processNameInput(newInteraction):
+                    name = str(nameInput.value)
+                    rules = {}
+                    for key, value in vars(currentLobby.currentRules).items():
+                        if key.startswith('__'):
+                            continue
+                        else:
+                            rules[key] = value
+                    ruleset = {'name': name, 'rules':rules}
+                    savedRulesets[indexSaved] = ruleset
+                    databaseManager.updateRuleset(currentLobby.host.id, savedRulesets)
+                    refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    await interaction.message.edit(view = refreshedView)
+                    await newInteraction.response.defer()
+                    
+            rulesetModal.on_submit = processNameInput
+            await interaction.response.send_modal(rulesetModal)
+
+        async def processLoadSelect(interaction):
+            indexSelected = int(loadSelect.values[0][0]) - 1
+            ruleset = savedRulesets[indexSelected]
+            if ruleset == None:
+                rules = {}
+            else:
+                rules = ruleset['rules']
+            currentLobby.currentRules.loadRules(rules)
+            refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            await interaction.message.edit(view = refreshedView)
+            await interaction.response.defer()
+
+        saveSelect.callback = processSaveSelect
+        loadSelect.callback = processLoadSelect
+        returnedView.add_item(loadSelect)
+        returnedView.add_item(saveSelect)
+        return returnedView
+        
+
+
     
     async def changeRoleRules(currentGame, currentLobby, interaction, changedRoles, isEnabled):
         if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:

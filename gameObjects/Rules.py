@@ -56,6 +56,10 @@ class Rules:
     def toggleRumbling(self, toggle):
         self.rumbling = toggle
 
+    def loadRules(self, rules):
+        for key, value in rules.items():
+            setattr(self, key, value)
+
 
     
 

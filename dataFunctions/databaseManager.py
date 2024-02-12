@@ -26,6 +26,24 @@ class databaseManager:
         return returnedUser
     
     @staticmethod
+    def searchForWvsPlayer(user):
+        returnedPlayer = databaseManager.gameDatabase.find_one({"userID":user.id})
+        return returnedPlayer
+    
+    @staticmethod
+    def addWvsPlayer(userInfo):
+        databaseManager.gameDatabase.insert_one(userInfo)
+
+    @staticmethod
+    def updateWvsPlayer(userInfo):
+        databaseManager.gameDatabase.update_one({'userID' : userInfo['userID']}, {'$set' : userInfo})
+
+    @staticmethod
+    def updateRuleset(userID, rules):
+        databaseManager.gameDatabase.update_one({'userID' : userID}, {'$set' : {'savedRulesets':rules}})
+
+    
+    @staticmethod
     def updateUserInformation(user, userData):
         databaseManager.rootDatabase['users'].update_one({'userID' : user.id}, {'$set' : userData})
 
