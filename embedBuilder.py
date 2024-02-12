@@ -175,8 +175,10 @@ class embedBuilder:
         titansSmelled = 0
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
-            if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+            if (expeditioner in currentGame.warriors and player in currentGame.warriors and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
+            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Magath' or expeditioner.role.id == 'Magath')):
+                playerList += f'{currentTheme.emojiWarrior}{expeditioner.role.emoji}'
             playerList += '\n'
             if expeditioner.role.isTitan:
                 titansSmelled += 1
@@ -255,8 +257,10 @@ class embedBuilder:
         playerList = f'The current {currentTheme.expeditionTeam}:\n'
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
-            if (expeditioner in currentGame.warriors and player in currentGame.warriors) or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+            if (expeditioner in currentGame.warriors and player in currentGame.warriors and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
+            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Magath' or expeditioner.role.id == 'Magath')):
+                playerList += f'{currentTheme.emojiWarrior}{expeditioner.role.emoji}'
             playerList += '\n'
         playerList += '\n'
         playerList += f'{currentTheme.emojiPassExpedition} Select Pass to Pass this {currentTheme.expeditionName} normally\n'

@@ -38,7 +38,7 @@ class Role:
     warriorGroupAbility = ['Pieck', 'Annie', 'Porco', 'Falco']
 
     #The group of all option Warriors with multi-use perks
-    warriorGroupPerk = ['Reiner', 'Bertholdt']
+    warriorGroupPerk = ['Reiner', 'Bertholdt', 'Magath']
 
     #The default Warrior classes.
     warriorGroupDefault = ['Warrior']

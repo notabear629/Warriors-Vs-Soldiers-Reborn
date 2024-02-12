@@ -816,6 +816,33 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] =  'Falco spends a lot of time with mail and the letters thanks to Eren\'s shenanigans. As such, he has learned how to intercept letters and receive notice as what is to come. Thanks to this, he has the 1 time ability to use a special vote when voting for an expedition proposal. What this vote will do, is that it will reject the expedition UNLESS it would pass with your vote! This ability is powerful when used properly, as it allows you the chance to accept one of your teammates, while not blowing your cover if it fails!'
 
+    class Magath:
+        roleDict = {'roleID' : 'Magath'}
+
+        roleDict['name'] = 'Theo Magath'
+
+        roleDict['shortName'] = 'Magath'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1206505938606100521
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You are a commander of the Marleyian Miltiary! As such, you have extensive detail on the movements of the other Warriors. You will have knowledge over who has what Warrior roles. In addition to this, the other Warriors will also know you are Magath. Use this advanced knowledge to expertly coordinate attacks against the Soldiers!\n\n'
+
+        roleDict['gameRole'] = ':military_helmet:Commander:military_helmet:'
+
+        roleDict['helpInfo'] =  'Theo Magath is a commander of the Marleyian Military. Thanks to this high rank, he has high knowledge of the troop movements and positioning of the other Warriors. He will know the specific role identity of each of his fellow Warrior comrades. In turn, all of the other Warriors will know his identity. This, in theory, should allow for superb coordination around him!'
+
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
 
@@ -897,7 +924,13 @@ class defaultGameTheme:
         warriorList = random.sample(warriorList, len(warriorList))
         for warrior in warriorList:
             if player.user.name != warrior.user.name:
-                warriorInfo += f'**{warrior.user.name}**'
+                if player.role.id != 'Magath':
+                    if warrior.role.id != 'Magath':
+                        warriorInfo += f'**{warrior.user.name}**'
+                    else:
+                        warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
+                else:
+                    warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
             if warriorList.index(warrior) != len(warriorList) - 1:
                 warriorInfo += '\n'
         return warriorInfo
