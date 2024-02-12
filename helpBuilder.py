@@ -48,6 +48,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = '🥷`Kidnap Rules`', value = 'This section teaches you more about the various rules regarding the kidnap phase of the game!', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiRumbling}`{currentTheme.rumblingName}`', value = 'This section teaches you more about the optional rule to play with new ways to win and find new endings! In the default theme, based off "The Rumbling" in Attack on Titan\'s final season.', inline=True)
         returnedEmbed.add_field(name = f'👥`Role Options`', value = 'This section explains how to properly configure the Role Options based on what you want', inline=True)
+        returnedEmbed.add_field(name = f'💾`Saved Rulesets`', value= 'This section explains how to quickly save and load particular rulesets', inline=True)
         return returnedEmbed
     
     async def gameThemesEmbed(currentTheme):
@@ -188,6 +189,13 @@ class helpBuilder:
 
         return returnedEmbed
     
+    async def savedRulesetEmbed(currentTheme):
+        returnedEmbed = discord.Embed(title = 'Saved Rulesets', description = 'Information on how to save your rulesets', color=currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = '🔃`Load Rulesets`', value= 'In order to load your rulesets, you simply must open the selection menu and click the named ruleset you wish to load. If you load an empty slot that you have not yet saved, nothing will change.', inline=True)
+        returnedEmbed.add_field(name = '💾`Save Rulesets`', value = 'Saving your rulesets is also quite simple. First, ensure that the current lobby has the rules you actually intend on saving. Next, choose the slot from the save selection menu you would like to save your ruleset in. You may either choose to save it in an empty slot, or to overwrite and replace an old slot with a new ruleset. After you select a slot, a window will appear asking you to name the ruleset. Once you choose a name, that slot will be saved with the currently loaded rules in the lobby by the name you gave it.', inline=True)
+        
+        return returnedEmbed
+    
     async def mainNavigatorView(navigatorContext, navigator, currentTheme, prefix, loadedRoles):
         returnedView = View()
 
@@ -195,7 +203,7 @@ class helpBuilder:
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
                     mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info']
-                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options']
+                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
                     if navigatorContext in mainReturns:
                         newNavigatorContext = 'Main'
@@ -224,6 +232,10 @@ class helpBuilder:
                 elif clickedButton == 'Role Info':
                     newNavigatorContext = 'Role Info'
                     refreshedEmbed = await helpBuilder.roleInfoHelpEmbed(currentTheme)
+
+                elif clickedButton == 'Saved Rulesets':
+                    newNavigatorContext = 'Saved Rulesets'
+                    refreshedEmbed = await helpBuilder.savedRulesetEmbed(currentTheme)
 
                 elif clickedButton == 'Selected Role Info':
                     newNavigatorContext = 'Role Info'
@@ -336,6 +348,12 @@ class helpBuilder:
                 await navigate(interaction, 'Role Options')
             roleOptionsButton.callback = processRoleOptionsButton
             returnedView.add_item(roleOptionsButton)
+
+            savedRulesetsButton = Button(label = 'Saved Rulesets', style=discord.ButtonStyle.grey, emoji = str('💾'))
+            async def processSavedRulesetsButton(interaction):
+                await navigate(interaction, 'Saved Rulesets')
+            savedRulesetsButton.callback = processSavedRulesetsButton
+            returnedView.add_item(savedRulesetsButton)
 
         elif navigatorContext == 'How to Play':
             gameInfoButton = Button(label= 'Game Info', style= discord.ButtonStyle.grey, emoji = str('💡'))
