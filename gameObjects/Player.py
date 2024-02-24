@@ -1,3 +1,5 @@
+from gameObjects.Stats import Stats
+
 class Player:
     def __init__(self, user, role):
         self.user = user
@@ -10,3 +12,6 @@ class Player:
 
     def killPlayer(self, killedPlayer, causeOfDeath):
         self.killed[killedPlayer] = causeOfDeath
+
+    def addStats(self, role):
+        self.stats = Stats(role)

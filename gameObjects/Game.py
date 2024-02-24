@@ -141,6 +141,7 @@ class Game:
                     self.deadWarriors.append(killedPlayer)
                 killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
                 killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+                
 
     def updateMikasaTarget(self, target, causeOfDeath):
         self.currentExpo.mikasaGuarded = {target: causeOfDeath}

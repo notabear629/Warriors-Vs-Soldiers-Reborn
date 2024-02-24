@@ -52,6 +52,9 @@ class Role:
     #Combine all roles into one
     allRoles = soldierRoles + warriorRoles
 
+    #All Lethal Roles in one
+    allLethal = soldierGroupLethal
+
     #Combine all Roles with getInfo functions to one list
     infoMessageRoles = soldierGroupCoordinate + warriorRoles + soldierGroupInfo
 

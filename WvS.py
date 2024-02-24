@@ -65,7 +65,7 @@ async def resetFunction():
 async def on_ready():
     global home, homeServer, userCategory, gagRole, adminRole
     global noMentions, withMentions
-    global currentTheme, currentRules, currentLobby, currentGame, loadedRoles
+    global currentTheme, currentRules, currentLobby, currentGame, loadedRoles, currentTest
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
@@ -185,7 +185,10 @@ async def passExpo(ctx):
 @client.command('clear')
 async def clear(ctx):
     await expoProposalFunctions.clearExpo(ctx, currentGame, home, prefix, currentTheme)
-        
+
+
+
+@commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
 @client.command('results')
 async def results(ctx):
     resultsRead = await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client, homeServer, discord)

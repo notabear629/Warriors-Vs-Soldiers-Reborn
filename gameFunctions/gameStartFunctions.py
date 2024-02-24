@@ -147,6 +147,7 @@ class gameStartFunctions:
     async def sendRoleMessages(currentGame, currentTheme, client):
         for player in currentGame.players:
             await gameStartFunctions.sendRoleMessage(currentGame, currentTheme, player, client)
+            player.addStats(player.role)
 
     async def sendRoleMessage(currentGame, currentTheme, player, client):
         if player.role.team == 'Soldiers':

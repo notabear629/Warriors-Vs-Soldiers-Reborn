@@ -137,11 +137,15 @@ class endGameFunctions:
 
     async def processEndgame(currentGame, currentTheme, home):
         currentGame.processWinners()
+        await endGameFunctions.processEndgameStats(currentGame)
         if currentGame.winCondition == 'multikidnapSuccess' or currentGame.winCondition == 'multikidnapFail':
             await endGameFunctions.sendMultikidnapWarriorWinners(currentGame, currentTheme, home)
         embed = await embedBuilder.endgame(currentGame, currentTheme)
         await home.send(embed=embed)
 
+    async def processEndgameStats(currentGame):
+        for player in currentGame.players:
+            player.stats.processEndgame(player, currentGame)
 
     async def skipToBasement(ctx, currentGame, currentTheme, home, client):
         if currentGame.online and currentGame.exposOver == False:

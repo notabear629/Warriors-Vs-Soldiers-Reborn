@@ -16,4 +16,5 @@ class defaultRules:
     #Rules that define game options
     multikidnap = False
     rumbling = False
+    casual = False
 

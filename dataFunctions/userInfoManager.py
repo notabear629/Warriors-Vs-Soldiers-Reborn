@@ -5,6 +5,8 @@ from dataFunctions.databaseManager import databaseManager
 
 from embedBuilder import embedBuilder
 
+from gameObjects.Role import Role
+
 class userInfoManager:
     async def userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix):
         userValidation = databaseManager.searchForUser(user)
@@ -28,10 +30,17 @@ class userInfoManager:
             gameValidation = databaseManager.searchForWvsPlayer(user)
         defaultDB = await userInfoManager.getDefaultUserDatabase()
         newDB = gameValidation.copy()
+        updateNeeded = False
         for key, value in defaultDB.items():
             if key not in newDB:
+                updateNeeded = True
                 newDB[key] = value
-        if newDB != gameValidation:
+            elif type(value) == dict:
+                for key2, value2 in value.items():
+                    if key2 not in newDB[key]:
+                        updateNeeded = True
+                        newDB[key][key2] = value2
+        if updateNeeded:
             databaseManager.updateWvsPlayer(newDB)
 
 
@@ -41,7 +50,24 @@ class userInfoManager:
         while len(savedRulesets) < 25:
             savedRulesets.append(None)
         db['savedRulesets'] = savedRulesets
+        db['stats'] = await userInfoManager.getDefaultStatistics()
         return db
+    
+    async def getDefaultStatistics():
+        stats = {'GamesPlayed': 0, 'GamesWon' : 0, 'SoldiersPlayed': 0, 'SoldiersWon': 0, 'SoldiersKidnaps': 0, 'SoldiersKidnapWins': 0, 'WarriorsPlayed' : 0, 'WarriorsWon': 0, 'WarriorsKidnaps': 0, 'WarriorsKidnapWins': 0, 'Kills' : 0, 'Deaths': 0, 'MVPS':0, 'SoldiersMVPS': 0, 'WarriorsMVPS':0}
+        for role in Role.allRoles:
+            roleStats = {f'{role}Played': 0, f'{role}Won' :0, f'{role}Kidnaps': 0, f'{role}KidnapWins' : 0}
+            stats.update(roleStats)
+        for role in Role.allLethal:
+            roleStats = {f'{role}Kills' : 0, f'{role}KillWins' :0}
+            stats.update(roleStats)
+        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'ArminNukes': 0, 'SashaFires': 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkipWins':0, 'FalcoUses' :0, 'FalcoWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0}
+        stats.update(abilityStats)
+        extraSoldierStats = {'SoldiersWallsBroken': 0, 'SoldiersPasses': 0, 'PassCommanders': 0, 'PassVotes': 0, 'PassAssists': 0, 'PassExpeditions': 0, 'PassesResponsible': 0, 'ExposCommanded': 0, 'ExpoCommandWins':0, 'ExposVoted':0, 'ExpoVoteWins':0, 'SoldiersExpeditionsOn':0}
+        stats.update(extraSoldierStats)
+        extraWarriorStats = {'WarriorsWallsBroken': 0, 'WarriorsPasses':0, 'BreakCommanders': 0, 'BreakVotes': 0, 'BreakAssists':0, 'BreakExpeditions':0, 'BreaksResposnible': 0, 'WarriorsExpeditionsOn':0}
+        stats.update(extraWarriorStats)
+        return stats
 
     async def changeColor(ctx, user, homeServer, color):
         userValidation = databaseManager.searchForUser(user)
