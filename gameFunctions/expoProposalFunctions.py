@@ -9,6 +9,7 @@ from gameObjects.Player import Player
 from gameObjects.Game import Game
 from gameObjects.Role import Role
 from gameObjects.Expedition import Expedition
+from gameObjects.Stats import Stats
 
 from gameFunctions.searchFunctions import searchFunctions
 from gameFunctions.timerManager import timerManager
@@ -138,6 +139,8 @@ class expoProposalFunctions:
             elif currentGame.porcoGagged == currentGame.currentExpo.commander:
                 await home.send(f'The {currentTheme.commanderName} is under a gag order and will be skipped!')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+                Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
+                Porco.stats.gagSkip()
             else:
                 return
 
@@ -237,6 +240,7 @@ class expoProposalFunctions:
             Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
             currentGame.currentExpo.processFalco(Falco)
         voteResult = await expoProposalFunctions.getVotingResults(currentGame)
+        await Stats.processVoteStats(currentGame, voteResult, searchFunctions)
         embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)
         await home.send(embed=embed)
         await webhookManager.processExpoVoteWebhooks(currentGame, currentTheme, home, client)
@@ -273,6 +277,7 @@ class expoProposalFunctions:
                     await Erwin.user.remove_roles(gagRole)
                     currentGame.removeGag()
                 currentGame.currentExpo.activateErwin(Erwin)
+                Erwin.stats.fireFlare()
 
     async def erwinTakeover(currentGame, currentTheme, home, client):
         await webhookManager.erwinWebhook(currentGame, currentTheme, home, client)

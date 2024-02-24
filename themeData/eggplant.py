@@ -54,6 +54,8 @@ class eggplant:
     emojiRoleEnabled = str('🍆')
     emojiRoleDisabled = str('🍆')
     emojiRoleDefault = str('🍆')
+    emojiCasual = str('🍆')
+    emojiRanked = str('🍆')
 
     #Status Embed Aesthetics
     winningColor = discord.Color.dark_purple()
@@ -147,6 +149,7 @@ class eggplant:
     endgameCardColor = discord.Color.dark_purple()
     emojiWinner = str('🍆')
     emojiLoser = str('🍆')
+    emojiMVP = str('🍆')
 
     #Webhook Message Aesthetics
     jeanMessage = str('🍆')

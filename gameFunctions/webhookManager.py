@@ -64,10 +64,19 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hitch', client, embed)
 
     async def processResultsWebhooks(currentGame, currentTheme, home, client):
+        Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+        if Hitch != None:
+            hitchInfo = {}
         if currentGame.currentExpo.arminActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.arminMessage, '{ALTERNATE}Armin', client)
+            if Hitch != None:
+                Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
+                hitchInfo['Armin'] = Armin
         if currentGame.currentExpo.bertholdtCloaked:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.bertholdtMessage, '{ALTERNATE}Bertholdt', client)
+            if Hitch != None:
+                Bertholdt = await searchFunctions.roleIDToPlayer(currentGame, 'Bertholdt')
+                hitchInfo['Bertholdt'] = Bertholdt
         if currentGame.currentExpo.leviAttacked:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             if Levi.killed != []:
@@ -76,6 +85,9 @@ class webhookManager:
                     user = databaseManager.searchForUser(player.user)
                     userChannel = client.get_channel(user['channelID'])
                     await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', '{ALTERNATE}Zeke', client)
+                if Hitch != None:
+                    Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+                    hitchInfo['Levi'] = Levi
         if currentGame.currentExpo.leviDefended and len(currentGame.currentExpo.sabotagedExpedition) > 0:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviDefendMessage, 'Levi', client)
@@ -83,15 +95,31 @@ class webhookManager:
                 user = databaseManager.searchForUser(player.user)
                 userChannel = client.get_channel(user['channelID'])
                 await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', '{ALTERNATE}Zeke', client)
+            if Hitch != None:
+                Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+                hitchInfo['Levi'] = Levi
         Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
         if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
+            if Hitch != None:
+                Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+                hitchInfo['Sasha'] = Sasha
         if currentGame.currentExpo.annieMessage != None:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.annieMessage, '{ALTERNATE}Annie', client)
             for player in currentGame.warriors:
                     user = databaseManager.searchForUser(player.user)
                     userChannel = client.get_channel(user['channelID'])
                     await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentGame.currentExpo.annieMessage}', '{ALTERNATE}Annie', client)
+            if Hitch != None:
+                Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
+                hitchInfo['Annie'] = Annie
+        if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
+            user = databaseManager.searchForUser(Hitch.user)
+            userChannel = client.get_channel(user['channelID'])
+            hitchMessage = currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+            embed = await embedBuilder.infoUpdate(currentTheme, Hitch, hitchMessage)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', client)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hitch', client, embed)
 
 
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):
@@ -115,6 +143,16 @@ class webhookManager:
 
     async def dazWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.dazMessage, 'Daz', client)
+        Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+        if Hitch != None:
+            Daz = await searchFunctions.roleIDToPlayer(currentGame, 'Daz')
+            hitchInfo = {'Daz': Daz}
+            user = databaseManager.searchForUser(Hitch.user)
+            userChannel = client.get_channel(user['channelID'])
+            hitchMessage = currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+            embed = await embedBuilder.infoUpdate(currentTheme, Hitch, hitchMessage)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', client)
+            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hitch', client, embed)
 
     async def mikasaWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.mikasaMessage, 'Mikasa', client)

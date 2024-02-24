@@ -8,6 +8,8 @@ from gameFunctions.timerManager import timerManager
 from gameFunctions.webhookManager import webhookManager
 from gameFunctions.searchFunctions import searchFunctions
 
+from gameObjects.Stats import Stats
+
 
 import random
 import asyncio
@@ -94,6 +96,7 @@ class expoActiveFunctions:
     
     async def processResults(currentGame, currentTheme, result, home, expoPredictFunction):
         currentGame.processResult(result)
+        await Stats.processResults(currentGame, result, searchFunctions)
         embed = await embedBuilder.results(currentGame, currentTheme, result)
         await home.send(embed=embed)
         if result == 'y':

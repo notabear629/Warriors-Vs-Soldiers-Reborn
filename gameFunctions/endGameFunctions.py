@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from gameObjects.Stats import Stats
+
 from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.timerManager import timerManager
 from gameFunctions.searchFunctions import searchFunctions
@@ -137,11 +139,16 @@ class endGameFunctions:
 
     async def processEndgame(currentGame, currentTheme, home):
         currentGame.processWinners()
+        await Stats.processMVP(currentGame)
         await endGameFunctions.processEndgameStats(currentGame)
         if currentGame.winCondition == 'multikidnapSuccess' or currentGame.winCondition == 'multikidnapFail':
             await endGameFunctions.sendMultikidnapWarriorWinners(currentGame, currentTheme, home)
         embed = await embedBuilder.endgame(currentGame, currentTheme)
         await home.send(embed=embed)
+        if currentGame.currentRules.casual == False:
+            embed = await embedBuilder.scoreboard(currentGame, currentTheme)
+            await home.send(embed=embed)
+            await home.send(f'{currentTheme.emojiMVP}{currentGame.MVP.user.mention} has won Match MVP with **{currentGame.MVP.mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
 
     async def processEndgameStats(currentGame):
         for player in currentGame.players:

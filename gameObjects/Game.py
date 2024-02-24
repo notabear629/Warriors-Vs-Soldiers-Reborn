@@ -63,6 +63,7 @@ class Game:
         self.fightingAllianceMember = None
         self.dominantYeagerist = None
         self.allianceDomination = True
+        self.MVP = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -141,6 +142,7 @@ class Game:
                     self.deadWarriors.append(killedPlayer)
                 killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
                 killerPlayer.killPlayer(killedPlayer, causeOfDeath)
+                killerPlayer.stats.processKill(killerPlayer, killedPlayer)
                 
 
     def updateMikasaTarget(self, target, causeOfDeath):
@@ -196,6 +198,9 @@ class Game:
             self.winners = self.yeagerists.copy()
         elif self.winCondition == 'Alliance':
             self.winners = self.alliance.copy()
+
+    def setMVP(self, MVP):
+        self.MVP = MVP
 
     def refundAbilities(self):
         for player in self.currentExpo.usedExpoAbilities:

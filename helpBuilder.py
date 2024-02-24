@@ -47,6 +47,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = '🎭`Game Themes`', value = 'This section teaches you more about Game Themes, the ability to re-skin the game!', inline= True)
         returnedEmbed.add_field(name = '🥷`Kidnap Rules`', value = 'This section teaches you more about the various rules regarding the kidnap phase of the game!', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiRumbling}`{currentTheme.rumblingName}`', value = 'This section teaches you more about the optional rule to play with new ways to win and find new endings! In the default theme, based off "The Rumbling" in Attack on Titan\'s final season.', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiRanked}`Ranked Status`', value = 'This section explains what setting the game to Ranked or Casual does', inline=True)
         returnedEmbed.add_field(name = f'👥`Role Options`', value = 'This section explains how to properly configure the Role Options based on what you want', inline=True)
         returnedEmbed.add_field(name = f'💾`Saved Rulesets`', value= 'This section explains how to quickly save and load particular rulesets', inline=True)
         return returnedEmbed
@@ -68,6 +69,12 @@ class helpBuilder:
         returnedEmbed.add_field(name = '`How can I trigger the Rumbling?`', value = 'In order to trigger the Rumbling, some conditions must be met. First of all, it will be triggered only after an expedition is complete, once you look at the results of the expedition, if the conditions within that expedition were met, the Rumbling will start. The conditions are as follows:\n1. The Round MUST be round 3 or later. The Rumbling cannot start in the first 2 rounds.\n2. Eren and Zeke must BOTH be in the expedition. They are the two characters that ultimately activate the rumbling.\n3. NO character that has an allegiance to the Alliance can be present in the expedition. It must be full of only Yeagerists.', inline= True)
         returnedEmbed.add_field(name = '`How is the Rumbling fought?`', value = 'The game works like this. All of the Yeagerist fighters and the Alliance fighters will form in to two teams. The Yeagerists will be the ones playing the game, in a fashion very similar to kidnapping. The Alliance fighters will have a specific order that is scrambled and randomized, the Yeagerist fighters will be semi-randomized except Eren will always be last and Zeke will be second to last. The game begins with the First Yeagerist being told the Role of the First Alliance Member, but NOT their identity. The first Yeagerist must select who they believe has this role, if they get it right, they kill the Alliance Member and the next Alliance Member steps up to fight that particular Yeagerist. If they get it wrong, the Yeagerist themselves is killed and that Alliance Member moves forward to fight the next Yeagerist. The game continues until one side is completely wiped out.', inline= True)
         returnedEmbed.add_field(name = '`How do I get different Endings?`', value= 'The Rumbling has multiple possible different endings. First, there is a default victory for both the Yeagerists and the Alliance. Next, there is something called "Domination Victories". This happens when a particular yeagerist kills every single alliance member by themselves, without another yeagerist getting a single kill. Each fighting yeagerist role has their own domination victory. In addition, if the yeagerists cannot identify a single alliance member correctly and every alliance member makes it through, the ALLIANCE has their own domination victory.', inline= True)
+        return returnedEmbed
+    
+    async def rankedEmbed(currentTheme):
+        returnedEmbed = discord.Embed(title = 'Ranked Status', description= 'This setting determines if certain stats are tracked throughout the game for ranked leaderboard purposes or if the results of the game are kept off-record.', color = currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiRanked}`Ranked`', value = 'Selecting this option means that the stats of the game will be tracked and saved. A game MVP will be rewarded at the end of the match.', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiCasual}`Casual`', value = 'Selecting this value means that the results of this game will not be tracked. In addition, it will allow for some of the whackier rules to be played.', inline=True)
         return returnedEmbed
     
     async def roleOptionsInfoEmbed(currentTheme):
@@ -203,7 +210,7 @@ class helpBuilder:
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
                     mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info']
-                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets']
+                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
                     if navigatorContext in mainReturns:
                         newNavigatorContext = 'Main'
@@ -252,6 +259,10 @@ class helpBuilder:
                 elif clickedButton == 'Rumbling':
                     newNavigatorContext = 'Rumbling'
                     refreshedEmbed = await helpBuilder.rumblingInfoEmbed(currentTheme)
+
+                elif clickedButton == 'Ranked':
+                    newNavigatorContext = 'Ranked'
+                    refreshedEmbed = await helpBuilder.rankedEmbed(currentTheme)
 
                 elif clickedButton == 'Role Options':
                     newNavigatorContext = 'Role Options'
@@ -342,6 +353,12 @@ class helpBuilder:
                 await navigate(interaction, 'Rumbling')
             rumblingButton.callback = processRumblingButton
             returnedView.add_item(rumblingButton)
+
+            rankedButton = Button(label = f'Ranked Status', style=discord.ButtonStyle.grey, emoji = currentTheme.emojiRanked)
+            async def processRankedButton(interaction):
+                await navigate(interaction, 'Ranked')
+            rankedButton.callback = processRankedButton
+            returnedView.add_item(rankedButton)
 
             roleOptionsButton = Button(label = 'Role Options', style= discord.ButtonStyle.grey, emoji = str('👥'))
             async def processRoleOptionsButton(interaction):

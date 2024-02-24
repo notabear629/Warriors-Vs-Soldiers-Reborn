@@ -54,6 +54,8 @@ class defaultGameTheme:
     emojiRoleEnabled = str('✅')
     emojiRoleDisabled = str('❌')
     emojiRoleDefault = str('➖')
+    emojiCasual = str('🤙')
+    emojiRanked = str('🏅')
 
     #Status Embed Aesthetics
     winningColor = discord.Color.green()
@@ -147,6 +149,7 @@ class defaultGameTheme:
     endgameCardColor = discord.Color.blue()
     emojiWinner ='🏅'
     emojiLoser = '☠️'
+    emojiMVP = '🏆'
 
     #Webhook Message Aesthetics
     jeanMessage = f'I\'m securing this Expedition!'

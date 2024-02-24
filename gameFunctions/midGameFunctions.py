@@ -94,3 +94,4 @@ class midGameFunctions:
                     await userChannel.send(f'{Porco.user.mention}, You have successfully carried out a gag order.')
                     Porco.role.disableAbility()
                     currentGame.porcoGag(gaggedPlayer)
+                    Porco.stats.activateGag()

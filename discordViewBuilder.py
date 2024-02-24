@@ -17,6 +17,7 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
+        return True
         if player.user == interaction.user:
             return True
         return False
@@ -184,7 +185,7 @@ class discordViewBuilder:
             bertholdtButton.callback = processBertholdtButton
             returnedView.add_item(bertholdtButton)
 
-        if player.role.id == 'Annie':
+        if player.role.id == 'Annie' and player.role.abilityActive:
             annieButton = Button(label = 'Input Scream Message', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processAnnieButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -336,6 +337,25 @@ class discordViewBuilder:
                 await interaction.response.defer()
         rumblingSelect.callback = processRumblingSelect
         returnedView.add_item(rumblingSelect)
+
+        casualSelect = Select(placeholder = 'Ranked Status', min_values=1, max_values=1)
+
+        casualSelect.add_option(label = f'Ranked', emoji = currentTheme.emojiRanked)
+        casualSelect.add_option(label = f'Casual', emoji = currentTheme.emojiCasual)
+
+        async def processCasualSelect(interaction):
+            option = str(casualSelect.values[0])
+            if option != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+                if option.startswith('Ranked'):
+                    currentLobby.currentRules.toggleCasual(False)
+                else:
+                    currentLobby.currentRules.toggleCasual(True)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+        casualSelect.callback = processCasualSelect
+        returnedView.add_item(casualSelect)
 
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 

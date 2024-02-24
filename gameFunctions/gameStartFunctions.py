@@ -13,6 +13,7 @@ from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.searchFunctions import searchFunctions
 
 from dataFunctions.databaseManager import databaseManager
+from dataFunctions.userInfoManager import userInfoManager
 
 from embedBuilder import embedBuilder
 
@@ -23,13 +24,17 @@ class gameStartFunctions:
                 if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
                         if len(currentLobby.users) >= 5:
-                            await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                            await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole)
-                            expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
-                            expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
-                            currentGame.setExpedition(expo)
-                            await gameStartFunctions.sendRoleMessages(currentGame, currentTheme, client)
-                            return True
+                            illegalRules = await gameStartFunctions.checkIllegalRules(currentLobby, currentTheme)
+                            if illegalRules == '':
+                                await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
+                                await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole)
+                                expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+                                expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
+                                currentGame.setExpedition(expo)
+                                await gameStartFunctions.sendRoleMessages(currentGame, currentTheme, client)
+                                return True
+                            else:
+                                await ctx.message.reply(f'⚠️Illegal Rule Configuration detected!⚠️\nGame cannot be started until following issues are resolved:\n{illegalRules}')
                         else:
                             await ctx.message.reply('A minimum of **5** Players is required to start the game!') 
                     else:
@@ -147,7 +152,8 @@ class gameStartFunctions:
     async def sendRoleMessages(currentGame, currentTheme, client):
         for player in currentGame.players:
             await gameStartFunctions.sendRoleMessage(currentGame, currentTheme, player, client)
-            player.addStats(player.role)
+            defaultStats = await userInfoManager.getDefaultStatistics()
+            player.addStats(player.role, defaultStats)
 
     async def sendRoleMessage(currentGame, currentTheme, player, client):
         if player.role.team == 'Soldiers':
@@ -192,6 +198,15 @@ class gameStartFunctions:
         await userChannel.send(player.user.mention)
         await userChannel.send(embed=embed)
 
+
+    async def checkIllegalRules(currentLobby, currentTheme):
+        illegalRules = ''
+        if currentLobby.currentRules.casual == False and currentLobby.currentRules.rumbling:
+            illegalRules += f'{currentTheme.rumblingName} can only be enabled if the lobby is set to casual!\n'
+        if currentLobby.currentRules.rumbling and len(currentLobby.users) < 7:
+            illegalRules += f'{currentTheme.rumblingName} can only be enabled if there are 7 or more players!\n'
+
+        return illegalRules
 
     
 

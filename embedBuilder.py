@@ -28,6 +28,13 @@ class embedBuilder:
             rumblingEmoji = str('❌')
             rumblingVal = 'Disabled'
         returnedEmbed.add_field(name = f'{currentTheme.rumblingName}', value = f'{rumblingEmoji}`{rumblingVal}`', inline = False)
+        if currentLobby.currentRules.casual:
+            rankedEmoji = currentTheme.emojiCasual
+            rankedChoice = 'Casual'
+        else:
+            rankedEmoji = currentTheme.emojiRanked
+            rankedChoice = 'Ranked'
+        returnedEmbed.add_field(name = 'Ranked Status', value = f'{rankedEmoji}`{rankedChoice}`', inline= False)
         return returnedEmbed
     
     async def buildReset(prefix):
@@ -384,6 +391,32 @@ class embedBuilder:
                     else:
                         addedEmoji = currentTheme.emojiLoser
                     returnedEmbed.add_field(name=f'{search.role.emoji}{search.role.name}{search.role.emoji}', value=f'{search.user.name}{addedEmoji}', inline=True)
+        return returnedEmbed
+    
+    async def scoreboard(currentGame, currentTheme):
+
+        returnedEmbed = discord.Embed(title = f'Scoreboard', color= currentTheme.endgameCardColor)
+        for role in Role.allRoles:
+            search = await searchFunctions.roleIDToPlayer(currentGame, role)
+            if search != None:
+                if type(search) == list:
+                    for player in search:
+                        if player == currentGame.MVP:
+                            addedEmoji = currentTheme.emojiMVP
+                        elif player in currentGame.winners:
+                            addedEmoji = currentTheme.emojiWinner
+                        else:
+                            addedEmoji = currentTheme.emojiLoser
+                        returnedEmbed.add_field(name = f'{addedEmoji}{player.user.name}{addedEmoji}', value=f'MVP Points: {player.mvpPoints}', inline=True)
+                else:
+                    if search == currentGame.MVP:
+                        addedEmoji = currentTheme.emojiMVP
+                    elif search in currentGame.winners:
+                        addedEmoji = currentTheme.emojiWinner
+                    else:
+                        addedEmoji = currentTheme.emojiLoser
+                    returnedEmbed.add_field(name = f'{addedEmoji}{search.user.name}{addedEmoji}', value=f'MVP Points: {search.mvpPoints}', inline=True)
+
         return returnedEmbed
     
     async def savedRulesets(currentTheme):
