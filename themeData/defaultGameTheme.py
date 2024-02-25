@@ -451,9 +451,9 @@ class defaultGameTheme:
 
         roleDict['isTitan'] = False
 
-        roleDict['emoji'] = 1185512895094726756
+        roleDict['emoji'] = 1211171011941236786
 
-        roleDict['secondaryEmoji'] = 1185515676392243302
+        roleDict['secondaryEmoji'] = 1211171033634181160
 
         roleDict['imageURL'] = None
 

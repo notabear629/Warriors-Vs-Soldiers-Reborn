@@ -25,7 +25,7 @@ class webhookManager:
             if foundPlayer != None:
                 authorName = foundPlayer.role.name
                 if type(foundPlayer.role.secondaryEmoji) == str:
-                    authorAvatar = foundPlayer.secondaryImageURL
+                    authorAvatar = foundPlayer.role.secondaryImageURL
                 else:
                     authorAvatar = foundPlayer.role.secondaryEmoji.url
         else:
