@@ -28,7 +28,7 @@ class expoActiveFunctions:
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Expo')
         if timeout == None:
             return
-        elif timeout:
+        elif timeout and currentGame.exposOver == False:
             await home.send(f'Time to act on the {currentTheme.expeditionName} has run out. The remaining players that did not act will have a random choice chosen for them.')
             for player in currentGame.currentExpo.expeditionMembers:
                 if player not in currentGame.currentExpo.expeditioned:
@@ -37,7 +37,8 @@ class expoActiveFunctions:
                         currentGame.currentExpo.actExpo(player, randomOption)
                     else:
                         currentGame.currentExpo.actExpo(player, 'y')
-        await home.send(f'The {currentTheme.expeditionName} results are in! Use `{prefix}results` to view them!')
+        if currentGame.exposOver == False:
+            await home.send(f'The {currentTheme.expeditionName} results are in! Use `{prefix}results` to view them!')
 
     async def chooseExpo(currentGame, player, client, currentTheme, home, choice):
         if currentGame.online and currentGame.currentExpo.currentlyExpeditioning and player in currentGame.currentExpo.expeditionMembers and player not in currentGame.currentExpo.expeditioned:

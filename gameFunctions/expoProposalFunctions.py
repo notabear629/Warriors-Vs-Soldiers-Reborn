@@ -190,12 +190,13 @@ class expoProposalFunctions:
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Vote')
         if timeout == None:
             return
-        elif timeout:
+        elif timeout and currentGame.exposOver == False:
             await home.send(f'Time to vote on the {currentTheme.expeditionTeam} has run out. The remaining voters that did not vote will be marked as abstaining.')
             for player in currentGame.currentExpo.eligibleVoters:
                 if player not in currentGame.currentExpo.voted:
                     currentGame.currentExpo.voteExpo(player, 'a')
-        await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
+        if currentGame.exposOver == False:
+            await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
 
     
     async def voteExpo(currentGame, player, client, currentTheme, home, vote):

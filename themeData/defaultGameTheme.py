@@ -7,6 +7,7 @@ import discord
 from discord.ext import commands
 import random
 
+load_dotenv()
 prefix = os.getenv('BOT_PREFIX')
 
 #CHANGE THIS CLASS NAME. Your new file and your new class should NOT be named defaultGameTheme, each theme added should have different names.

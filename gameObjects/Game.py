@@ -210,6 +210,9 @@ class Game:
         self.exposOver = True
         if self.currentExpo != None:
             self.currentExpo.resultsAvailable = False
+            self.currentExpo.currentlyPicking = False
+            self.currentExpo.currentlyVoting = False
+            self.currentExpo.currentlyExpeditioning = False
 
     def activateRumbling(self):
         self.exposOver = True
