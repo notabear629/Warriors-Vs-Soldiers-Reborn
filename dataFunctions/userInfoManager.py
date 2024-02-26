@@ -8,8 +8,11 @@ from embedBuilder import embedBuilder
 from gameObjects.Role import Role
 
 class userInfoManager:
-    async def userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix):
-        userValidation = databaseManager.searchForUser(user)
+    async def userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix, idCase=None):
+        if idCase == None:
+            userValidation = databaseManager.searchForUser(user)
+        else:
+            userValidation = idCase
         if userValidation == None:
             newPersonalRole = await homeServer.create_role(name = f'role-{user.name}')
             await user.add_roles(newPersonalRole)
@@ -23,11 +26,19 @@ class userInfoManager:
             await channel.send(embed=embed)
             userInformation = {'userID' : user.id, 'userName': user.name, 'roleID' : newPersonalRole.id, 'channelID' : channel.id}
             databaseManager.addUser(userInformation)
-        gameValidation = databaseManager.searchForWvsPlayer(user)
-        if gameValidation == None:
-            userInformation = {'userID' : user.id, 'userName' : user.name}
-            databaseManager.addWvsPlayer(userInformation)
+        if idCase == None:
             gameValidation = databaseManager.searchForWvsPlayer(user)
+        else:
+            gameValidation = databaseManager.getWvsPlayerByID(idCase['userID'])
+        if gameValidation == None:
+            if idCase == None:
+                userInformation = {'userID' : user.id, 'userName' : user.name}
+                databaseManager.addWvsPlayer(userInformation)
+                gameValidation = databaseManager.searchForWvsPlayer(user)
+            else:
+                userInformation = {'userID' : idCase['userID'], 'userName' : idCase['userName']}
+                databaseManager.addWvsPlayer(userInformation)
+                gameValidation = databaseManager.getWvsPlayerByID(idCase['userID'])
         defaultDB = await userInfoManager.getDefaultUserDatabase()
         newDB = gameValidation.copy()
         updateNeeded = False
@@ -40,9 +51,28 @@ class userInfoManager:
                     if key2 not in newDB[key]:
                         updateNeeded = True
                         newDB[key][key2] = value2
+        statsToRemove = []
+        for key, value in newDB['stats'].items():
+            if key not in defaultDB['stats']:
+                statsToRemove.append(key)
+                updateNeeded = True
+        for stat in statsToRemove:
+            del newDB['stats'][stat]
         if updateNeeded:
             databaseManager.updateWvsPlayer(newDB)
 
+
+    async def fixDatabase(ctx, homeServer, userCategory, currentTheme, prefix):
+        allUsers = databaseManager.returnAllUsers()
+        for user in allUsers:
+            await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix, user)
+        globalDB = databaseManager.getGlobal()
+        if globalDB == None:
+            defaultDB = {'userID' : "GLOBAL", 'userName': 'GLOBAL'}
+            defaultDB.update(await userInfoManager.getDefaultUserDatabase())
+            databaseManager.addWvsPlayer(defaultDB)
+            globalDB = databaseManager.getGlobal()
+        await userInfoManager.userRegistration(ctx, globalDB, homeServer, userCategory, currentTheme, prefix, globalDB)
 
     async def getDefaultUserDatabase():
         db = {}
@@ -51,6 +81,7 @@ class userInfoManager:
             savedRulesets.append(None)
         db['savedRulesets'] = savedRulesets
         db['stats'] = await userInfoManager.getDefaultStatistics()
+        db['titles'] = []
         return db
     
     async def getDefaultStatistics():
@@ -61,7 +92,7 @@ class userInfoManager:
         for role in Role.allLethal:
             roleStats = {f'{role}Kills' : 0, f'{role}KillWins' :0}
             stats.update(roleStats)
-        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'ArminNukes': 0, 'SashaFires': 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0}
+        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'ArminNukes': 0, 'SashaFires': 0, 'AnnieScreams' : 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0}
         stats.update(abilityStats)
         extraSoldierStats = {'SoldiersWallsBroken': 0, 'SoldiersPasses': 0, 'PassCommanders': 0, 'PassVotes': 0, 'PassAssists': 0, 'PassExpeditions': 0, 'PassesResponsible': 0, 'ExposCommanded': 0, 'AcceptedCommand':0, 'ExposVoted':0, 'SoldiersExpeditionsOn':0}
         stats.update(extraSoldierStats)

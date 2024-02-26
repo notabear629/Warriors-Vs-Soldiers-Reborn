@@ -149,10 +149,23 @@ class endGameFunctions:
             embed = await embedBuilder.scoreboard(currentGame, currentTheme)
             await home.send(embed=embed)
             await home.send(f'{currentTheme.emojiMVP}{currentGame.MVP.user.mention} has won Match MVP with **{currentGame.MVP.mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
+        if currentGame.currentRules.casual == False:
+            await endGameFunctions.saveStats(currentGame)
 
     async def processEndgameStats(currentGame):
         for player in currentGame.players:
             player.stats.processEndgame(player, currentGame)
+
+    async def saveStats(currentGame):
+        for player in currentGame.players:
+            statDict = {}
+            for key, value in vars(player.stats).items():
+                if key.startswith('__'):
+                    continue
+                else:
+                    statDict[key] = value
+            databaseManager.tallyStatsByID(player.user.id, statDict)
+            
 
     async def skipToBasement(ctx, currentGame, currentTheme, home, client):
         if currentGame.online and currentGame.exposOver == False:
@@ -161,6 +174,7 @@ class endGameFunctions:
             zekeChannel = client.get_channel(user['channelID'])
             if ctx.message.author == Zeke.user and ctx.message.channel == zekeChannel:
                 currentGame.skipExpos()
+                await ctx.reply('Retreat Confirmed!')
                 futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
                 embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
                 await home.send(embed=embed)

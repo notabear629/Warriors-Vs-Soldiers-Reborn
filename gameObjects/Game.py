@@ -208,6 +208,8 @@ class Game:
 
     def skipExpos(self):
         self.exposOver = True
+        if self.currentExpo != None:
+            self.currentExpo.resultsAvailable = False
 
     def activateRumbling(self):
         self.exposOver = True

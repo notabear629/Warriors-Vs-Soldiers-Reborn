@@ -26,9 +26,29 @@ class databaseManager:
         return returnedUser
     
     @staticmethod
+    def searchForUserByName(userName):
+        foundUsers = databaseManager.rootDatabase['users'].find()
+        for user in foundUsers:
+            if userName.lower() in user['userName'].lower():
+                return user
+    
+    @staticmethod
+    def returnAllUsers():
+        return databaseManager.rootDatabase['users'].find()
+    
+    @staticmethod
+    def getGlobal():
+        globalDB = databaseManager.gameDatabase.find_one({'userID' : "GLOBAL"})
+        return globalDB
+    
+    @staticmethod
     def searchForWvsPlayer(user):
         returnedPlayer = databaseManager.gameDatabase.find_one({"userID":user.id})
         return returnedPlayer
+    
+    @staticmethod
+    def getWvsPlayerByID(userID):
+        return databaseManager.gameDatabase.find_one({"userID":userID})
     
     @staticmethod
     def addWvsPlayer(userInfo):
@@ -37,6 +57,18 @@ class databaseManager:
     @staticmethod
     def updateWvsPlayer(userInfo):
         databaseManager.gameDatabase.update_one({'userID' : userInfo['userID']}, {'$set' : userInfo})
+
+    @staticmethod
+    def tallyStatsByID(userID, stats):
+        player = databaseManager.getWvsPlayerByID(userID)
+        globalDB = databaseManager.getGlobal()
+        newDB = player.copy()
+        newGlobalDB = globalDB.copy()
+        for key, value in player['stats'].items():
+            newDB['stats'][key] += stats[key]
+            newGlobalDB['stats'][key] += stats[key]
+        databaseManager.updateWvsPlayer(newDB)
+        databaseManager.updateWvsPlayer(newGlobalDB)
 
     @staticmethod
     def updateRuleset(userID, rules):

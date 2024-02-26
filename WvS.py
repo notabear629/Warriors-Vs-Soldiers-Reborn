@@ -79,6 +79,7 @@ async def on_ready():
     currentLobby = Lobby()
     currentGame = Game(client)
     loadedRoles = Role.loadRoles(currentTheme, client)
+    await userInfoManager.fixDatabase(None, homeServer, userCategory, currentTheme, prefix)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
 @client.command('reset')
@@ -242,10 +243,21 @@ async def rolelist(ctx):
 async def help(ctx):
     await infoFunctions.help(ctx, currentTheme, loadedRoles, prefix)
 
+@client.command('info')
+async def info(ctx, *, input=None):
+    await infoFunctions.info(ctx, currentTheme, loadedRoles, prefix, input)
+
+@client.command('profile')
+async def profile(ctx, *, input=None):
+    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, input)
+
+@client.command('stats')
+async def stats(ctx, *, input=None):
+    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, input)
+
 @client.command('admin')
 async def admin(ctx):
     await userInfoManager.toggleAdmin(ctx, home, adminRole)
-
 
 
 #TEST COMMAND ONLY

@@ -24,3 +24,11 @@ class searchFunctions:
             if role.id == roleID:
                 return role
         return False
+    
+    async def stringToRole(loadedRoles, input):
+        foundRoles = []
+        for role in loadedRoles:
+            if input.lower() in role.id.lower() or input.lower() in role.name.lower() or input.lower() in role.shortName.lower():
+                foundRoles.append(role)
+        if len(foundRoles) > 0:
+            return foundRoles[0]

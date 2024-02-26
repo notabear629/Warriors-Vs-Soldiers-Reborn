@@ -7,12 +7,11 @@ import discord
 from discord.ext import commands
 import random
 
+prefix = os.getenv('BOT_PREFIX')
+
 #CHANGE THIS CLASS NAME. Your new file and your new class should NOT be named defaultGameTheme, each theme added should have different names.
 class defaultGameTheme:
     global prefix
-
-    prefix = os.getenv('BOT_PREFIX')
-
 
     #You have free reign to edit these as you please
     themeName = 'Default Warriors vs Soldiers'
@@ -34,6 +33,7 @@ class defaultGameTheme:
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
     wildcardThumbnail ='https://cdn.discordapp.com/emojis/934489212277882932.webp?size=128&quality=lossless'
+    globalThumbnail = 'https://em-content.zobj.net/source/twitter/376/globe-showing-americas_1f30e.png'
 
     soldierColor = discord.Color.blue()
     warriorColor = discord.Color.red()

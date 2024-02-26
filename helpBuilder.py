@@ -17,6 +17,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = '⚙️`Game Options and Rules`', value = 'Information on the various Game Options and Rules', inline= True)
         returnedEmbed.add_field(name = '🕹️`How to Play`', value = 'Basic information on the game and how to play it', inline=True)
         returnedEmbed.add_field(name = '👥`Role Information`', value = 'A menu that allows you to bring up a help screen for every individual role', inline=True)
+        returnedEmbed.add_field(name = '❓`Help Commands`', value = 'Commands used for getting help/info about the game', inline=True)
         return returnedEmbed
     
     async def userInfoEmbed(currentTheme, prefix):
@@ -99,6 +100,13 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'`{prefix}status`', value= 'This command returns an embed containing the current game status and general information about the game.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}players`', value= f'This command returns a list of the living players in the game and the order for which they will take turns making {currentTheme.expeditionTeam} Proposals.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}roles`', value= 'This command returns a list of the roles currently active in the game. It also contains a list of killed players, if any exist.', inline=True)
+        return returnedEmbed
+    
+    async def helpEmbed(currentTheme, prefix):
+        returnedEmbed = discord.Embed(title = 'Basic Help and Info Commands', description = 'The following is a list of commands that you can call for information regarding the game', color = currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = f'`{prefix}help`', value = f'You had to use this command to get where you are now! This command opens the help menu', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}rolelist`', value = 'This command returns a list of all roles implemented into the game', inline= True)
+        returnedEmbed.add_field(name= f'`{prefix}info`', value = f'This command skips straight to returning information about a particular role. Usage: `{prefix}info eren` will return help for Eren.', inline=True)
         return returnedEmbed
     
     async def expoProposalInfoEmbed(currentTheme, prefix):
@@ -209,7 +217,7 @@ class helpBuilder:
         async def navigate(interaction, clickedButton, selectedRole = None):
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
-                    mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info']
+                    mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info', 'Help']
                     optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
                     if navigatorContext in mainReturns:
@@ -267,6 +275,10 @@ class helpBuilder:
                 elif clickedButton == 'Role Options':
                     newNavigatorContext = 'Role Options'
                     refreshedEmbed = await helpBuilder.roleOptionsInfoEmbed(currentTheme)
+
+                elif clickedButton == 'Help':
+                    newNavigatorContext = 'Help'
+                    refreshedEmbed = await helpBuilder.helpEmbed(currentTheme, prefix)
 
                 elif clickedButton == 'How to Play':
                     newNavigatorContext = 'How to Play'
@@ -334,6 +346,12 @@ class helpBuilder:
                 await navigate(interaction, 'Role Info')
             roleHelpButton.callback = processRoleHelpButton
             returnedView.add_item(roleHelpButton)
+
+            helpButton = Button(label = 'Help and Info', style = discord.ButtonStyle.grey, emoji = str('❓'))
+            async def processHelpButton(interaction):
+                await navigate(interaction, 'Help')
+            helpButton.callback = processHelpButton
+            returnedView.add_item(helpButton)
 
         elif navigatorContext == 'Game Options and Rules':
             themesButton = Button(label = 'Game Themes', style= discord.ButtonStyle.grey, emoji = str('🎭'))

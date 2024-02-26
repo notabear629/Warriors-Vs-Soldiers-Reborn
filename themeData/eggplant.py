@@ -34,6 +34,7 @@ class eggplant:
     soldierThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
     warriorThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
     wildcardThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
+    globalThumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Twemoji_1f346.svg/1200px-Twemoji_1f346.svg.png'
 
     soldierColor = discord.Color.dark_purple()
     warriorColor = discord.Color.dark_purple()

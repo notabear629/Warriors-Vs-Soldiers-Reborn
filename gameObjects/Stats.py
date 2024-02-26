@@ -90,6 +90,9 @@ class Stats:
                     setattr(Levi.stats, 'LeviDefends', 1)
                     if len(expo.sabotagedExpedition) > 0 and result == 'y':
                         setattr(Levi.stats, 'LeviDefendWins', 1)
+            if expo.annieMessage != None:
+                Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
+                setattr(Annie.stats, 'AnnieScreams', 1)
             if expo.mikasaGuarded != None:
                 Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
                 guardCount = getattr(Mikasa.stats, 'MikasaGuards')
@@ -121,7 +124,7 @@ class Stats:
                     commandCount = getattr(expo.commander.stats, 'AcceptedCommand')
                     setattr(expo.commander.stats, 'AcceptedCommand', commandCount + 1)
             for soldier in currentGame.soldiers:
-                if soldier in expo.accepted or soldier in expo.rejected:
+                if soldier in expo.accepted:
                     voteCount = getattr(soldier.stats, 'ExposVoted')
                     setattr(soldier.stats, 'ExposVoted', voteCount + 1)
                 if soldier in expo.expeditionMembers:
@@ -187,8 +190,8 @@ class Stats:
             if winner.mvpPoints > mvp.mvpPoints:
                 mvp = winner
         currentGame.setMVP(mvp)
-        setattr(mvp, 'MVPS', 1)
-        setattr(mvp, f'{winner.role.team}MVPS', 1)
+        setattr(mvp.stats, 'MVPS', 1)
+        setattr(mvp.stats, f'{winner.role.team}MVPS', 1)
 
 
             
