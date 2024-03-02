@@ -59,6 +59,22 @@ class databaseManager:
         databaseManager.gameDatabase.update_one({'userID' : userInfo['userID']}, {'$set' : userInfo})
 
     @staticmethod
+    def getSortedWvsPlayer(calc):
+        return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'calcs.{calc}', -1)
+    
+    @staticmethod
+    def getWorstWvsPlayer(calc):
+        return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'calcs.{calc}')[0]
+    
+    @staticmethod
+    def getSortedLegacy():
+        return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'points.LegacyPoints', -1)
+    
+    @staticmethod
+    def getSortedPoints(stat):
+        return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'points.{stat}', -1)
+
+    @staticmethod
     def tallyStatsByID(userID, stats):
         player = databaseManager.getWvsPlayerByID(userID)
         globalDB = databaseManager.getGlobal()

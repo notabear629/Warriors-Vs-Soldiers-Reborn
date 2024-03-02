@@ -11,6 +11,8 @@ from embedBuilder import embedBuilder
 
 from discordViewBuilder import discordViewBuilder
 
+from statBuilder import statBuilder
+
 #Import the gameObjects
 from gameObjects.Lobby import Lobby
 from gameObjects.Theme import Theme
@@ -18,6 +20,7 @@ from gameObjects.Game import Game
 from gameObjects.Player import Player
 from gameObjects.Rules import Rules
 from gameObjects.Role import Role
+from gameObjects.Badges import Badges
 
 #Import the gameFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
@@ -57,7 +60,7 @@ async def resetFunction():
     if currentGame.online:
         currentGame.turnOffline()
     currentLobby = Lobby()
-    currentGame = Game(client)
+    currentGame = Game(client, homeServer, prefix, userCategory)
     for player in gagRole.members:
         await player.remove_roles(gagRole)
 
@@ -65,7 +68,7 @@ async def resetFunction():
 async def on_ready():
     global home, homeServer, userCategory, gagRole, adminRole
     global noMentions, withMentions
-    global currentTheme, currentRules, currentLobby, currentGame, loadedRoles, currentTest
+    global currentTheme, currentRules, currentLobby, currentGame, loadedRoles, loadedBadges
     home = client.get_channel(HOME_ID)
     homeServer = client.get_guild(HOME_SERVER_ID)
     userCategory = client.get_channel(USER_CHANNEL_CATEGORY_ID)
@@ -77,9 +80,10 @@ async def on_ready():
     await currentTheme.resolveEmojis(client)
     currentRules = Rules()
     currentLobby = Lobby()
-    currentGame = Game(client)
+    currentGame = Game(client, homeServer, prefix, userCategory)
     loadedRoles = Role.loadRoles(currentTheme, client)
-    await userInfoManager.fixDatabase(None, homeServer, userCategory, currentTheme, prefix)
+    loadedBadges = Badges(client)
+    await userInfoManager.fixDatabase(None, homeServer, userCategory, currentTheme, prefix, loadedBadges)
     print(f"Bot Online\nOn Server {homeServer.name}\nHome Channel At {home.name}\nUser Category at {userCategory.name}")
 
 @client.command('reset')
@@ -157,7 +161,7 @@ async def fixme(ctx):
 
 @client.command('start')
 async def start(ctx):
-    newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole)
+    newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges)
     if newGame:
         await midGameFunctions.showStatus(currentGame, currentTheme, home)
         await midGameFunctions.showRoles(currentGame, currentTheme, home)
@@ -219,7 +223,7 @@ async def attack(ctx, *, attackedUser:discord.Member):
 
 @client.command('retreat')
 async def retreat(ctx):
-    await endGameFunctions.skipToBasement(ctx, currentGame, currentTheme, home, client)
+    await endGameFunctions.skipToBasement(ctx, currentGame, currentTheme, home, client, gagRole)
     if currentGame.online and currentGame.winCondition != None:
         await resetFunction()
 
@@ -249,15 +253,33 @@ async def info(ctx, *, input=None):
 
 @client.command('profile')
 async def profile(ctx, *, input=None):
-    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, input)
+    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, homeServer, loadedBadges, input)
 
 @client.command('stats')
 async def stats(ctx, *, input=None):
-    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, input)
+    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, homeServer, loadedBadges, input)
+
+@client.command('badges')
+async def badges(ctx, *, input=None):
+    await infoFunctions.badges(ctx, currentTheme, client, loadedBadges, input)
+
+@client.command('lb')
+async def lb(ctx):
+    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme)
+
+@client.command('leaderboard')
+async def leaderboard(ctx):
+    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme)
 
 @client.command('admin')
 async def admin(ctx):
     await userInfoManager.toggleAdmin(ctx, home, adminRole)
+
+
+@client.command('test')
+async def test(ctx):
+    embed = await statBuilder.testBadgesEmbed(ctx.message.author)
+    await ctx.reply(embed=embed)
 
 
 #TEST COMMAND ONLY

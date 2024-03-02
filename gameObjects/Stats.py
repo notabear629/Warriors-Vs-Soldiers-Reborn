@@ -124,7 +124,7 @@ class Stats:
                     commandCount = getattr(expo.commander.stats, 'AcceptedCommand')
                     setattr(expo.commander.stats, 'AcceptedCommand', commandCount + 1)
             for soldier in currentGame.soldiers:
-                if soldier in expo.accepted:
+                if soldier in expo.accepted or soldier in expo.rejected:
                     voteCount = getattr(soldier.stats, 'ExposVoted')
                     setattr(soldier.stats, 'ExposVoted', voteCount + 1)
                 if soldier in expo.expeditionMembers:
@@ -147,7 +147,7 @@ class Stats:
                             setattr(soldier.stats, 'PassAssists', expoAssists + 1)
                         if soldier in expo.accepted:
                             passVotes = getattr(soldier.stats, 'PassVotes')
-                            setattr(soldier.stats, 'PassCommanders', passVotes + 1)
+                            setattr(soldier.stats, 'PassVotes', passVotes + 1)
                         if expo.commander == soldier:
                             passCommands = getattr(soldier.stats, 'PassCommanders')
                             setattr(soldier.stats, 'PassCommanders', passCommands + 1)
@@ -164,7 +164,7 @@ class Stats:
                             setattr(warrior.stats, 'BreakAssists', expoAssists + 1)
                         if warrior in expo.accepted:
                             breakVotes = getattr(warrior.stats, 'BreakVotes')
-                            setattr(warrior.stats, 'BreakCommanders', breakVotes + 1)
+                            setattr(warrior.stats, 'BreakVotes', breakVotes + 1)
                         if expo.commander == warrior:
                             breakCommands = getattr(warrior.stats, 'BreakCommanders')
                             setattr(warrior.stats, 'BreakCommanders', breakCommands + 1)

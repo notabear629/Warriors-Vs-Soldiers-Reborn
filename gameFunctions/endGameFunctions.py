@@ -32,6 +32,7 @@ class endGameFunctions:
     async def reachBasement(currentGame, currentTheme, home):
         currentGame.activateKidnap()
         await home.send(currentTheme.basementMessage)
+        await home.send(await endGameFunctions.getWarriorList(currentGame))
         if currentGame.currentRules.multikidnap:
             await home.send(f'Multikidnap is currently active! Each {currentTheme.warriorSingle} should select a candidate to kidnap to continue.')
             timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Multikidnap')
@@ -49,6 +50,12 @@ class endGameFunctions:
                 await endGameFunctions.kidnapTimeout(currentGame, currentTheme, home)     
             else:
                 await endGameFunctions.processKidnap(currentGame, currentTheme, home)
+
+    async def getWarriorList(currentGame):
+        warriorList = 'The Warriors are:\n'
+        for warrior in currentGame.warriors:
+            warriorList += f'**{warrior.user.name}**\n'
+        return warriorList
 
     async def kidnapTimeout(currentGame, currentTheme, home):
         await home.send(f'{currentTheme.kidnapTimeoutMessage}')
@@ -151,10 +158,62 @@ class endGameFunctions:
             await home.send(f'{currentTheme.emojiMVP}{currentGame.MVP.user.mention} has won Match MVP with **{currentGame.MVP.mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
         if currentGame.currentRules.casual == False:
             await endGameFunctions.saveStats(currentGame)
+            await endGameFunctions.notifyBadges(currentGame, home)
+            await userInfoManager.fixDatabase(None, currentGame.homeServer, currentGame.userCategory, currentTheme, currentGame.prefix, currentGame.badges)
+            await endGameFunctions.notifyTitles(currentGame, home)
+            embed = await embedBuilder.pointsBoard(currentGame, currentTheme)
+            await home.send(embed=embed)
+            
 
     async def processEndgameStats(currentGame):
         for player in currentGame.players:
             player.stats.processEndgame(player, currentGame)
+
+    async def notifyBadges(currentGame, home):
+        badgeUpdates = await endGameFunctions.checkUserBadges(currentGame)
+        for badgeUpdate in badgeUpdates:
+            if badgeUpdate != "":
+                await home.send(badgeUpdate)
+
+    async def notifyTitles(currentGame, home):
+        titleUpdates = await endGameFunctions.checkUserTitles(currentGame)
+        for titleUpdate in titleUpdates:
+            if titleUpdate != "":
+                await home.send(titleUpdate)
+
+    async def checkUserBadges(currentGame):
+        badgeStrings = []
+        for player in currentGame.players:
+            badgeString = ""
+            loadedBadges = currentGame.badges
+            for badgeType, value in loadedBadges.badgeTitles.items():
+                wvsPlayer = databaseManager.getWvsPlayerByID(player.user.id)
+                badgeInfo = loadedBadges.getBadgeOutput(badgeType, wvsPlayer['stats'][badgeType])
+                if badgeInfo['badge'] != wvsPlayer['badges'][badgeType]:
+                    if badgeString != "":
+                        badgeString += '\n\n'
+                    badgeString += f'{badgeInfo['emoji']}{player.user.mention} has earned the **{badgeInfo['badge']}** badge for {badgeInfo['title']}! (+**{badgeInfo['points']}**BP)'
+            totalRank = loadedBadges.getTotalBadgeOutput(wvsPlayer)
+            if wvsPlayer['badges']['Rank'] != totalRank['badge']:
+                if badgeString != "":
+                    badgeString += '\n\n'
+                badgeString += f'{totalRank['emoji']}{player.user.mention} has leveled up to the **{totalRank['badge']}** Badge Rank!'
+            badgeStrings.append(badgeString)
+        return badgeStrings
+    
+    async def checkUserTitles(currentGame):
+        titleStrings = []
+        for player in currentGame.players:
+            titleString = ""
+            loadedBadges = currentGame.badges
+            db = databaseManager.getWvsPlayerByID(player.user.id)
+            for title in db['titles']:
+                if title not in player.oldTitles:
+                    if titleString != "":
+                        titleString += '\n\n'
+                    titleString += f'{getattr(loadedBadges, f'emoji{title}')}{player.user.mention} has earned the title of **{getattr(loadedBadges, 'titleAnnouncements')[title]}**!'
+            titleStrings.append(titleString)
+        return titleStrings
 
     async def saveStats(currentGame):
         for player in currentGame.players:
@@ -167,7 +226,7 @@ class endGameFunctions:
             databaseManager.tallyStatsByID(player.user.id, statDict)
             
 
-    async def skipToBasement(ctx, currentGame, currentTheme, home, client):
+    async def skipToBasement(ctx, currentGame, currentTheme, home, client, gagRole):
         if currentGame.online and currentGame.exposOver == False:
             Zeke = await searchFunctions.roleIDToPlayer(currentGame, 'Zeke')
             user = databaseManager.searchForUser(Zeke.user)
@@ -175,6 +234,10 @@ class endGameFunctions:
             if ctx.message.author == Zeke.user and ctx.message.channel == zekeChannel:
                 currentGame.skipExpos()
                 await ctx.reply('Retreat Confirmed!')
+                if currentGame.porcoGagged != None:
+                    for user in currentGame.gagRole.members:
+                        await user.remove_roles(currentGame.gagRole)
+                    currentGame.removeGag()
                 futureExpoCounts = await expoProposalFunctions.getExpeditionPrediction(currentGame)
                 embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
                 await home.send(embed=embed)

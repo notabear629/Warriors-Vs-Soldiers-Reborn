@@ -18,6 +18,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = '🕹️`How to Play`', value = 'Basic information on the game and how to play it', inline=True)
         returnedEmbed.add_field(name = '👥`Role Information`', value = 'A menu that allows you to bring up a help screen for every individual role', inline=True)
         returnedEmbed.add_field(name = '❓`Help Commands`', value = 'Commands used for getting help/info about the game', inline=True)
+        returnedEmbed.add_field(name = '📊`Statistics and Awards`', value = 'A collection of commands and information about stats and awards that can be earned in-game', inline=True)
         return returnedEmbed
     
     async def userInfoEmbed(currentTheme, prefix):
@@ -211,15 +212,43 @@ class helpBuilder:
         
         return returnedEmbed
     
+    async def statsEmbed(currentTheme):
+        returnedEmbed = discord.Embed(title = 'Stats and Award Help', description = 'A Landing page for information on Stats and Awards', color = currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = '📚`Stat and Award Information`', value='In order for information on what the stats and awards are and how they are derived from, choose this option', inline=True)
+        returnedEmbed.add_field(name = '🧮`Stat and Award Commands`', value = 'In order to see what commands you can use associated with stats and awards, click this button', inline=True)
+        return returnedEmbed
+    
+    async def statsInfoEmbed(currentTheme):
+        returnedEmbed = discord.Embed(title = 'Stats and Awards Information', description = 'Information on various stats and awards throughout the game', color = currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = f'💎`Badges`', value= 'Badges are simply awards that you can earn as you progress through the game. At the end of a ranked game, if you earn a badge you will be notified and that badge will be added to your collection.', inline=True)
+        returnedEmbed.add_field(name = f'🏅`Titles`', value = 'A title is something special. It means that you are the #1 player on a particular leaderboard that factors into the overall Legacy Points. Only 1 person can have each title!', inline=True)
+        returnedEmbed.add_field(name = f'🏆`MVPS`', value = 'At the end of each ranked game, an MVP is selected from the winners. This is based on some tracked metrics to try to estimate player performance, only 1 MVP is chosen each game.', inline=True)
+        returnedEmbed.add_field(name = f'🐐`Legacy Points`', value = 'Legacy Points are a metric that is used to track the leaderboard for who is the #1 player. They are calculated by a sum of up to 1000 points from 5 categories including WORP, Soldier WORP, Warrior WORP, MVP count, and Badge Points', inline=True)
+        returnedEmbed.add_field(name = f'👑`WORP`', value = 'WORP is a special kind of stat. It means Wins Over Replacement Player, and in the end is not that complicated. It is calculated by performing a WORP calculation for each individual role and then summing the total. WORP is calculated using this simple manner. It takes your role win percentage minus the global role win percentage. This gets a metric of what % you win above average, and it can be positive and negative. It is then multiplied by your games played. That\'s it. As an example, if you played 10 games as Eren with an 80% winrate, and the global winrate is 50%, here is how we calculate that WORP. Your .8 winrate - .5 global winrate is equal to 0.3. Then, 0.3 * 10 = 3. Your WORP is 3. And this makes sense because if you won 50% you would have won 5 games, but thanks to your higher level you won 8, and 8 is 3 wins above 5. That\'s all it is.', inline=True)
+        returnedEmbed.add_field(name = f'💠`True Winning %`', value = 'True Winning Percentage, or TW%, is another form of advanced stat. The main problem with win percentage is that the average win percentage is NOT always 50. And it does not take what roles you got into account, if you got harder roles, your win % may be lower! True Win Percentage normalizes all of this and ensures that 50% would mean a value of being perfectly average no matter what roles you got.', inline=True)
+        returnedEmbed.add_field(name = '🎁`Assists`', value = 'In some of the stats you may see something called assists. This simply means that you were not on the round that passed/failed but you picked it, or accepted it. It can be thought of as helping your teammate achieve it. Commanding and Accepting is still just 1 assist. It doesn\'t matter how many ways you cover it.')
+        returnedEmbed.add_field(name = '👷‍♂️`Responsible For`', value = 'This means a round you were either directly on or assisted on. It can be thought of as the amount of passed/failed rounds you contributed to.', inline=True)
+        return returnedEmbed
+    
+    async def statsCommandsEmbed(currentTheme, prefix):
+        returnedEmbed = discord.Embed(title = 'Stats and Awards Commands', description= 'Information on commands you can call related to Stats and Awards', color=currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = f'`{prefix}profile`', value = f'This command will give you your profile that displays your stats among some other things. This command has multiple usages, `{prefix}profile` by itself takes you directly to your profile. `{prefix}profile @mention` takes you to the profile of that person. `{prefix}profile text` would try to find a user by your text keyword. If it could find one, it returns their profile. Finally, `{prefix}profile global` returns global statistics. If a player can not be found by one of your searches, global will be defaulted to.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}stats`', value = f'This command is exactly the same as profile.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}badges`', value = f'This is a command that displays what badges you currently have. You can call it by itself, or with any of the arguments specified in profile except for global.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}leaderboard`', value = f'This command will display the leaderboard to you.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}lb`', value = 'This command is exactly the same as leaderboard', inline=True)
+        return returnedEmbed
+    
     async def mainNavigatorView(navigatorContext, navigator, currentTheme, prefix, loadedRoles):
         returnedView = View()
 
         async def navigate(interaction, clickedButton, selectedRole = None):
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
-                    mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info', 'Help']
+                    mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info', 'Help', 'Stats']
                     optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
+                    statsReturns = ['StatsInfo', 'StatsCommands']
                     if navigatorContext in mainReturns:
                         newNavigatorContext = 'Main'
                         refreshedEmbed = await helpBuilder.mainHelpEmbed(currentTheme)
@@ -231,6 +260,10 @@ class helpBuilder:
                     elif navigatorContext in howToPlayReturns:
                         newNavigatorContext = 'How to Play'
                         refreshedEmbed = await helpBuilder.howToPlayEmbed(currentTheme)
+
+                    elif navigatorContext in statsReturns:
+                        newNavigatorContext = 'Stats'
+                        refreshedEmbed = await helpBuilder.statsEmbed(currentTheme)
 
                 elif clickedButton == 'User Info':
                     newNavigatorContext = 'User Info'
@@ -279,6 +312,18 @@ class helpBuilder:
                 elif clickedButton == 'Help':
                     newNavigatorContext = 'Help'
                     refreshedEmbed = await helpBuilder.helpEmbed(currentTheme, prefix)
+
+                elif clickedButton == 'Stats':
+                    newNavigatorContext = 'Stats'
+                    refreshedEmbed = await helpBuilder.statsEmbed(currentTheme)
+
+                elif clickedButton == 'StatsInfo':
+                    newNavigatorContext = 'StatsInfo'
+                    refreshedEmbed = await helpBuilder.statsInfoEmbed(currentTheme)
+                
+                elif clickedButton == 'StatsCommands':
+                    newNavigatorContext = 'StatsCommands'
+                    refreshedEmbed = await helpBuilder.statsCommandsEmbed(currentTheme, prefix)
 
                 elif clickedButton == 'How to Play':
                     newNavigatorContext = 'How to Play'
@@ -352,6 +397,12 @@ class helpBuilder:
                 await navigate(interaction, 'Help')
             helpButton.callback = processHelpButton
             returnedView.add_item(helpButton)
+
+            statButton = Button(label = 'Stats and Awards', style= discord.ButtonStyle.grey, emoji = str('📊'))
+            async def processStatButton(interaction):
+                await navigate(interaction, 'Stats')
+            statButton.callback = processStatButton
+            returnedView.add_item(statButton)
 
         elif navigatorContext == 'Game Options and Rules':
             themesButton = Button(label = 'Game Themes', style= discord.ButtonStyle.grey, emoji = str('🎭'))
@@ -451,8 +502,19 @@ class helpBuilder:
             returnedView.add_item(soldierSelection)
             returnedView.add_item(warriorSelection)
 
+        elif navigatorContext == 'Stats':
 
+            infoButton = Button(label='Information', style=discord.ButtonStyle.grey, emoji = str('📚'))
+            async def processInfoButton(interaction):
+                await navigate(interaction, 'StatsInfo')
+            infoButton.callback = processInfoButton
+            returnedView.add_item(infoButton)
 
+            commandButton = Button(label = 'Commands', style=discord.ButtonStyle.grey, emoji= str('🧮'))
+            async def processCommandButton(interaction):
+                await navigate(interaction, 'StatsCommands')
+            commandButton.callback = processCommandButton
+            returnedView.add_item(commandButton)
 
 
         return returnedView

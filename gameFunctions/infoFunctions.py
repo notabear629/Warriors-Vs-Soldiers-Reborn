@@ -35,7 +35,7 @@ class infoFunctions:
         await ctx.reply(embed=infoEmbed, view = infoView)
 
 
-    async def profile(ctx, currentTheme, client, loadedRoles, input=None):
+    async def profile(ctx, currentTheme, client, loadedRoles, homeServer, loadedBadges, input=None):
         foundInput = None
         if len(ctx.message.mentions) > 0:
             foundInput = databaseManager.searchForUser(ctx.message.mentions[0])
@@ -54,13 +54,41 @@ class infoFunctions:
         if foundInput == None:
             foundInput = 'GLOBAL'
         if foundInput == 'GLOBAL':
-            profileEmbed = await statBuilder.profileEmbed(currentTheme, 'GLOBAL', loadedRoles, 'Main')
+            profileEmbed = await statBuilder.profileEmbed(currentTheme, 'GLOBAL', loadedRoles, currentTheme.helpEmbedColor, 'Main')
             profileView = await statBuilder.profileView(ctx.message.author, 'GLOBAL', currentTheme, loadedRoles)
         else:
             user = client.get_user(foundInput['userID'])
-            profileEmbed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, 'Main')
-            profileView = await statBuilder.profileView(ctx.message.author, user, currentTheme, loadedRoles)
+            role = homeServer.get_role(foundInput['roleID'])
+            if role.color == discord.Color.default():
+                color = currentTheme.helpEmbedColor
+            else:
+                color = role.color
+            profileEmbed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Main')
+            profileView = await statBuilder.profileView(ctx.message.author, user, currentTheme, loadedRoles, color, loadedBadges)
         await ctx.reply(embed=profileEmbed, view=profileView)
+
+    async def badges(ctx, currentTheme, client, loadedBadges, input=None):
+        foundInput = None
+        if len(ctx.message.mentions) > 0:
+            foundInput = databaseManager.searchForUser(ctx.message.mentions[0])
+        if input == None and foundInput == None:
+            foundInput = databaseManager.searchForUser(ctx.message.author)
+            if foundInput == None:
+                await ctx.reply('You have not yet registered in the game! As such, you have no badge screen.')
+        if foundInput == None:
+            foundInput = databaseManager.searchForUserByName(input)
+            if foundInput == None:
+                await ctx.reply('No user found with such a name!')
+        if foundInput != None:
+            user = client.get_user(foundInput['userID'])
+            badgesEmbed = await statBuilder.badgesEmbed(user, currentTheme, loadedBadges)
+            await ctx.reply(embed=badgesEmbed)
+
+    async def leaderboard(ctx, client, homeServer, loadedBadges, currentTheme):
+        
+        lbView = await statBuilder.leaderboardView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+        lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+        await ctx.send(embed=lbEmbed, view=lbView)
 
         
 

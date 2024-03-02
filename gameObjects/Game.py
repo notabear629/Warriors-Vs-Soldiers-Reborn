@@ -3,12 +3,15 @@ import random
 from embedBuilder import embedBuilder
 
 class Game:
-    def __init__(self, client):
+    def __init__(self, client, homeServer, prefix, userCategory):
         self.online = False
         self.client = client
+        self.homeServer = homeServer
+        self.prefix = prefix
+        self.userCategory = userCategory
 
 
-    def start(self, lobby, players, currentRules, loadedRoles, gagRole):
+    def start(self, lobby, players, currentRules, loadedRoles, gagRole, loadedBadges):
         self.online = True
         self.lobby = lobby
         self.players = players
@@ -64,6 +67,7 @@ class Game:
         self.dominantYeagerist = None
         self.allianceDomination = True
         self.MVP = None
+        self.badges = loadedBadges
 
         for player in players:
             self.livingPlayers.append(player)

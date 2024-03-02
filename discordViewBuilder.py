@@ -17,6 +17,7 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
+        return True
         if player.user == interaction.user:
             return True
         return False

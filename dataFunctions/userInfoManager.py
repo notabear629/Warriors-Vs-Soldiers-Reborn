@@ -7,6 +7,8 @@ from embedBuilder import embedBuilder
 
 from gameObjects.Role import Role
 
+from statBuilder import statBuilder
+
 class userInfoManager:
     async def userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix, idCase=None):
         if idCase == None:
@@ -62,10 +64,8 @@ class userInfoManager:
             databaseManager.updateWvsPlayer(newDB)
 
 
-    async def fixDatabase(ctx, homeServer, userCategory, currentTheme, prefix):
-        allUsers = databaseManager.returnAllUsers()
-        for user in allUsers:
-            await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix, user)
+    async def fixDatabase(ctx, homeServer, userCategory, currentTheme, prefix, loadedBadges):
+
         globalDB = databaseManager.getGlobal()
         if globalDB == None:
             defaultDB = {'userID' : "GLOBAL", 'userName': 'GLOBAL'}
@@ -73,6 +73,18 @@ class userInfoManager:
             databaseManager.addWvsPlayer(defaultDB)
             globalDB = databaseManager.getGlobal()
         await userInfoManager.userRegistration(ctx, globalDB, homeServer, userCategory, currentTheme, prefix, globalDB)
+
+
+        allUsers = databaseManager.returnAllUsers()
+        for user in allUsers:
+            await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix, user)
+            player = databaseManager.getWvsPlayerByID(user['userID'])
+            databaseManager.updateWvsPlayer(await userInfoManager.calculateBadges(player, loadedBadges))
+            player = databaseManager.getWvsPlayerByID(user['userID'])
+            databaseManager.updateWvsPlayer(await userInfoManager.calculateCalcs(player, loadedBadges))
+        await userInfoManager.calculateRanks()
+
+        
 
     async def getDefaultUserDatabase():
         db = {}
@@ -82,6 +94,9 @@ class userInfoManager:
         db['savedRulesets'] = savedRulesets
         db['stats'] = await userInfoManager.getDefaultStatistics()
         db['titles'] = []
+        db['badges'] = {'GamesWon': 'No Badge Earned', 'SoldiersWon': 'No Badge Earned', 'WarriorsWon': 'No Badge Earned', 'WarriorsKidnapWins': 'No Badge Earned', 'MVPS':'No Badge Earned', 'PassesResponsible':'No Badge Earned', 'BreaksResponsible':'No Badge Earned', 'Rank': 'Noob'}
+        db['calcs'] = {'WORP' : 0, 'SoldierWORP' : 0, 'WarriorWORP': 0, 'MVPS': 0, 'BadgePoints':0}
+        db['points'] = {'LegacyPoints': 0, 'WORP':0, 'SoldierWORP' : 0, 'WarriorWORP': 0, 'MVPS' :0 , 'BadgePoints':0}
         return db
     
     async def getDefaultStatistics():
@@ -99,6 +114,74 @@ class userInfoManager:
         extraWarriorStats = {'WarriorsWallsBroken': 0, 'WarriorsPasses':0, 'BreakCommanders': 0, 'BreakVotes': 0, 'BreakAssists':0, 'BreakExpeditions':0, 'BreaksResponsible': 0, 'WarriorsExpeditionsOn':0}
         stats.update(extraWarriorStats)
         return stats
+    
+    async def calculateBadges(db, loadedBadges):
+        newDB = db.copy()
+        for badgeType, badge in db['badges'].items():
+            if badgeType == 'Rank':
+                continue
+            newDB['badges'][badgeType] = loadedBadges.getBadgeOutput(badgeType, db['stats'][badgeType])['badge']
+        newDB['badges']['Rank'] = loadedBadges.getTotalBadgeOutput(db)['badge']
+        return newDB
+    
+    async def calculateCalcs(db, loadedBadges):
+        newDB = db.copy()
+        globalDB = databaseManager.getGlobal()
+        newDB['calcs']['WORP'] = await statBuilder.getTotalWORP(db['stats'], globalDB['stats'], True)
+        newDB['calcs']['SoldierWORP'] = await statBuilder.getTeamWORP(db['stats'], globalDB['stats'], 'Soldiers', True)
+        newDB['calcs']['WarriorWORP'] = await statBuilder.getTeamWORP(db['stats'], globalDB['stats'], 'Warriors', True)
+        newDB['calcs']['MVPS'] = db['stats']['MVPS']
+        newDB['calcs']['BadgePoints'] = loadedBadges.getTotalBadgeOutput(db)['points']
+        return newDB
+    
+    async def calculateRanks():
+        calcStats = ['WORP', 'SoldierWORP', 'WarriorWORP', 'MVPS', 'BadgePoints']
+        allUsers = databaseManager.returnAllUsers()
+        for user in allUsers:
+            player = databaseManager.getWvsPlayerByID(user['userID'])
+            newDB = player.copy()
+            newDB['titles'] = []
+            databaseManager.updateWvsPlayer(newDB)
+        for stat in calcStats:
+            sortedDB = databaseManager.getSortedWvsPlayer(stat)
+            maxValue = sortedDB[0]['calcs'][stat]
+            minValue = databaseManager.getWorstWvsPlayer(stat)['calcs'][stat]
+            scaleValue = maxValue - minValue
+            index = 0
+            for player in sortedDB:
+                newDB = player.copy()
+                if index == 0 and player['calcs'][stat] != 0:
+                    newDB['titles'].append(stat)
+                if 'WORP' in stat:
+                    if scaleValue== 0:
+                        newDB['points'][stat] = 0
+                    else:
+                        newDB['points'][stat] = round((player['calcs'][stat] - minValue)/scaleValue*1000)
+                elif 'MVPS' in stat:
+                    if maxValue == 0:
+                        newDB['points'][stat] = 0
+                    else:
+                        newDB['points'][stat] = round(player['calcs'][stat]/maxValue*1000)
+                else:
+                    newDB['points'][stat] = player['calcs'][stat]
+                databaseManager.updateWvsPlayer(newDB)
+                index += 1
+        allUsers = databaseManager.returnAllUsers()
+        for user in allUsers:
+            player = databaseManager.getWvsPlayerByID(user['userID'])
+            newDB = player.copy()
+            newDB['points']['LegacyPoints'] = 0
+            for stat in calcStats:
+                newDB['points']['LegacyPoints'] += player['points'][stat]
+            databaseManager.updateWvsPlayer(newDB)
+        sortedDB = databaseManager.getSortedWvsPlayer('LegacyPoints')
+        pointWinner = sortedDB[0]
+        newDB = pointWinner.copy()
+        newDB['titles'].append('LegacyPoints')
+        databaseManager.updateWvsPlayer(newDB)
+
+
+
 
     async def changeColor(ctx, user, homeServer, color):
         userValidation = databaseManager.searchForUser(user)

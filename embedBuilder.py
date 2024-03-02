@@ -5,6 +5,8 @@ from gameObjects.Role import Role
 
 from gameFunctions.searchFunctions import searchFunctions
 
+from dataFunctions.databaseManager import databaseManager
+
 class embedBuilder:
 
     async def buildLobby(currentLobby, currentTheme, prefix):
@@ -417,6 +419,19 @@ class embedBuilder:
                         addedEmoji = currentTheme.emojiLoser
                     returnedEmbed.add_field(name = f'{addedEmoji}{search.user.name}{addedEmoji}', value=f'MVP Points: {search.mvpPoints}', inline=True)
 
+        return returnedEmbed
+    
+    async def pointsBoard(currentGame, currentTheme):
+        updateValue = ''
+        for player in currentGame.players:
+            db = databaseManager.getWvsPlayerByID(player.user.id)
+            differential = db['points']['LegacyPoints'] - player.oldLegacyPoints
+            if differential < 0:
+                difVal = str(differential)
+            else:
+                difVal = f'+{differential}'
+            updateValue += f'{player.user.name}: **{player.oldLegacyPoints}** --> **{db['points']['LegacyPoints']}** ({difVal})\n'
+        returnedEmbed = discord.Embed(title = 'Legacy Points Update', description = updateValue, color = currentTheme.endgameCardColor)
         return returnedEmbed
     
     async def savedRulesets(currentTheme):

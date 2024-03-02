@@ -78,16 +78,19 @@ class lobbyFunctions:
             else:
                 if currentLobby.online:
                     if ctx.message.author == currentLobby.host:
-                        if kicked in currentLobby.users:
-                            if currentGame.online == False:
-                                currentLobby.removeUser(kicked)
-                                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                                await home.send(embed=embed, allowed_mentions= noMentions)
-                                await home.send(f'**{kicked.name}** has been kicked back to where they came from.')
+                        if kicked != currentLobby.host:
+                            if kicked in currentLobby.users:
+                                if currentGame.online == False:
+                                    currentLobby.removeUser(kicked)
+                                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                                    await home.send(embed=embed, allowed_mentions= noMentions)
+                                    await home.send(f'**{kicked.name}** has been kicked back to where they came from.')
+                                else:
+                                    await ctx.message.reply('Hey, you meanie! You can\'t kick someone midgame! Please kindly refrain from delivering them your boot of justice until after the game has finished.')
                             else:
-                                await ctx.message.reply('Hey, you meanie! You can\'t kick someone midgame! Please kindly refrain from delivering them your boot of justice until after the game has finished.')
+                                await ctx.message.reply(f'Hey, you bully! You can\'t kick a player out of a lobby that they are not a part of! You may only kick {kicked.name} if they joined the lobby.')
                         else:
-                            await ctx.message.reply(f'Hey, you bully! You can\'t kick a player out of a lobby that they are not a part of! You may only kick {kicked.name} if they joined the lobby.')
+                            await ctx.message.reply('Hey! You can\'t kick yourself, you freaking masochist!')
                     else:
                         await ctx.message.reply(f'Hey, you bully! You can\'t kick a player out of a lobby that you\'re not the host of! Only the host may punt {kicked.name} out of here.')
                 else:

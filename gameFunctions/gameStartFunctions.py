@@ -18,7 +18,7 @@ from dataFunctions.userInfoManager import userInfoManager
 from embedBuilder import embedBuilder
 
 class gameStartFunctions:
-    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole):
+    async def start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges):
         if home == ctx.channel:
             if currentGame.online == False:
                 if currentLobby.online:
@@ -27,7 +27,7 @@ class gameStartFunctions:
                             illegalRules = await gameStartFunctions.checkIllegalRules(currentLobby, currentTheme)
                             if illegalRules == '':
                                 await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
-                                await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole)
+                                await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges)
                                 expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
                                 expo = Expedition(currentGame.commanderOrder[0], expoSize, currentGame.players)
                                 currentGame.setExpedition(expo)
@@ -44,7 +44,7 @@ class gameStartFunctions:
             else:
                 await ctx.message.reply('There is already an active game!')
 
-    async def createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole):
+    async def createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges):
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
         roleList = []
 
@@ -58,7 +58,7 @@ class gameStartFunctions:
             newPlayer = Player(user, roleList[index])
             players.append(newPlayer)
             index += 1
-        currentGame.start(currentLobby, players, currentRules, loadedRoles, gagRole)
+        currentGame.start(currentLobby, players, currentRules, loadedRoles, gagRole, loadedBadges)
         search = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
         if search != None:
             await search.role.startHange(currentGame, search)
