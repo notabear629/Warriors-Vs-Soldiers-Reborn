@@ -35,6 +35,16 @@ class Rules:
                 secondaryGroup = self.disabledWarriors
                 primaryAttribute = 'enabledWarriors'
                 secondaryAttribute = 'disabledWarriors'
+        elif roles[0] in Role.wildcardRoles:
+            primaryGroup = self.disabledWildcards
+            secondaryGroup = self.enabledWildcards
+            primaryAttribute = 'disabledWildcards'
+            secondaryAttribute = 'enabledWildcards'
+            if enabled:
+                primaryGroup = self.enabledWildcards
+                secondaryGroup = self.disabledWildcards
+                primaryAttribute = 'enabledWildcards'
+                secondaryAttribute = 'disabledWildcards'
         for role in roles:
             if role in secondaryGroup:
                 secondaryGroup.remove(role)
@@ -49,6 +59,9 @@ class Rules:
         elif team == 'Warriors':
             self.enabledWarriors = []
             self.disabledWarriors = []
+        elif team == 'Wildcards':
+            self.enabledWildcards = []
+            self.disabledWildcards = []
     
     def toggleMultikidnap(self, toggle):
         self.multikidnap = toggle
@@ -58,6 +71,13 @@ class Rules:
 
     def toggleCasual(self, toggle):
         self.casual = toggle
+
+    def toggleCaptains(self, erenKey, zekeKey):
+        self.noCoordinate = not erenKey
+        self.noWarchief = not zekeKey
+
+    def toggleWildcards(self):
+        self.wildcards = not self.wildcards
 
     def loadRules(self, rules):
         for key, value in rules.items():

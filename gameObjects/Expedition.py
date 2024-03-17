@@ -22,11 +22,13 @@ class Expedition:
         self.leviAttacked = False
         self.leviDefended = False
         self.sashaActivated = False
+        self.gabiActivated = False
         self.erwinActivated = False
         self.dazActivated = False
         self.falcoActivated = False
         self.mikasaGuarded = None
         self.reinerBlocked = None
+        self.kennyMurdered = None
         self.bertholdtCloaked = False
         self.annieMessage = None
         self.usedExpoAbilities = []
@@ -45,9 +47,11 @@ class Expedition:
         self.erwinActivated = False
         self.dazActivated = False
         self.sashaActivated = False
+        self.gabiActivated = False
         self.leviAttacked = False
         self.leviDefended = False
         self.mikasaGuarded = None
+        self.kennyMurdered = None
         self.arminActivated = False
         self.reinerBlocked = None
         self.bertholdtCloaked = False
@@ -146,6 +150,9 @@ class Expedition:
             self.annieMessage = actCase['Annie']
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
+        elif type(actCase) == dict and 'Kenny' in actCase:
+            self.passedExpedition.append(player)
+            self.kennyMurdered = actCase['Kenny']
         elif actCase == 'y':
             self.passedExpedition.append(player)
         elif actCase == 'n':
@@ -156,6 +163,9 @@ class Expedition:
 
     def activateSasha(self):
         self.sashaActivated = True
+
+    def activateGabi(self):
+        self.gabiActivated = True
 
     def processFalco(self, Falco):
         if len(self.accepted) >= len(self.rejected):

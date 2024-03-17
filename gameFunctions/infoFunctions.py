@@ -54,8 +54,8 @@ class infoFunctions:
         if foundInput == None:
             foundInput = 'GLOBAL'
         if foundInput == 'GLOBAL':
-            profileEmbed = await statBuilder.profileEmbed(currentTheme, 'GLOBAL', loadedRoles, currentTheme.helpEmbedColor, 'Main')
-            profileView = await statBuilder.profileView(ctx.message.author, 'GLOBAL', currentTheme, loadedRoles)
+            profileEmbed = await statBuilder.profileEmbed(currentTheme, 'GLOBAL', loadedRoles, currentTheme.helpEmbedColor, loadedBadges,'Main')
+            profileView = await statBuilder.profileView(ctx.message.author, 'GLOBAL', currentTheme, loadedRoles, currentTheme.helpEmbedColor, loadedBadges)
         else:
             user = client.get_user(foundInput['userID'])
             role = homeServer.get_role(foundInput['roleID'])

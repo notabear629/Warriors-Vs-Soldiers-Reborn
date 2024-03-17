@@ -5,6 +5,8 @@ from dataFunctions.databaseManager import databaseManager
 
 from gameFunctions.searchFunctions import searchFunctions
 
+from gameObjects.Player import Player
+
 from embedBuilder import embedBuilder
 
 class webhookManager:
@@ -20,23 +22,23 @@ class webhookManager:
             ourWebhook = await channel.create_webhook(name = 'WvS Bot Webhook')
         if author == 'PATHS':
             pass
-        elif author.startswith('{ALTERNATE}'):
-            foundPlayer = await searchFunctions.roleIDToPlayer(currentGame, author.split('{ALTERNATE}')[1])
-            if foundPlayer != None:
-                authorName = foundPlayer.role.name
-                if type(foundPlayer.role.secondaryEmoji) == str:
-                    authorAvatar = foundPlayer.role.secondaryImageURL
-                else:
-                    authorAvatar = foundPlayer.role.secondaryEmoji.url
         else:
-            foundPlayer = await searchFunctions.roleIDToPlayer(currentGame, author)
-            if foundPlayer != None:
-                authorName = foundPlayer.role.name
-                if type(foundPlayer.role.emoji) == str:
-                    authorAvatar = foundPlayer.role.imageURL
-                else:
-                    authorAvatar = foundPlayer.role.emoji.url
-
+            if author.startswith('{ALTERNATE}'):
+                foundRole = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, author.split('{ALTERNATE}')[1])
+                if foundRole != None:
+                    if type(foundRole.secondaryEmoji) == str:
+                        authorAvatar = foundRole.secondaryImageURL
+                    else:
+                        authorAvatar = foundRole.secondaryEmoji.url
+            else:
+                foundRole = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, author)
+                if foundRole != None:
+                    if type(foundRole.emoji) == str:
+                        authorAvatar = foundRole.imageURL
+                    else:
+                        authorAvatar = foundRole.emoji.url
+            if foundRole != None:
+                authorName = foundRole.name
         await ourWebhook.send(message, embed=embed, username= authorName, avatar_url = authorAvatar, wait = True)
 
     async def processExpoVoteWebhooks(currentGame, currentTheme, home, client):
@@ -79,15 +81,14 @@ class webhookManager:
                 hitchInfo['Bertholdt'] = Bertholdt
         if currentGame.currentExpo.leviAttacked:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
-            if Levi.killed != []:
-                await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviAttackMessage, '{ALTERNATE}Levi', client)
-                for player in currentGame.warriors:
-                    user = databaseManager.searchForUser(player.user)
-                    userChannel = client.get_channel(user['channelID'])
-                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', '{ALTERNATE}Zeke', client)
-                if Hitch != None:
-                    Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
-                    hitchInfo['Levi'] = Levi
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviAttackMessage, '{ALTERNATE}Levi', client)
+            for player in currentGame.warriors:
+                user = databaseManager.searchForUser(player.user)
+                userChannel = client.get_channel(user['channelID'])
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentTheme.getLeviRevealMessage(Levi)}', '{ALTERNATE}Zeke', client)
+            if Hitch != None:
+                Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+                hitchInfo['Levi'] = Levi
         if currentGame.currentExpo.leviDefended and len(currentGame.currentExpo.sabotagedExpedition) > 0:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviDefendMessage, 'Levi', client)
@@ -98,12 +99,25 @@ class webhookManager:
             if Hitch != None:
                 Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
                 hitchInfo['Levi'] = Levi
+        if currentGame.currentExpo.kennyMurdered != None:
+            Kenny = await searchFunctions.roleIDToPlayer(currentGame, 'Kenny')
+            kennyMsg = currentTheme.kennyMessage
+            if currentGame.currentExpo.kennyMurdered == Kenny:
+                kennyMsg = currentTheme.kennySuicideMessage
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, kennyMsg, 'Kenny', client)
+            if Hitch != None:
+                hitchInfo['Kenny'] = Kenny
         Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
         if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
             if Hitch != None:
                 Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
                 hitchInfo['Sasha'] = Sasha
+        Gabi = await searchFunctions.roleIDToPlayer(currentGame, 'Gabi')
+        if Gabi !=None and currentGame.gabiTargeted != None and currentGame.gabiTargeted not in currentGame.deadPlayers:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.gabiMessage, 'Gabi', client)
+            if Hitch != None:
+                hitchInfo['Gabi'] = Gabi
         if currentGame.currentExpo.annieMessage != None:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.annieMessage, '{ALTERNATE}Annie', client)
             for player in currentGame.warriors:
@@ -163,5 +177,22 @@ class webhookManager:
     async def basementSkipWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.retreatMessage, '{ALTERNATE}Zeke', client)
 
+    async def erenFrecklemirWebhook(currentGame, currentTheme, channel, msg, embed, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, channel, msg, 'Eren', client, embed)
 
+    async def ymirWebhook(currentGame, currentTheme, channel, msg, embed, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, channel, msg, 'Ymir', client, embed)
+    
+    async def ymirMessageWebhook(currentGame, currentTheme, channel, embed, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, channel, currentGame.ymirGuiding.user.mention, 'Ymir', client, embed)
+
+    async def ymirRevivalWebhook(currentGame, currentTheme, home, msg, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, msg, 'Ymir', client)
+
+    async def ymirBlessingGrantedWebook(currentGame, currentTheme, client):
+        Ymir = await searchFunctions.roleIDToPlayer(currentGame, 'Ymir')
+        await webhookManager.sendWebhook(currentGame, currentTheme, currentGame.home, f'{currentGame.blessedPlayer.user.mention}, you have been granted {Ymir.role.shortName}\'s Blessing. Use `{currentGame.prefix}check @player` to determine what team they are on.', 'Ymir', client)
+
+    async def ymirBlessingCheckWebhook(currentGame, currentTheme, channel, embed):
+        await webhookManager.sendWebhook(currentGame, currentTheme, channel, currentGame.blessedPlayer.user.mention, 'Ymir', currentGame.client, embed)
     

@@ -47,8 +47,10 @@ class helpBuilder:
     async def optionsAndRulesEmbed(currentTheme):
         returnedEmbed = discord.Embed(title = 'Game Options and Rules', description='This section is a collection of information regarding the various options and rules configurable to the game. Select the option you wish to know more about.', color = currentTheme.helpEmbedColor)
         returnedEmbed.add_field(name = '🎭`Game Themes`', value = 'This section teaches you more about Game Themes, the ability to re-skin the game!', inline= True)
+        returnedEmbed.add_field(name = '👨‍✈️`Team Captains`', value = 'This section teaches you more about the Team Captains, and the rule options you can select.', inline=True)
         returnedEmbed.add_field(name = '🥷`Kidnap Rules`', value = 'This section teaches you more about the various rules regarding the kidnap phase of the game!', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiRumbling}`{currentTheme.rumblingName}`', value = 'This section teaches you more about the optional rule to play with new ways to win and find new endings! In the default theme, based off "The Rumbling" in Attack on Titan\'s final season.', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}`{currentTheme.wildcardPlural}`', value = f'This section explains everything to know about the 3rd team the {currentTheme.wildcardPlural}!', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiRanked}`Ranked Status`', value = 'This section explains what setting the game to Ranked or Casual does', inline=True)
         returnedEmbed.add_field(name = f'👥`Role Options`', value = 'This section explains how to properly configure the Role Options based on what you want', inline=True)
         returnedEmbed.add_field(name = f'💾`Saved Rulesets`', value= 'This section explains how to quickly save and load particular rulesets', inline=True)
@@ -56,6 +58,19 @@ class helpBuilder:
     
     async def gameThemesEmbed(currentTheme):
         returnedEmbed = discord.Embed(title = 'Game Themes', description = 'This game has a feature called themes! Themes allow you to re-skin the game without changing any of its functionality. For example, the default for this game is an Attack on Titan based skin entitled Warriors vs Soldiers. This does not have to be the case! Users are allowed, and enocuraged, to create their own themes with very powerful re-skin abilities. For example, it is possible to create a Danganronpa-themed game entitled "Hopes vs Despairs". The Soldiers/Warriors name is configurable, the roles could all be re-named and re-emoji\'d to Danganronpa characters, even the expedition name could be re-named to "Class Trials". Essentially everything is customizeable in this game, and the options are limitless! Selecting your theme does not change the gameplay at all, but does change how it looks and the aesthetics of the game.', color = currentTheme.helpEmbedColor)
+        return returnedEmbed
+    
+    async def teamCaptainsEmbed(currentTheme, loadedRoles):
+        Eren = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Eren')
+        Zeke = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Zeke')
+        Mike = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Mike')
+        Historia = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Historia')
+        Floch = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Floch')
+        returnedEmbed = discord.Embed(title = 'Team Captains', description = 'An explanation of all of the various rules available for Team Captains', color = currentTheme.helpEmbedColor)
+        returnedEmbed.add_field(name = f'✅`Coordinate and Warchief Enabled`', value = f'This option means that {Eren.shortName} and {Zeke.shortName} will be present in every single game, no matter what.', inline=True)
+        returnedEmbed.add_field(name = f'{Eren.emoji}`Coordinate Only`', value = f'This option means that {Zeke.shortName} will be disabled and will not appear in the game.', inline=True)
+        returnedEmbed.add_field(name = f'{Zeke.emoji}`Warchief Only`', value = f'This option means that {Eren.shortName} will be disabled and will not appear in the game. There will be no kidnapping phase, and reaching the basement is an instant win for the soldiers. The soldier roles that are present in the game will be hidden, and the Warriors will be DM\'d the soldier roles present so they can choose to pretend to be players that another player isn\'t already. In this gamemode, {Floch.shortName}, {Historia.shortName}, and {Mike.shortName} will also be banned.', inline=True)
+        returnedEmbed.add_field(name = f'❌`Coordinate and Warchief Disabled`', value = 'This option means that consequences for both of the captains being disabled will apply, and neither will appear in the game.', inline=True)
         return returnedEmbed
     
     async def kidnapRulesEmbed(currentTheme):
@@ -71,6 +86,12 @@ class helpBuilder:
         returnedEmbed.add_field(name = '`How can I trigger the Rumbling?`', value = 'In order to trigger the Rumbling, some conditions must be met. First of all, it will be triggered only after an expedition is complete, once you look at the results of the expedition, if the conditions within that expedition were met, the Rumbling will start. The conditions are as follows:\n1. The Round MUST be round 3 or later. The Rumbling cannot start in the first 2 rounds.\n2. Eren and Zeke must BOTH be in the expedition. They are the two characters that ultimately activate the rumbling.\n3. NO character that has an allegiance to the Alliance can be present in the expedition. It must be full of only Yeagerists.', inline= True)
         returnedEmbed.add_field(name = '`How is the Rumbling fought?`', value = 'The game works like this. All of the Yeagerist fighters and the Alliance fighters will form in to two teams. The Yeagerists will be the ones playing the game, in a fashion very similar to kidnapping. The Alliance fighters will have a specific order that is scrambled and randomized, the Yeagerist fighters will be semi-randomized except Eren will always be last and Zeke will be second to last. The game begins with the First Yeagerist being told the Role of the First Alliance Member, but NOT their identity. The first Yeagerist must select who they believe has this role, if they get it right, they kill the Alliance Member and the next Alliance Member steps up to fight that particular Yeagerist. If they get it wrong, the Yeagerist themselves is killed and that Alliance Member moves forward to fight the next Yeagerist. The game continues until one side is completely wiped out.', inline= True)
         returnedEmbed.add_field(name = '`How do I get different Endings?`', value= 'The Rumbling has multiple possible different endings. First, there is a default victory for both the Yeagerists and the Alliance. Next, there is something called "Domination Victories". This happens when a particular yeagerist kills every single alliance member by themselves, without another yeagerist getting a single kill. Each fighting yeagerist role has their own domination victory. In addition, if the yeagerists cannot identify a single alliance member correctly and every alliance member makes it through, the ALLIANCE has their own domination victory.', inline= True)
+        return returnedEmbed
+    
+    async def wildcardEmbed(currentTheme, loadedRoles):
+        Hange = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Hange')
+        returnedEmbed = discord.Embed(title = currentTheme.wildcardPlural, description= f'Enabling this special team introduces a 3rd faction to the game, one not necessarily that is inline with the {currentTheme.soldierPlural} or the {currentTheme.warriorPlural}, but instead has their own unique objectives. This gamemode requires 7+ people, and {Hange.shortName} will be disabled due to the role not working properly with this gamemode. This tends to be the most chaotic setting in the game.', color = currentTheme.wildcardColor)
+        returnedEmbed.set_thumbnail(url = currentTheme.wildcardThumbnail)
         return returnedEmbed
     
     async def rankedEmbed(currentTheme):
@@ -150,7 +171,8 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'{Bertholdt.emoji}`Cloak`', value = f'This is an option exclusive to {Bertholdt.emoji}{Bertholdt.shortName}{Bertholdt.emoji} that can be used multiple times per game. This option makes it so the results screen that shows how many players passed or sabotaged a round does not show up. This could be helpful to hide and better coordinate double sabotages, BUT can expose your role and who you are, because if the players see the cloak go off, it logically means {Bertholdt.shortName} logically must have been in that {currentTheme.expeditionName}.', inline=True)
         Annie = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Annie')
         returnedEmbed.add_field(name = f'{Annie.emoji}`Scream`', value = f'This is a choice exclusive to {Annie.emoji}{Annie.shortName}{Annie.emoji} once per game. It results in a sabotage, AND allows you to type a secret message that will be sent to all of the {currentTheme.warriorPlural} in their private channels. The players in the main game will also see that you sent a scream message, but it will not tell them the content of the message, merely inform them that one was sent.', inline=True)
-
+        Kenny = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Kenny')
+        returnedEmbed.add_field(name = f'{Kenny.emoji}`Kill`', value = f'This is a choice exclusive to {Kenny.emoji}{Kenny.shortName}{Kenny.emoji}. He can kill any player present on the {currentTheme.expeditionName}.', inline=True)
         return returnedEmbed
     
     async def specialActionsInfoEmbed(currentTheme, loadedRoles, prefix):
@@ -168,6 +190,13 @@ class helpBuilder:
         Porco = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Porco')
         returnedEmbed.add_field(name = f'{Erwin.emoji}`{prefix}flare`', value =f'A one-time command special to {Erwin.emoji}{Erwin.shortName}{Erwin.emoji}. When used in their private channel during the proposal stage, it will reveal their identity as {Erwin.shortName}, give them the ability to be the {currentTheme.commanderName} instantly. If the player is currently gagged by {Porco.shortName}, it will instantly remove the gag.', inline=True)
         returnedEmbed.add_field(name = f'{Porco.emoji}`{prefix}gag`', value = f'A one-time special ability granted to {Porco.emoji}{Porco.shortName}{Porco.emoji}. When used in your private channel, it opens the menu for you to choose which player to gag. Which can be any player, including your teammates and yourself. When a player is gagged, for an entire round, they will be given a role called "GAGGED" that prohibits them from speaking in the channel. In addition, it will not allow them to be the {currentTheme.commanderName} and pick {currentTheme.expeditionTeamMembers}, it will skip over them. It also does not send an announcement when you do this, so it is possible that people will not notice what you did and you can get away with making an inconveniently loud player shut up for a round. However, {Erwin.shortName} is immune to this entirely once they fire a flare. Even if you had previously gagged them, they will break out upon the flare firing.', inline=True)
+        Gabi = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Gabi')
+        returnedEmbed.add_field(name = f'{Gabi.emoji}`{prefix}fire`', value = f'A one-time special ability granted to {Gabi.emoji}{Gabi.shortName}{Gabi.emoji}. This command designates a person to fire upon. Once the results are read, that player will be shot, and they will be wounded for a round. Wounded players cannot be on the {currentTheme.expeditionName}.', inline=True)
+        Keith = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Keith')
+        returnedEmbed.add_field(name = f'{Keith.emoji}`{prefix}summon`', value = f'A one-time special ability granted to {Keith.emoji}{Keith.shortName}{Keith.emoji}. This command designates a role you wish to change to. At the end of a passed round, you will change to that role.', inline=True)
+        Ymir = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Ymir')
+        returnedEmbed.add_field(name = f'{Ymir.emoji}`{prefix}paths`', value = f'Opens up the menu for paths options. Unique to {Ymir.emoji}{Ymir.shortName}{Ymir.emoji}. This command is the center that lets you use the message send, blessing granting, or player revival.', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiPaths}`{prefix}check @mention`', value = f'If the blessing was bestowed upon you, you can use this command to check to see what team any player is on.', inline=True)
         return returnedEmbed
     
     async def roleInfoHelpEmbed(currentTheme):
@@ -181,6 +210,9 @@ class helpBuilder:
         elif selectedRole.team == 'Warriors':
             embedColor = currentTheme.warriorColor
             roleTeam = currentTheme.warriorPlural
+        elif selectedRole.team == 'Wildcards':
+            embedColor = currentTheme.wildcardColor
+            roleTeam = currentTheme.wildcardPlural
         if selectedRole.rumblingTeam.startswith('yeagerist'):
             rumblingTeam = currentTheme.yeageristTeam
         elif selectedRole.rumblingTeam.startswith('alliance'):
@@ -246,7 +278,7 @@ class helpBuilder:
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
                     mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info', 'Help', 'Stats']
-                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked']
+                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked', 'Wildcards', 'Team Captains']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
                     statsReturns = ['StatsInfo', 'StatsCommands']
                     if navigatorContext in mainReturns:
@@ -293,6 +325,10 @@ class helpBuilder:
                     newNavigatorContext = 'Game Themes'
                     refreshedEmbed = await helpBuilder.gameThemesEmbed(currentTheme)
 
+                elif clickedButton == 'Team Captains':
+                    newNavigatorContext = 'Team Captains'
+                    refreshedEmbed = await helpBuilder.teamCaptainsEmbed(currentTheme, loadedRoles)
+
                 elif clickedButton == 'Kidnap Rules':
                     newNavigatorContext = 'Kidnap Rules'
                     refreshedEmbed = await helpBuilder.kidnapRulesEmbed(currentTheme)
@@ -300,6 +336,10 @@ class helpBuilder:
                 elif clickedButton == 'Rumbling':
                     newNavigatorContext = 'Rumbling'
                     refreshedEmbed = await helpBuilder.rumblingInfoEmbed(currentTheme)
+
+                elif clickedButton == 'Wildcards':
+                    newNavigatorContext = 'Wildcards'
+                    refreshedEmbed = await helpBuilder.wildcardEmbed(currentTheme, loadedRoles)
 
                 elif clickedButton == 'Ranked':
                     newNavigatorContext = 'Ranked'
@@ -411,6 +451,12 @@ class helpBuilder:
             themesButton.callback = processThemesButton
             returnedView.add_item(themesButton)
 
+            captainButton = Button(label = 'Team Captains', style=discord.ButtonStyle.grey, emoji = str('👨‍✈️'))
+            async def processCaptainButton(interaction):
+                await navigate(interaction, 'Team Captains')
+            captainButton.callback = processCaptainButton
+            returnedView.add_item(captainButton)
+
             kidnapRulesButton = Button(label = 'Kidnap Rules', style=discord.ButtonStyle.grey, emoji = str('🥷'))
             async def processKidnapRulesButton(interaction):
                 await navigate(interaction, 'Kidnap Rules')
@@ -422,6 +468,12 @@ class helpBuilder:
                 await navigate(interaction, 'Rumbling')
             rumblingButton.callback = processRumblingButton
             returnedView.add_item(rumblingButton)
+
+            wildcardButton = Button(label = f'{currentTheme.wildcardPlural}', style=discord.ButtonStyle.grey, emoji = currentTheme.emojiWildcard)
+            async def processWildcardButton(interaction):
+                await navigate(interaction, 'Wildcards')
+            wildcardButton.callback = processWildcardButton
+            returnedView.add_item(wildcardButton)
 
             rankedButton = Button(label = f'Ranked Status', style=discord.ButtonStyle.grey, emoji = currentTheme.emojiRanked)
             async def processRankedButton(interaction):
@@ -475,18 +527,24 @@ class helpBuilder:
         elif navigatorContext == 'Role Info':
             soldierRoles = []
             warriorRoles = []
+            wildcardRoles = []
             for role in loadedRoles:
                 if role.team == 'Soldiers':
                     soldierRoles.append(role)
                 elif role.team == 'Warriors':
                     warriorRoles.append(role)
+                elif role.team == 'Wildcards':
+                    wildcardRoles.append(role)
 
-            soldierSelection = Select(placeholder= f'Get Info about a Soldier Role', min_values=1, max_values=1)
+            soldierSelection = Select(placeholder= f'Get Info about a {currentTheme.soldierSingle} Role', min_values=1, max_values=1)
             for role in soldierRoles:
                 soldierSelection.add_option(label = role.shortName, emoji=role.emoji)
-            warriorSelection = Select(placeholder= 'Get Info about a Warrior Role', min_values=1, max_values=1)
+            warriorSelection = Select(placeholder= f'Get Info about a {currentTheme.warriorSingle} Role', min_values=1, max_values=1)
             for role in warriorRoles:
                 warriorSelection.add_option(label = role.shortName, emoji = role.emoji)
+            wildcardSelection = Select(placeholder= f'Get Info about a {currentTheme.wildcardSingle} Role', min_values=1, max_values=1)
+            for role in wildcardRoles:
+                wildcardSelection.add_option(label = role.shortName, emoji = role.emoji)
             async def processSoldierSelection(interaction):
                 selectedRoleShortName = soldierSelection.values[0]
                 for role in soldierRoles:
@@ -497,10 +555,17 @@ class helpBuilder:
                 for role in warriorRoles:
                     if role.shortName == selectedRoleShortName:
                         await navigate(interaction, 'Selected Role Info', role)
+            async def processWildcardSelection(interaction):
+                selectedRoleShortName = wildcardSelection.values[0]
+                for role in wildcardRoles:
+                    if role.shortName == selectedRoleShortName:
+                        await navigate(interaction, 'Selected Role Info', role)
             soldierSelection.callback = processSoldierSelection
             warriorSelection.callback = processWarriorSelection
+            wildcardSelection.callback = processWildcardSelection
             returnedView.add_item(soldierSelection)
             returnedView.add_item(warriorSelection)
+            returnedView.add_item(wildcardSelection)
 
         elif navigatorContext == 'Stats':
 

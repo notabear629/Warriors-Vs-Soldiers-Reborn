@@ -25,11 +25,16 @@ class endGameFunctions:
             
 
     async def breakAllWalls(currentGame, currentTheme, home):
+        await currentGame.applyFrecklemirTeam()
         await home.send(currentTheme.wallBreakMessage)
         currentGame.setWinCondition('wallBreaks')
         await endGameFunctions.processEndgame(currentGame, currentTheme, home)
 
     async def reachBasement(currentGame, currentTheme, home):
+        await currentGame.applyFrecklemirTeam()
+        if currentGame.currentRules.noCoordinate:
+            await endGameFunctions.noCoordinateWin(currentGame, currentTheme, home)
+            return
         currentGame.activateKidnap()
         await home.send(currentTheme.basementMessage)
         await home.send(await endGameFunctions.getWarriorList(currentGame))
@@ -144,8 +149,13 @@ class endGameFunctions:
         if warriorWinMessage != None:
             await home.send(warriorWinMessage)
 
+    async def noCoordinateWin(currentGame, currentTheme, home):
+        await home.send(currentTheme.noCordSuccessMessage)
+        currentGame.setWinCondition('noCoordinateWin')
+        await endGameFunctions.processEndgame(currentGame, currentTheme, home)
+
     async def processEndgame(currentGame, currentTheme, home):
-        currentGame.processWinners()
+        await currentGame.processWinners()
         await Stats.processMVP(currentGame)
         await endGameFunctions.processEndgameStats(currentGame)
         if currentGame.winCondition == 'multikidnapSuccess' or currentGame.winCondition == 'multikidnapFail':
@@ -232,6 +242,9 @@ class endGameFunctions:
             user = databaseManager.searchForUser(Zeke.user)
             zekeChannel = client.get_channel(user['channelID'])
             if ctx.message.author == Zeke.user and ctx.message.channel == zekeChannel:
+                if currentGame.currentRules.noCoordinate:
+                    await ctx.reply('There is no Coordinate! You cannot retreat!')
+                    return
                 currentGame.skipExpos()
                 await ctx.reply('Retreat Confirmed!')
                 if currentGame.porcoGagged != None:

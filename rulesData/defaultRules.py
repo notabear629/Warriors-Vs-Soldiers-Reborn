@@ -12,9 +12,14 @@ class defaultRules:
     disabledSoldiers = []
     enabledWarriors = []
     disabledWarriors = []
+    enabledWildcards = []
+    disabledWildcards = []
 
     #Rules that define game options
     multikidnap = False
     rumbling = False
     casual = False
+    noCoordinate = False
+    noWarchief = False
+    wildcards = False
 

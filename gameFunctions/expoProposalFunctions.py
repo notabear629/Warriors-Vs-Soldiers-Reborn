@@ -40,8 +40,11 @@ class expoProposalFunctions:
             if 1 in currentGame.passedRounds:
                 dynamicOffset -= 1
             expeditionNumber = 3 + dynamicOffset
-        if expeditionNumber > len(currentGame.livingSoldiers):
-            expeditionNumber = len(currentGame.livingSoldiers)
+        woundOffset = 0
+        if currentGame.woundedPlayer in currentGame.livingSoldiers and expeditionNumber > (len(currentGame.livingSoldiers) - 1):
+            woundOffset = 1
+        if expeditionNumber > (len(currentGame.livingSoldiers) - woundOffset):
+            expeditionNumber = (len(currentGame.livingSoldiers) - woundOffset)
         return expeditionNumber
     
     async def getExpeditionPrediction(currentGame):
@@ -157,6 +160,11 @@ class expoProposalFunctions:
                 await ctx.reply(f'This player is already in your {currentTheme.expeditionTeam}!')
             elif player not in currentGame.livingPlayers:
                 await ctx.reply(f'This player is dead! You may only pick living players for your {currentTheme.expeditionTeam}')
+            elif player.role.id == 'Ymir':
+                Ymir = await searchFunctions.roleIDToPlayer(currentGame, 'Ymir')
+                await ctx.reply(f'You cannot pick the {Ymir.role.name} for your {currentTheme.expeditionTeam}!')
+            elif player == currentGame.woundedPlayer:
+                await ctx.reply('This player is still recovering from their wounds! You may not pick them at this time.')
             else:
                 currentGame.currentExpo.addMember(player)
                 embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)

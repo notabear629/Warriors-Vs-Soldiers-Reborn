@@ -34,16 +34,25 @@ class statBuilder:
         return per
     
     async def getRoleTW(db, globalDB, wins, plays):
-        if globalDB[plays] == 0 or db[wins] == 0:
-            return 0.0
-        elif db[wins] == db[plays]:
-            return 100.0
-        #Let x = average win percentage of given role
-        g = globalDB[wins]/globalDB[plays]
-        #Let x = user's win percentage
-        x = db[wins]/db[plays]
-        #Return our TW% function calc
-        return round((x ** (math.log(0.5,g))) * 100, 1)
+        if wins.startswith('Keith'):
+            if globalDB['KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+                return 0.0
+            elif db['KeithFinishedWon'] == globalDB['KeithFinishedWon']:
+                return 100.0
+            g = globalDB['KeithFinishedWon']/globalDB['KeithFinishedPlayed']
+            x = db['KeithFinishedWon']/db['KeithFinishedPlayed']
+            return round((x ** (math.log(0.5,g))) * 100, 1)
+        else:
+            if globalDB[plays] == 0 or db[wins] == 0:
+                return 0.0
+            elif db[wins] == db[plays]:
+                return 100.0
+            #Let x = average win percentage of given role
+            g = globalDB[wins]/globalDB[plays]
+            #Let x = user's win percentage
+            x = db[wins]/db[plays]
+            #Return our TW% function calc
+            return round((x ** (math.log(0.5,g))) * 100, 1)
     
     async def getTeamTW(db, globalDB, team):
         if team == 'Soldiers':
@@ -53,21 +62,38 @@ class statBuilder:
         #initialize t = total
         t = 0
         for role in roles:
-            if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
-                continue
-            if db[f'{role}Won'] == db[f'{role}Played']:
-                t += (db[f'{role}Played']/db[f'{team}Played'])
-                continue
-            #let g = average win percentage of given role
-            g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
-            #let x = user's win percentage
-            x = db[f'{role}Won']/db[f'{role}Played']
-            #let y = the raw tw% calculation
-            y = x ** (math.log(0.5, g))
-            #let z = y times the proportion of the time they played as that role relative to playing as the team
-            z = y * (db[f'{role}Played']/db[f'{team}Played'])
-            #increment t by z
-            t += z
+            if role == 'Keith':
+                if globalDB[f'KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+                    continue
+                if db[f'KeithFinishedWon'] == db[f'KeithFinishedPlayed']:
+                    t += (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                    continue
+                #let g = average win percentage of given role
+                g = globalDB[f'KeithFinishedWon']/globalDB[f'KeithFinishedPlayed']
+                #let x = user's win percentage
+                x = db[f'KeithFinishedWon']/db[f'KeithFinishedPlayed']
+                #let y = the raw tw% calculation
+                y = x ** (math.log(0.5, g))
+                #let z = y times the proportion of the time they played as that role relative to playing as the team
+                z = y * (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                #increment t by z
+                t += z
+            else:
+                if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
+                    continue
+                if db[f'{role}Won'] == db[f'{role}Played']:
+                    t += (db[f'{role}Played']/db[f'GamesPlayed'])
+                    continue
+                #let g = average win percentage of given role
+                g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
+                #let x = user's win percentage
+                x = db[f'{role}Won']/db[f'{role}Played']
+                #let y = the raw tw% calculation
+                y = x ** (math.log(0.5, g))
+                #let z = y times the proportion of the time they played as that role relative to playing as the team
+                z = y * (db[f'{role}Played']/db[f'GamesPlayed'])
+                #increment t by z
+                t += z
         #Convert t to properly rounded percentage and return
         return round(t*100, 1)
     
@@ -75,40 +101,69 @@ class statBuilder:
         roles = Role.allRoles.copy()
         t = 0
         for role in roles:
-            if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
-                continue
-            if db[f'{role}Won'] == db[f'{role}Played']:
-                t += (db[f'{role}Played']/db[f'GamesPlayed'])
-                continue
-            #let g = average win percentage of given role
-            g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
-            #let x = user's win percentage
-            x = db[f'{role}Won']/db[f'{role}Played']
-            #let y = the raw tw% calculation
-            y = x ** (math.log(0.5, g))
-            #let z = y times the proportion of the time they played as that role relative to playing as the team
-            z = y * (db[f'{role}Played']/db[f'GamesPlayed'])
-            #increment t by z
-            t += z
+            if role == 'Keith':
+                if globalDB[f'KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+                    continue
+                if db[f'KeithFinishedWon'] == db[f'KeithFinishedPlayed']:
+                    t += (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                    continue
+                #let g = average win percentage of given role
+                g = globalDB[f'KeithFinishedWon']/globalDB[f'KeithFinishedPlayed']
+                #let x = user's win percentage
+                x = db[f'KeithFinishedWon']/db[f'KeithFinishedPlayed']
+                #let y = the raw tw% calculation
+                y = x ** (math.log(0.5, g))
+                #let z = y times the proportion of the time they played as that role relative to playing as the team
+                z = y * (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                #increment t by z
+                t += z
+            else:
+                if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
+                    continue
+                if db[f'{role}Won'] == db[f'{role}Played']:
+                    t += (db[f'{role}Played']/db[f'GamesPlayed'])
+                    continue
+                #let g = average win percentage of given role
+                g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
+                #let x = user's win percentage
+                x = db[f'{role}Won']/db[f'{role}Played']
+                #let y = the raw tw% calculation
+                y = x ** (math.log(0.5, g))
+                #let z = y times the proportion of the time they played as that role relative to playing as the team
+                z = y * (db[f'{role}Played']/db[f'GamesPlayed'])
+                #increment t by z
+                t += z
         #Convert t to properly rounded percentage and return
         return round(t*100, 1)
     
     async def getRoleWORP(db, globalDB, role, stackCase=False):
-        if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
-            return 0.0
-        #let g = average win percentage
-        g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
-        #let x = player win percentage
-        x = db[f'{role}Won']/db[f'{role}Played']
-        #let y be the differential between these two values
-        y = x - g
-        #let z be the total WORP generated by multiplying differential times user games
-        z = y * db[f'{role}Played']
-        #If this function is being called to get a team/total value, then return without a round
-        if stackCase:
-            return z
+        if role == 'Keith':
+            if globalDB['KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+                return 0.0
+            g = globalDB['KeithFinishedWon']/globalDB['KeithFinishedPlayed']
+            x = db['KeithFinishedWon']/db['KeithFinishedPlayed']
+            y = x - g
+            z = y * db['KeithFinishedPlayed']
+            if stackCase:
+                return z
+            else:
+                return round(z, 1)
         else:
-            return round(z,1)
+            if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
+                return 0.0
+            #let g = average win percentage
+            g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
+            #let x = player win percentage
+            x = db[f'{role}Won']/db[f'{role}Played']
+            #let y be the differential between these two values
+            y = x - g
+            #let z be the total WORP generated by multiplying differential times user games
+            z = y * db[f'{role}Played']
+            #If this function is being called to get a team/total value, then return without a round
+            if stackCase:
+                return z
+            else:
+                return round(z,1)
         
     async def getTeamWORP(db, globalDB, team, stackCase=False):
         if team == 'Soldiers':
@@ -276,6 +331,13 @@ class statBuilder:
             returnedEmbed.add_field(name = 'Players Guarded', value = db['MikasaGuards'], inline=True)
             returnedEmbed.add_field(name = 'Players Saved', value = f'{db['MikasaSaved']} ({await statBuilder.getPercentage(db, 'MikasaSaved', 'MikasaGuards')}% of Guards)')
             returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Saved', value = f'{db['MikasaSaveWins']} ({await statBuilder.getPercentage(db, 'MikasaSaveWins', 'MikasaGuards')}% of Guards, {await statBuilder.getPercentage(db, 'MikasaSaveWins', 'MikasaSaved')}% of Saves)')
+        elif role.id == 'Keith':
+            returnedEmbed.add_field(name = f'Times Summoned', value = f'{db['KeithPlayed']-db['KeithFinishedPlayed']} ({round((100 - await statBuilder.getPercentage(db, 'KeithFinishedPlayed', 'KeithPlayed')),1)}% of Games Played)', inline=True)
+            returnedEmbed.add_field(name = f'Games Finished as {role.shortName}', value = f'{db['KeithFinishedPlayed']}', inline=True)
+            returnedEmbed.add_field(name = f'Games Won as {role.shortName}', value = f'{db['KeithFinishedWon']} ({await statBuilder.getPercentage(db, 'KeithFinishedWon', 'KeithFinishedPlayed')}% of Non-Summoning Games)', inline=True)
+            returnedEmbed.add_field(name = f'Basements Reached as {role.shortName}', value = f'{db['KeithFinishedKidnaps']} ({await statBuilder.getPercentage(db, 'KeithFinishedKidnaps', 'KeithFinishedPlayed')}% of Non-Summoning Games)', inline=True)
+            returnedEmbed.add_field(name = f'Coords Hidden as {role.shortName}', value = f'{db['KeithFinishedKidnapWins']} ({await statBuilder.getPercentage(db, 'KeithFinishedKidnapWins', 'KeithFinishedKidnaps')}% of Non-Summoning Basements)', inline=True)
+            
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -350,11 +412,14 @@ class statBuilder:
         elif role.id == 'Falco':
             returnedEmbed.add_field(name = 'Vote Intercepts', value = db['FalcoUses'], inline=True)
             returnedEmbed.add_field(name = 'Vote Intercept Passes', value = f'{db['FalcoVoteWins']} ({await statBuilder.getPercentage(db, 'FalcoVoteWins', 'FalcoUses')}% of Intercepts)', inline=True)
-        elif role.id == 'Reiner Saves':
+        elif role.id == 'Reiner':
             returnedEmbed.add_field(name = 'Armor Saves', value = f'{db['ReinerSaves']} ({await statBuilder.getDivider('ReinerSaves', 'ReinerPlayed')} per Game)')
         elif role.id == 'Bertholdt':
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Cloaked', value = f'{db['BertholdtCloaks']} ({await statBuilder.getDivider(db, 'BertholdtCloaks', 'BertholdtPlayed')} per Game)', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Doubles Cloaked', value = f'{db['BertholdtDoubleCloaks']} ({await statBuilder.getDivider(db, 'BertholdtDoubleCloaks', 'BertholdtCloaks')} per Cloak, {await statBuilder.getDivider(db, 'BertholdtDoubleCloaks', 'BertholdtPlayed')} per Game)')
+        elif role.id == 'Gabi':
+            returnedEmbed.add_field(name = 'Fires', value = f'{db['GabiFires']} ({await statBuilder.getDivider(db, 'GabiFires', 'GabiPlayed')} per Game)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Fired Upon', value = f'{db['GabiFireWins']} ({await statBuilder.getPercentage(db, 'GabiFireWins', 'GabiFires')}% of Fires, {await statBuilder.getDivider(db, 'GabiFireWins', 'GabiPlayed')} per Game)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

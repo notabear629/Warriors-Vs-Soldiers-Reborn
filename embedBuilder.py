@@ -16,6 +16,26 @@ class embedBuilder:
             playerList += f'**{player.mention}**\n'
         returnedEmbed.add_field(name = 'Players', value = playerList, inline = False)
         returnedEmbed.add_field(name = 'Current Theme', value = f'{currentTheme.emojiTheme}`{currentTheme.themeName}`', inline = False)
+        if currentLobby.currentRules.noCoordinate and currentLobby.currentRules.noWarchief:
+            captainEmoji = str('❌')
+            captainChoice = 'Coordinate and Warchief Disabled'
+        elif currentLobby.currentRules.noCoordinate and currentLobby.currentRules.noWarchief == False:
+            captainEmoji = str('🦹‍♂️')
+            captainChoice = 'Only Warchief Enabled'
+        elif currentLobby.currentRules.noCoordinate == False and currentLobby.currentRules.noWarchief:
+            captainEmoji = str('🗺️')
+            captainChoice = 'Only Coordinate Enabled'
+        else:
+            captainEmoji = str('✅')
+            captainChoice = 'Coordinate and Warchief Enabled'
+        returnedEmbed.add_field(name = f'Team Captains', value = f'{captainEmoji}`{captainChoice}`', inline=False)
+        if currentLobby.currentRules.enabledSoldiers == [] and currentLobby.currentRules.disabledSoldiers == [] and currentLobby.currentRules.enabledWarriors == [] and currentLobby.currentRules.disabledWarriors == [] and currentLobby.currentRules.enabledWildcards == [] and currentLobby.currentRules.disabledWildcards == []:
+            customEmoji = str('🎲')
+            customChoice = 'Completely Random'
+        else:
+            customEmoji = str('🎭')
+            customChoice = 'Role Selection Active'
+        returnedEmbed.add_field(name = 'Roleset Rules', value = f'{customEmoji}`{customChoice}`', inline=False)
         if currentLobby.currentRules.multikidnap:
             kidnapEmoji = str('♾️')
             kidnapVal = 'Multi-kidnap'
@@ -30,6 +50,13 @@ class embedBuilder:
             rumblingEmoji = str('❌')
             rumblingVal = 'Disabled'
         returnedEmbed.add_field(name = f'{currentTheme.rumblingName}', value = f'{rumblingEmoji}`{rumblingVal}`', inline = False)
+        if currentLobby.currentRules.wildcards:
+            wildcardEmoji = currentTheme.emojiWildcard
+            wildcardVal = 'Enabled'
+        else:
+            wildcardEmoji = str('❌')
+            wildcardVal = 'Disabled'
+        returnedEmbed.add_field(name = 'Wildcards', value = f'{wildcardEmoji}`{wildcardVal}`', inline=False)
         if currentLobby.currentRules.casual:
             rankedEmoji = currentTheme.emojiCasual
             rankedChoice = 'Casual'
@@ -67,6 +94,10 @@ class embedBuilder:
         buildDescription += f' vs **{len(currentGame.warriors)}** {currentTheme.warriorPlural}'
         if len(currentGame.deadWarriors) > 0:
             buildDescription += f' (**{len(currentGame.livingWarriors)}** Alive)'
+        if len(currentGame.wildcards) > 0:
+            buildDescription += f' with **{len(currentGame.wildcards)}** {currentTheme.wildcardPlural}'
+            if len(currentGame.deadWildcards) > 0:
+                buildDescription += f' (**{len(currentGame.livingWildcards)}** Alive)'
         if currentGame.roundFails == 3:
             selectedColor = currentTheme.lostColor
         elif currentGame.roundFails > currentGame.roundWins:
@@ -133,6 +164,9 @@ class embedBuilder:
         for role in Role.soldierRoles:
             search = await searchFunctions.roleIDToPlayer(currentGame, role)
             if search != None:
+                if currentGame.currentRules.noCoordinate:
+                    soldierList += str('❓\n')
+                    continue
                 if type(search) == list:
                     for player in search:
                         soldierList += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
@@ -150,6 +184,18 @@ class embedBuilder:
                     warriorList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = warriorList, inline = False)
 
+        if len(currentGame.wildcards) > 0:
+            wildcardList = ''
+            for role in Role.wildcardRoles:
+                search = await searchFunctions.roleIDToPlayer(currentGame, role)
+                if search != None:
+                    if type(search) == list:
+                        for player in search:
+                            wildcardList += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
+                    else:
+                        wildcardList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
+            returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}{currentTheme.wildcardPlural}{currentTheme.emojiWildcard}', value = wildcardList, inline = False)
+
         if currentGame.deadPlayers != []:
             deadList = ''
             for player in currentGame.deadPlayers:
@@ -160,6 +206,19 @@ class embedBuilder:
                 deadList += f'{roleEmoji}{player.user.name}{roleEmoji}\n'
             returnedEmbed.add_field(name = f'{currentTheme.emojiDead}Dead Players{currentTheme.emojiDead}', value=deadList, inline=False)
             
+        return returnedEmbed
+    
+    async def soldierRoleDM(currentGame, currentTheme):
+        soldierList = ''
+        for role in Role.soldierRoles:
+            search = await searchFunctions.roleIDToPlayer(currentGame, role)
+            if search != None:
+                if type(search) == list:
+                    for player in search:
+                        soldierList += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
+                else:
+                    soldierList += f'{search.role.emoji}{search.role.name}{search.role.emoji}\n'
+        returnedEmbed = discord.Embed(title = f'{currentTheme.emojiSoldier}List of {currentTheme.soldierSingle} Roles{currentTheme.emojiSoldier}', description= soldierList, color = currentTheme.warriorColor)
         return returnedEmbed
     
     async def buildPlayers(currentGame, currentTheme):
@@ -184,7 +243,7 @@ class embedBuilder:
         titansSmelled = 0
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
-            if (expeditioner in currentGame.warriors and player in currentGame.warriors and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+            if (expeditioner in currentGame.warriors and player in currentGame.warriors and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and (expeditioner in currentGame.warriors or (expeditioner.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors')) and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
             elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Magath' or expeditioner.role.id == 'Magath')):
                 playerList += f'{currentTheme.emojiWarrior}{expeditioner.role.emoji}'
@@ -289,6 +348,8 @@ class embedBuilder:
             playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
         if player.role.id == 'Annie' and player.role.abilityActive:
             playerList += f'{player.role.secondaryEmoji} Select Input Scream Message to sabotage this {currentTheme.expeditionName} and then pass a secret message to your fellow {currentTheme.warriorPlural}.\n'
+        if player.role.id == 'Kenny':
+            playerList += f'{player.role.secondaryEmoji} Select a player to Kill to kill them and pass this {currentTheme.expeditionName}.\n'
 
         if player.role.id == 'Armin' and currentGame.currentExpo.arminActivated:
             decisionString = f'You have chosen to nuke this {currentTheme.expeditionName}.'
@@ -304,6 +365,8 @@ class embedBuilder:
             decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
         elif player.role.id == 'Annie' and currentGame.currentExpo.annieMessage != None:
             decisionString = f'You have chosen to sabotage the {currentTheme.expeditionName} and send a secret message to your fellow {currentTheme.warriorPlural}'
+        elif player.role.id == 'Kenny' and currentGame.currentExpo.kennyMurdered != None:
+            decisionString = f'You have chosen to Kill {currentGame.currentExpo.kennyMurdered.user.name}.'
         elif player in currentGame.currentExpo.passedExpedition:
             decisionString = f'You have chosen to pass this {currentTheme.expeditionName}.'
         elif player in currentGame.currentExpo.sabotagedExpedition:
@@ -453,6 +516,13 @@ class embedBuilder:
             selectedSubgroup = Role.warriorGroupOptional
             enabledGroup = currentRules.enabledWarriors
             disabledGroup = currentRules.disabledWarriors
+        elif team == 'Wildcards':
+            selectedPlural = currentTheme.wildcardPlural
+            selectedColor = currentTheme.wildcardColor
+            selectedThumbnail = currentTheme.wildcardThumbnail
+            selectedSubgroup = Role.wildcardRoles
+            enabledGroup = currentRules.enabledWildcards
+            disabledGroup = currentRules.disabledWildcards
         returnedEmbed = discord.Embed(title = f'Options for {selectedPlural} Roles', color = selectedColor)
         returnedEmbed.set_thumbnail(url = selectedThumbnail)
 
@@ -604,11 +674,14 @@ class embedBuilder:
     async def rolelistEmbed(loadedRoles, currentTheme):
         soldierRoles = []
         warriorRoles = []
+        wildcardRoles = []
         for role in loadedRoles:
             if role.team == 'Soldiers':
                 soldierRoles.append(role)
             elif role.team == 'Warriors':
                 warriorRoles.append(role)
+            elif role.team == 'Wildcards':
+                wildcardRoles.append(role)
         returnedEmbed = discord.Embed(title = 'Roles Implemented into the Game', color = currentTheme.rolesEmbedColor)
         soldierList = ''
         for role in soldierRoles:
@@ -616,9 +689,59 @@ class embedBuilder:
         warriorList = ''
         for role in warriorRoles:
             warriorList += f'{role.emoji}{role.name}{role.emoji}\n'
+        wildcardList = ''
+        for role in wildcardRoles:
+            wildcardList += f'{role.emoji}{role.name}{role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}', value = f'{soldierList}', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}{currentTheme.wildcardPlural}{currentTheme.emojiWildcard}', value = f'{wildcardList}', inline=True)
+        return returnedEmbed
+    
+    async def erenFrecklemirEmbed(currentGame, currentTheme):
+        Frecklemir = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Frecklemir')
+        desc = f'{Frecklemir.name} has chosen to fight on the side of the '
+        if currentGame.frecklemirTeam == 'Soldiers':
+            desc += f'**{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}**.'
+        else:
+            desc += f'**{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}**.\n\nTheir identity has been revealed as **'
+            realFreckles = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
+            desc += f'{realFreckles.user.name}**.'
+        returnedEmbed = discord.Embed(title = f'{Frecklemir.name} has picked a Side!', description= desc, color = currentTheme.soldierColor)
+        return returnedEmbed
+    
+    async def ymirEmbed(currentGame, currentTheme):
+        desc = currentTheme.ymirMessage
+        returnedEmbed = discord.Embed(title = '??????????', description = desc, color = currentTheme.wildcardColor)
+        returnedEmbed.set_thumbnail(url = currentTheme.emojiPaths.url)
+        return returnedEmbed
+    
+    async def pathsEmbed(currentGame, currentTheme):
+        desc = 'The following is a list of choices for you to make. Message can be used as many times as you want per game, whereas ONLY A SINGLE ONE of the other abilities can be used ONCE. Abilities include:\n`Message`: Passes a message to the player you are guiding\n`Revive`: Revives any dead player, if one exists, the next time there is an expo is complete.\n`Bless`: Blesses any one player, which grants them the ability to check another player\'s team'
+        returnedEmbed = discord.Embed(title = 'PATHS', description=desc, color = currentTheme.wildcardColor)
+        returnedEmbed.set_thumbnail(url = currentTheme.emojiPaths.url)
+        return returnedEmbed
+    
+    async def ymirMessageEmbed(currentGame, currentTheme, msg):
+        Ymir = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Ymir')
+        returnedEmbed = discord.Embed(title = f'Message From {Ymir.name}', description=msg, color = currentTheme.wildcardColor)
+        returnedEmbed.set_thumbnail(url = currentTheme.emojiPaths.url)
         return returnedEmbed
 
-    
+    async def blessingEmbed(currentGame, currentTheme, checkedPlayer):
+        if checkedPlayer in currentGame.soldiers or (checkedPlayer.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Soldiers'):
+            color = currentTheme.soldierColor
+            team = currentTheme.soldierPlural
+            thumbnail = currentTheme.soldierThumbnail
+        elif checkedPlayer in currentGame.warriors or (checkedPlayer.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors'):
+            color = currentTheme.warriorColor
+            team = currentTheme.warriorPlural
+            thumbnail = currentTheme.warriorThumbnail
+        elif checkedPlayer in currentGame.wildcards:
+            color = currentTheme.wildcardColor
+            team = currentTheme.wildcardPlural
+            thumbnail = currentTheme.wildcardThumbnail
+        desc = f'{checkedPlayer.user.name} is fighting for the **{team}**.'
+        returnedEmbed = discord.Embed(title = f'{checkedPlayer.user.name}\'s Allegiance...', description = desc, color = color)
+        returnedEmbed.set_thumbnail(url = thumbnail)
+        return returnedEmbed
 

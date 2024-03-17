@@ -6,19 +6,36 @@ class Stats:
         setattr(self, f'{role.team}Played', 1)
         setattr(self, f'{role.id}Played', 1)
 
+    def changeRole(self, role):
+        setattr(self, f'{role.id}Played', 1)
+
     def processEndgame(self, player, currentGame):
         if player in currentGame.winners:
             self.GamesWon = 1
             setattr(self, f'{player.role.team}Won', 1)
             setattr(self, f'{player.role.id}Won', 1)
+            if player.originalKeith:
+                setattr(self, 'KeithWon', 1)
+                if player.role.id == 'Keith':
+                    setattr(self, 'KeithFinishedWon')
         if 'kidnap' in currentGame.winCondition:
             setattr(self, f'{player.role.team}Kidnaps', 1)
             setattr(self, f'{player.role.id}Kidnaps', 1)
+            if player.originalKeith:
+                setattr(self, 'KeithKidnaps', 1)
+                if player.role.id == 'Keith':
+                    setattr(self, 'KeithFinishedKidnaps')
             if player in currentGame.winners:
                 setattr(self, f'{player.role.team}KidnapWins', 1)
                 setattr(self, f'{player.role.id}KidnapWins', 1)
+                if player.originalKeith:
+                    setattr(self, 'KeithKidnapWins', 1)
+                    if player.role.id == 'Keith':
+                        setattr(self, 'KeithFinishedKidnapWins', 1)
         setattr(self, f'{player.role.team}WallsBroken', currentGame.roundFails)
         setattr(self, f'{player.role.team}Passes', currentGame.roundWins)
+        if player.role.id == 'Keith':
+            setattr(self, 'KeithFinishedPlayed', 1)
         
 
     def processKill(self, killer, killed):
@@ -110,6 +127,11 @@ class Stats:
             if expo.sashaActivated:
                 Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
                 setattr(Sasha.stats, 'SashaFires', 1)
+            if expo.gabiActivated:
+                Gabi = await searchFunctions.roleIDToPlayer(currentGame, 'Gabi')
+                setattr(Gabi.stats, 'GabiFires', 1)
+                if currentGame.woundedPlayer in currentGame.soldiers:
+                    setattr(Gabi.stats, 'GabiFireWins', 1)
             if expo.reinerBlocked != None:
                 Reiner = await searchFunctions.roleIDToPlayer(currentGame, 'Reiner')
                 setattr(Reiner.stats, 'ReinerSaves', 1)
@@ -178,7 +200,7 @@ class Stats:
                 if check != None:
                     score = check * value
                     soldier.addMVPPoints(score)
-        warriorMVPGrading = {'PieckFlipAcceptWins' : 1, 'PieckFlipRejectWins' : 0.5, 'PorcoCommanderSkips' : 0.5, 'FalcoVoteWins' : 1, 'ReinerSaves' : 0.5, 'BertholdtCloaks' : -0.5, 'BertholdtDoubleCloaks' : 1.5, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
+        warriorMVPGrading = {'PieckFlipAcceptWins' : 1, 'PieckFlipRejectWins' : 0.5, 'PorcoCommanderSkips' : 0.5, 'FalcoVoteWins' : 1, 'ReinerSaves' : 0.5, 'BertholdtCloaks' : -0.5, 'BertholdtDoubleCloaks' : 1.5, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1, 'GabiFires' : -1, 'GabiFireWins' : 2}
         for warrior in currentGame.warriors:
             for key, value in warriorMVPGrading.items():
                 check = getattr(warrior.stats, key)

@@ -14,7 +14,7 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean', 'Erwin', 'Daz']
+    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi', 'Mikasa']
@@ -24,6 +24,9 @@ class Role:
 
     #A group of all Analytical Soldiers
     soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch', 'Floch']
+
+    #List of roles banned in noEren rulesets
+    soldierBannedNoEren = ['Historia', 'Mike', 'Floch']
 
     #Combine all optional Soldier Roles
     soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst
@@ -35,7 +38,7 @@ class Role:
     warriorGroupWarchief = ['Zeke']
 
     #The group of all option Warriors with one-time special abilities
-    warriorGroupAbility = ['Pieck', 'Annie', 'Porco', 'Falco']
+    warriorGroupAbility = ['Pieck', 'Annie', 'Porco', 'Falco', 'Gabi']
 
     #The group of all option Warriors with multi-use perks
     warriorGroupPerk = ['Reiner', 'Bertholdt', 'Magath']
@@ -49,8 +52,11 @@ class Role:
     #Combine all warrior groups to make a complete warrior list
     warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault
 
+    #List of Wildcard Roles
+    wildcardRoles = ['Kenny', 'Frecklemir', 'PureTitan', 'Ymir']
+
     #Combine all roles into one
-    allRoles = soldierRoles + warriorRoles
+    allRoles = soldierRoles + warriorRoles + wildcardRoles
 
     #All Lethal Roles in one
     allLethal = soldierGroupLethal
@@ -93,6 +99,8 @@ class Role:
             newRole = Role(getRole)
             if type(newRole.emoji) == int:
                 newRole.emoji = client.get_emoji(newRole.emoji)
+            if type(newRole.secondaryEmoji) == int:
+                newRole.secondaryEmoji = client.get_emoji(newRole.secondaryEmoji)
             roleList.append(newRole)
         return roleList
     
@@ -109,6 +117,20 @@ class Role:
         self.roleMessage = roleInfo['roleMessage']
         self.gameRole = roleInfo['gameRole']
         self.helpInfo = roleInfo['helpInfo']
+        if type(self.emoji) == int:
+            self.emoji = client.get_emoji(self.emoji)
+        if type(self.secondaryEmoji) == int:
+            self.secondaryEmoji = client.get_emoji(self.secondaryEmoji)
+
+    def copy(self, currentTheme, client):
+        roleInfo = getattr(currentTheme, self.id)
+        newRole = Role(roleInfo)
+        if self.abilityActive == False:
+            newRole.disableAbility()
+        newRole.resolveEmojis(client)
+        return newRole
+    
+    def resolveEmojis(self, client):
         if type(self.emoji) == int:
             self.emoji = client.get_emoji(self.emoji)
         if type(self.secondaryEmoji) == int:

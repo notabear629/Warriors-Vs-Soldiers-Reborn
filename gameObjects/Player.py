@@ -12,6 +12,9 @@ class Player:
         db = databaseManager.getWvsPlayerByID(user.id)
         self.oldTitles = db['titles']
         self.oldLegacyPoints = db['points']['LegacyPoints']
+        self.originalKeith = False
+        if role.id == 'Keith':
+            self.originalKeith = True
 
     def getKilledBy(self, killer, causeOfDeath):
         self.killedBy[killer] = causeOfDeath
@@ -24,3 +27,6 @@ class Player:
 
     def addMVPPoints(self, points):
         self.mvpPoints += points
+
+    def changeRole(self, role):
+        self.role = role

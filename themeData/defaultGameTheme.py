@@ -23,6 +23,9 @@ class defaultGameTheme:
     warriorSingle = 'Warrior'
     warriorPlural = 'Warriors'
     emojiWarrior = str('⚔️')
+    wildcardSingle = 'Wildcard'
+    wildcardPlural = 'Wildcards'
+    emojiWildcard = str('🃏')
     wallSingle = 'Wall'
     wallPlural = 'Walls'
     #By Default is the same as Eren Emoji
@@ -30,6 +33,9 @@ class defaultGameTheme:
     titanSingle = 'Titan'
     titanPlural = 'Titans'
     emojiDead = '☠️'
+
+    #MUST be integer emoji. No exceptions.
+    emojiPaths = 1218660133945737287
 
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
@@ -147,6 +153,7 @@ class defaultGameTheme:
     kidnapSuccessMessage = str('⚔️The Warriors have successfully identified the Coordinate!⚔️\n\n⚔️Warriors Win!⚔️')
     kidnapFailMessage = str('🛡️The Warriors did not manage to successfully identify the Coordinate and Eren\'s identity was kept secret.🛡️\n\n🛡️Soldiers Win!🛡️')
     multikidnapFailMessage = str('🛡️The Warriors did not manage to successfully identify the Coordinate as the single most popular choice.🛡️\n\n🛡️Soldiers Win!🛡️')
+    noCordSuccessMessage = str('🛡️The Soldiers have successfully completed 3 expeditions and protected the Walls.🛡️\n\n🛡️Soldiers Win!🛡️')
     endgameCardColor = discord.Color.blue()
     emojiWinner ='🏅'
     emojiLoser = '☠️'
@@ -167,6 +174,13 @@ class defaultGameTheme:
     bertholdtMessage = 'I\'ll deploy a cloak of steam!'
     annieMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
     retreatMessage = 'I\'m ordering a retreat! Pull back from the assault on the walls, and allow the Soldiers to advance to the basement!'
+    kennyMessage = 'I hope you don\'t mind being without your throat!'
+    kennySuicideMessage = 'That\'s it! I hate every last one of you! I\'m getting the HELL off this damned island the only way I know how!'
+    ymirMessage = 'To you, 2000 years from now...'
+    ymirRevivalMessage = 'I will re-make you with these sands...'
+    gabiMessage = 'I\'m firing my rifle!'
+    keithMessage = 'I am but a bystander... I leave this to my students.'
+    keithMessage2 = 'Reporting for duty.'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -302,7 +316,7 @@ class defaultGameTheme:
 
         roleDict['gameRole'] = ':angel:Queen:angel:'
 
-        roleDict['helpInfo'] = 'Historia is the queen of Paradis and has closer knowledge of the situation than most Soldiers due to being in communications with the Yeager brothers, but there was a mistake in the line! Now, she knows which 2 players are Eren and Zeke, but not which is which!'
+        roleDict['helpInfo'] = 'Historia is the queen of Paradis and has closer knowledge of the situation than most Soldiers due to being in communications with the Yeager brothers, but there was a mistake in the line of communications! Now, she knows which 2 players are Eren and Zeke, but not which is which!'
 
     class Hange:
         roleDict = {'roleID' : 'Hange'}
@@ -460,11 +474,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = 'You have the ability to secure the walls for an expedition! But be careful! If there are more titans than soldiers attempting to secure the walls, you will fail!\n\n'
+        roleDict['roleMessage'] = 'You are Humanity\'s strongest soldier! While on expedition, you have two choices. `attack`, which will kill any Warrior that attempts to sabotage the expedition. HOWEVER. Pressing this button will instantly alert the warriors to your identity, regardless if you killed anybody or not. Secondly, you may press `defend`, which will prevent the expedition from being sabotaged. The warriors will be alerted to your identity if and only if they tried to sabotage the expedition, and if they did indeed try, there will be an indicator in the game channel that says as such as well.\n\n'
 
         roleDict['gameRole'] = ':guard:Ackermann:guard:'
 
-        roleDict['helpInfo'] = 'Levi is the strongest Soldier of all time! He has an ability to secure an expedition and ensure that it will pass, even if a warrior sabotages! However, Levi is not strong enough to beat TWO warriors, so if 2 or more warriors try to sabotage the expedition, he will fail! In addition, when you use the ability to secure the walls and the warriors sabotage, they will be alerted as to your identity which may make it easier for them to track down Eren.'
+        roleDict['helpInfo'] = 'Levi is the strongest Soldier of all time! He has an ability to secure an expedition and ensure that it will pass, even if a warrior sabotages! Or, if defense isn\'t your style, he is also great at offense. He can also kill all Warriors which attempt to sabotage an expo.'
 
 
     class Sasha:
@@ -569,11 +583,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'When voting for an expedition, you will be told if Eren is in the expedition or not.\n\n'
+        roleDict['roleMessage'] = f'When voting for an expedition, if you are inside the expedition, you will be told if Eren is in the expedition or not.\n\n'
 
         roleDict['gameRole'] = ':punch:Coordinate\'s Fist:punch:'
 
-        roleDict['helpInfo'] = 'Floch is the quintessential Yeagerist. He will follow a complete rumbling to the bitter end, and will help it come to fruition. In addition, he has the ability to gain intel from Eren. After every Expedition proposed, he will be informed by Eren if he is in the expo or not.'
+        roleDict['helpInfo'] = 'Floch is the quintessential Yeagerist. He will follow a complete rumbling to the bitter end, and will help it come to fruition. In addition, he has the ability to gain intel from Eren. After every Expedition proposed, if he is in the expedition, he will be informed by Eren if he is in the expo or not.'
 
     class Mikasa:
         roleDict = {'roleID' : 'Mikasa'}
@@ -601,7 +615,34 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':fencer:Bodyguard:fencer:'
 
         roleDict['helpInfo'] = 'Mikasa is an extremely strong Soldier! Thanks to this and an unwavering ~~desire to be a pathetic fucking simp~~ loyal streak, every expedition she is on, she has the ability to protect 1 person on the expo INCLUDING herself to prevent them from being killed!'
-    
+
+    class Keith:
+        roleDict = {'roleID' : 'Keith'}
+
+        roleDict['name'] = 'Keith Shadis'
+
+        roleDict['shortName'] = 'Keith'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1218766701605425192
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are responsible for training the Soldiers of Paradis! As such, you have many students that trained under you to call upon. Use `{prefix}summon` to step aside, and allow them to take your place. (This will make it so that you can choose any Soldier role to morph into that isn\'t already present in the game. Your role will change upon a passed expedition.)\n\n'
+
+        roleDict['gameRole'] = ':man_teacher:Instructor:man_teacher:'
+
+        roleDict['helpInfo'] = 'Keith is the instructor for the cadet corps! As such, he has made many connections with his students. As he himself, is a mere bystander, he has the ability to leave the battlefield, calling one of his students to take his place. This effectively means, that the player with this role can change their role to any Soldier role not already present in the game. Their role will not be changed until the next passed round\'s results are read, however.'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -654,7 +695,7 @@ class defaultGameTheme:
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
 
-        roleDict['helpInfo'] = f'Zeke is the warchief and team captain for the Warriors! He will not be seen as a Wall by Eren, and is a mandatory role that appears every game. He is more important than just being invisible to the Coordinate, however. He alone has the ability to choose to kidnap in the middle of the game to stop all of the Warriors from being killed if the situation looks grim!'  
+        roleDict['helpInfo'] = f'Zeke is the warchief and team captain for the Warriors! He will not be seen as a Warrior by Eren, and is a mandatory role that appears every game. He is more important than just being invisible to the Coordinate, however. He alone has the ability to choose to kidnap in the middle of the game to stop all of the Warriors from being killed if the situation looks grim!'  
     
 
     class Pieck:
@@ -829,7 +870,7 @@ class defaultGameTheme:
 
         roleDict['team'] = 'Warriors'
 
-        roleDict['rumblingTeam'] = 'allianceBench'
+        roleDict['rumblingTeam'] = 'allianceFighter'
 
         roleDict['isTitan'] = False
 
@@ -846,6 +887,33 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':military_helmet:Commander:military_helmet:'
 
         roleDict['helpInfo'] =  'Theo Magath is a commander of the Marleyian Military. Thanks to this high rank, he has high knowledge of the troop movements and positioning of the other Warriors. He will know the specific role identity of each of his fellow Warrior comrades. In turn, all of the other Warriors will know his identity. This, in theory, should allow for superb coordination around him!'
+
+    class Gabi:
+        roleDict = {'roleID' : 'Gabi'}
+
+        roleDict['name'] = 'Gabi Braun'
+
+        roleDict['shortName'] = 'Gabi'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1218690811630456922
+
+        roleDict['secondaryEmoji'] = str('🎯')
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a ranged weapons specialist! At any time, you can use `{prefix}fire` to open a menu to select a player to target. At the end of any expo, regardless if they are on the expo or not, you will fire a shot that wounds that player. A wounded player will not be able to be picked for the expedition for a round.\n\n'
+
+        roleDict['gameRole'] = ':gun:Marksman:gun:'
+
+        roleDict['helpInfo'] =  f'The worst character on the face of the planet, if I had my way they would instantly lose as soon as they start the game. Unfortunately... That wouldn\'t make for a very good role. Gabi is a ranged weapons "expert" and can somehow wield weapons that outweigh her by 5x expertly. Gabi can use `{prefix}fire` to open a menu to choose a player to fire upon. Then, when the next results are read, she will fire a shot that wounds the player. A wounded player cannot be chosen for an expedition for a round.'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
@@ -874,6 +942,113 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = f'The Warrior role is merely just a default Warrior, they essentially have no role.'
 
+    class Kenny:
+        roleDict = {'roleID' : 'Kenny'}
+
+        roleDict['name'] = 'Kenny Ackermann'
+
+        roleDict['shortName'] = 'Kenny'
+
+        roleDict['team'] = 'Wildcards'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1218103275782410360
+
+        roleDict['secondaryEmoji'] = '🔪'
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a serial killer! You do not give a singular shit about the status of the walls. Your objective is simple. Get on expos. Murder at least 2 players. If you can achieve this, you win.\n\n'
+
+        roleDict['gameRole'] = ':knife:Serial Killer:knife:'
+
+        roleDict['helpInfo'] = f'Kenny Ackermann is a serial killer. He does not care if the walls break or not, he wins through one glorious way. Murder. When he gets on an expo, he has the ability to kill another player on the expo. If he can kill at least 2 people in a match, he wins.'
+
+    class Frecklemir:
+        roleDict = {'roleID' : 'Frecklemir'}
+
+        roleDict['name'] = 'Ymir Freckles'
+
+        roleDict['shortName'] = 'Frecklemir'
+
+        roleDict['team'] = 'Wildcards'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1218288982572400700
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have not yet decided what team you want to be a part of! In order to pick a team, you need to get into an expedition. If the expedition you are on passes, you will join the Soldiers. If it breaks, you will join the Warriors. You cannot win unless you are on a team, so do your best to pick a side!\n\n'
+
+        roleDict['gameRole'] = ':snake:Disloyal Fighter:snake:'
+
+        roleDict['helpInfo'] = f'Ymir does not know if she wants to fight on the side of the Soldiers or Warriors. As such, she begins on neither team. The first time she gets on an expedition, she will join a team that depends on how the expedition went. If the expo passes, then she joins the Soldiers. If it breaks, she joins the Warriors.'
+
+    class PureTitan:
+        roleDict = {'roleID' : 'PureTitan'}
+
+        roleDict['name'] = 'Pure Titan'
+
+        roleDict['shortName'] = 'Pure Titan'
+
+        roleDict['team'] = 'Wildcards'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1205684706431991818
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'Whoever ends the game with this role will lose! But fret not, you can shed yourself of this role! When on an expedition with another titan, it is possible for you to eat them, and then steal their role, giving the person you ate the Pure Titan role! Find a new role and claim victory before it\'s too late!\n\n'
+
+        roleDict['gameRole'] = ':potato:Hot Potato:potato:'
+
+        roleDict['helpInfo'] = f'Whoever is the Pure Titan at the end of the game, will instantly lose. However, they have an opportunity to lose this role. When on an expo with another titan, they can eat that player and change roles with them. Inheriting a new role, and giving the eaten player this role.'
+
+    class Ymir:
+        roleDict = {'roleID' : 'Ymir'}
+
+        roleDict['name'] = 'Founder Ymir'
+
+        roleDict['shortName'] = 'Ymir'
+
+        roleDict['team'] = 'Wildcards'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1218401634556710972
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'To you, 2000 years from now...\n\nYou are the Founder Ymir. You cannot directly participate in expeditions. There is someone out there you are waiting for... But you aren\'t sure who. Or what decisions they will make. Use `{prefix}paths` to utilize PATHS to open the menu with your powers to assist the player you are guiding. If they win, you win. Your fates are tied. Guide them to victory.'
+
+        roleDict['gameRole'] = ':milky_way:Pathfinder:milky_way:'
+
+        roleDict['helpInfo'] = f'Founder Ymir is unable to participate in expeditions. A random person that she does not know the name of will be chosen, her objective is to guide that person to victory. She can use PATHS to communicate with them, revive a dead player, or grant somebody her blessing. She must work her way to that person she has been waiting for... All this time.'
 
     def getErenInfo(currentGame):
         erenInfo = 'The Warriors are:\n'
@@ -954,6 +1129,8 @@ class defaultGameTheme:
                     arminDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     arminDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    arminDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Armin':
@@ -961,7 +1138,7 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.reinerBlocked) == dict:
             for key, value in currentGame.currentExpo.reinerBlocked.items():
                 if value == 'Armin':
-                    arminDeathMessages += f'{Reiner.role.emoji}**{key.user.name}** Survived the Blast!{Reiner.role.emoji}\n\n'
+                    arminDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}** Survived the Blast!{Reiner.role.secondaryEmoji}\n\n'
         return arminDeathMessages
     
     def getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa, Reiner):
@@ -973,6 +1150,8 @@ class defaultGameTheme:
                     leviDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     leviDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    leviDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Levi':
@@ -980,7 +1159,7 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.reinerBlocked) == dict:
             for key, value in currentGame.currentExpo.reinerBlocked.items():
                 if value == 'Levi':
-                    leviDeathMessages += f'{Reiner.role.emoji}**{key.user.name}**\'s Armor protected them from Levi\'s onslaught!{Reiner.role.emoji}\n\n'
+                    leviDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Levi\'s onslaught!{Reiner.role.secondaryEmoji}\n\n'
         return leviDeathMessages
     
     def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner):
@@ -992,6 +1171,8 @@ class defaultGameTheme:
                     sashaDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     sashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    sashaDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
         if type(currentGame.currentExpo.mikasaGuarded) == dict:
             for key, value in currentGame.currentExpo.mikasaGuarded.items():
                 if value == 'Sasha':
@@ -999,8 +1180,49 @@ class defaultGameTheme:
         if type(currentGame.currentExpo.reinerBlocked) == dict:
             for key, value in currentGame.currentExpo.reinerBlocked.items():
                 if value == 'Sasha':
-                    sashaDeathMessages += f'{Reiner.role.emoji}The Arrow merely bounced off **{key.user.name}**\'s Armor!{Reiner.role.emoji}\n\n'
+                    sashaDeathMessages += f'{Reiner.role.secondaryEmoji}The Arrow merely bounced off **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
         return sashaDeathMessages
+    
+    def getKennyDeathMessages(currentGame, currentTheme, Kenny, Mikasa, Reiner):
+        kennyDeathMessages = ''
+        for killedPlayer, causeOfDeath in Kenny.killed.items():
+            if killedPlayer not in currentGame.kennyDisplayedKills:
+                if causeOfDeath == 'Kenny':
+                    if killedPlayer == Kenny:
+                        kennyDeathMessages += f'{Kenny.role.secondaryEmoji}**{killedPlayer.user.name}** has decided that they would rather kill themselves than deal with another second of your babbling.{Kenny.role.secondaryEmoji}\n'
+                    else:
+                        kennyDeathMessages += f'{Kenny.role.secondaryEmoji}**{killedPlayer.user.name}** was murdered by Kenny!{Kenny.role.secondaryEmoji}\n'
+                    if killedPlayer in currentGame.soldiers:
+                        kennyDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                    elif killedPlayer in currentGame.warriors:
+                        kennyDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                    elif killedPlayer in currentGame.wildcards:
+                        kennyDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+                    currentGame.displayKennyKill(killedPlayer)
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Kenny':
+                    kennyDeathMessages += f'{Mikasa.role.emoji}Mikasa has protected **{key.user.name}** from being murdered by Kenny!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Kenny':
+                    kennyDeathMessages += f'{Reiner.role.secondaryEmoji}Kenny\'s pitiful murder attempt was no match for **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
+        return kennyDeathMessages
+    
+    def getGabiWoundMessage(currentGame, currentTheme, Gabi):
+        gabiWoundMessage = f'{Gabi.role.secondaryEmoji}Gabi has shot **{currentGame.woundedPlayer.user.name}**! They have been evacuated to the Field Hospital and will not be able to attend the next expedition!{Gabi.role.secondaryEmoji}\n\n'
+        return gabiWoundMessage
+    
+    def getHealMessage(player):
+        healMessage = f'{player.user.mention} has healed and returned to the fight!'
+        return healMessage
+    
+    def getYmirRevivalMessage(currentGame, currentTheme, Ymir):
+        ymirMessage = ''
+        for player, clause in currentGame.ymirRevival.items():
+            if clause:
+                ymirMessage += f'{Ymir.role.emoji}The Founder Ymir has used the power of the Titans to revive **{player.user.name}** back from the dead!{Ymir.role.emoji}'
+        return ymirMessage
     
     def getVictoriousWarriors(currentGame, currentTheme):
         victoriousWarriors = []

@@ -60,7 +60,7 @@ async def resetFunction():
     if currentGame.online:
         currentGame.turnOffline()
     currentLobby = Lobby()
-    currentGame = Game(client, homeServer, prefix, userCategory)
+    currentGame = Game(client, homeServer, prefix, userCategory, home)
     for player in gagRole.members:
         await player.remove_roles(gagRole)
 
@@ -80,7 +80,7 @@ async def on_ready():
     await currentTheme.resolveEmojis(client)
     currentRules = Rules()
     currentLobby = Lobby()
-    currentGame = Game(client, homeServer, prefix, userCategory)
+    currentGame = Game(client, homeServer, prefix, userCategory, home)
     loadedRoles = Role.loadRoles(currentTheme, client)
     loadedBadges = Badges(client)
     await userInfoManager.fixDatabase(None, homeServer, userCategory, currentTheme, prefix, loadedBadges)
@@ -159,6 +159,7 @@ async def fixme(ctx):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.fixUser(ctx, client, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
 
+@commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
 @client.command('start')
 async def start(ctx):
     newGame = await gameStartFunctions.start(ctx, currentLobby, currentGame, home, prefix, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges)
@@ -190,7 +191,6 @@ async def passExpo(ctx):
 @client.command('clear')
 async def clear(ctx):
     await expoProposalFunctions.clearExpo(ctx, currentGame, home, prefix, currentTheme)
-
 
 
 @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
@@ -230,10 +230,27 @@ async def retreat(ctx):
 @client.command('target')
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
+    
+@client.command('summon')
+async def summon(ctx):
+    await midGameFunctions.summon(ctx, currentGame, currentTheme)
+
+@client.command('fire')
+async def fire(ctx):
+    await midGameFunctions.fire(ctx, currentGame, currentTheme)
 
 @client.command('gag')
 async def gag(ctx):
     await midGameFunctions.gag(ctx, currentGame, currentTheme, prefix, client, gagRole, midGameFunctions.executeGag)
+
+@commands.max_concurrency(1, per=commands.BucketType.default, wait=True)
+@client.command('check')
+async def check(ctx, *, checkedPlayer:discord.Member):
+    await midGameFunctions.check(ctx, checkedPlayer, currentGame, currentTheme)
+
+@client.command('paths')
+async def paths(ctx):
+    await midGameFunctions.paths(ctx, currentGame, currentTheme, prefix, client)
 
 @client.command('flare')
 async def flare(ctx):
@@ -284,11 +301,16 @@ async def test(ctx):
 
 #TEST COMMAND ONLY
 @client.command('fill')
-async def fill(ctx):
+async def fill(ctx, *, arg=None):
     if ctx.message.author.name == 'cerberus629':
         bozos = [663576295682080789, 571823508909195265, 663577459647840259, 650144793296633887]
+        bozoSeven = [650144793296633887, 663576295682080789, 663577459647840259, 663577459647840259, 571823508909195265, 571823508909195265]
         bozoUsers = []
-        for bozo in bozos:
+        if str(arg) == '7':
+            choiceGroup = bozoSeven
+        else:
+            choiceGroup = bozos
+        for bozo in choiceGroup:
             user = homeServer.get_member(bozo)
             await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
             bozoUsers.append(user)

@@ -13,6 +13,7 @@ from gameFunctions.expoProposalFunctions import expoProposalFunctions
 from gameFunctions.lobbyFunctions import lobbyFunctions
 from gameFunctions.searchFunctions import searchFunctions
 from gameFunctions.infoFunctions import infoFunctions
+from gameFunctions.webhookManager import webhookManager
 
 from dataFunctions.databaseManager import databaseManager
 
@@ -71,6 +72,24 @@ class midGameFunctions:
                 view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
                 await userChannel.send('Choose who to target!', view=view)
 
+    async def fire(ctx, currentGame, currentTheme):
+        if currentGame.online:
+            Gabi = await searchFunctions.roleIDToPlayer(currentGame, 'Gabi')
+            user = databaseManager.searchForUser(Gabi.user)
+            userChannel = currentGame.client.get_channel(user['channelID'])
+            if Gabi != None and Gabi.user == ctx.message.author and Gabi.role.abilityActive and ctx.message.channel == userChannel:
+                view = await discordViewBuilder.gabiFireView(currentGame, currentTheme, Gabi)
+                await userChannel.send('Choose who to fire upon!', view=view)
+
+    async def summon(ctx, currentGame, currentTheme):
+        if currentGame.online:
+            Keith = await searchFunctions.roleIDToPlayer(currentGame, 'Keith')
+            user = databaseManager.searchForUser(Keith.user)
+            userChannel = currentGame.client.get_channel(user['channelID'])
+            if Keith != None and Keith.user == ctx.message.author and ctx.message.channel == userChannel:
+                view = await discordViewBuilder.keithSummonView(currentGame, Keith)
+                await userChannel.send('Choose who to summon!', view = view)
+
     async def gag(ctx, currentGame, currentTheme, prefix, client, gagRole, gagFunction):
         if currentGame.online:
             Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
@@ -79,6 +98,30 @@ class midGameFunctions:
             if Porco != None and Porco.user == ctx.message.author and Porco.role.abilityActive and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.porcoTargetView(currentGame, currentTheme, Porco, gagRole, gagFunction, client)
                 await userChannel.send('Choose who to gag!', view=view)
+
+    async def paths(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Ymir = await searchFunctions.roleIDToPlayer(currentGame, 'Ymir')
+            user = databaseManager.searchForUser(Ymir.user)
+            userChannel = client.get_channel(user['channelID'])
+            if Ymir != None and Ymir.user == ctx.message.author and ctx.message.channel == userChannel:
+                embed = await embedBuilder.pathsEmbed(currentGame, currentTheme)
+                view = await discordViewBuilder.ymirPathsView(currentGame, currentTheme, Ymir, client)
+                await userChannel.send(embed=embed, view=view)
+
+    async def check(ctx, checkedUser, currentGame, currentTheme):
+        if currentGame.online and currentGame.blessedPlayer.user == ctx.message.author:
+            player = await searchFunctions.userToPlayer(currentGame, checkedUser)
+            if player == None:
+                await ctx.reply('You may only check someone that is playing the game!')
+                return
+            user = databaseManager.searchForUser(ctx.message.author)
+            userChannel = currentGame.client.get_channel(user['channelID'])
+            Ymir = await searchFunctions.roleIDToPlayer(currentGame, 'Ymir')
+            if Ymir != None:
+                embed = await embedBuilder.blessingEmbed(currentGame, currentTheme, player)
+                await webhookManager.ymirBlessingCheckWebhook(currentGame, currentTheme, userChannel, embed)
+                currentGame.removeBlessing()
 
     async def executeGag(Porco, gagRole, gaggedPlayer, currentGame, client):
         if Porco.role.abilityActive:

@@ -107,7 +107,7 @@ class userInfoManager:
         for role in Role.allLethal:
             roleStats = {f'{role}Kills' : 0, f'{role}KillWins' :0}
             stats.update(roleStats)
-        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'ArminNukes': 0, 'SashaFires': 0, 'AnnieScreams' : 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0}
+        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'ArminNukes': 0, 'SashaFires': 0, 'KeithFinishedPlayed': 0, 'KeithFinishedWon': 0, 'KeithFinishedKidnaps': 0, 'KeithFinishedKidnapWins':0,'GabiFires' : 0,  'GabiFireWins': 0, 'AnnieScreams' : 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0}
         stats.update(abilityStats)
         extraSoldierStats = {'SoldiersWallsBroken': 0, 'SoldiersPasses': 0, 'PassCommanders': 0, 'PassVotes': 0, 'PassAssists': 0, 'PassExpeditions': 0, 'PassesResponsible': 0, 'ExposCommanded': 0, 'AcceptedCommand':0, 'ExposVoted':0, 'SoldiersExpeditionsOn':0}
         stats.update(extraSoldierStats)
@@ -174,7 +174,7 @@ class userInfoManager:
             for stat in calcStats:
                 newDB['points']['LegacyPoints'] += player['points'][stat]
             databaseManager.updateWvsPlayer(newDB)
-        sortedDB = databaseManager.getSortedWvsPlayer('LegacyPoints')
+        sortedDB = databaseManager.getSortedLegacy()
         pointWinner = sortedDB[0]
         newDB = pointWinner.copy()
         newDB['titles'].append('LegacyPoints')

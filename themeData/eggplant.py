@@ -23,6 +23,9 @@ class eggplant:
     warriorSingle = str('🍆')
     warriorPlural = str('🍆')
     emojiWarrior = str('🍆')
+    wildcardSingle = str('🍆')
+    wildcardPlural = str('🍆')
+    emojiWildcard = str('🍆')
     wallSingle = str('🍆')
     wallPlural = str('🍆')
     #By Default is the same as Eren Emoji

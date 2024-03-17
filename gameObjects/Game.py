@@ -2,13 +2,18 @@ import random
 
 from embedBuilder import embedBuilder
 
+from gameFunctions.searchFunctions import searchFunctions
+
+from gameObjects.Player import Player
+
 class Game:
-    def __init__(self, client, homeServer, prefix, userCategory):
+    def __init__(self, client, homeServer, prefix, userCategory, home):
         self.online = False
         self.client = client
         self.homeServer = homeServer
         self.prefix = prefix
         self.userCategory = userCategory
+        self.home = home
 
 
     def start(self, lobby, players, currentRules, loadedRoles, gagRole, loadedBadges):
@@ -24,6 +29,8 @@ class Game:
         self.deadSoldiers = []
         self.livingWarriors = []
         self.deadWarriors = []
+        self.livingWildcards = []
+        self.deadWildcards = []
         self.currentRound = 1
         self.passedRounds = []
         self.failedRounds = []
@@ -46,6 +53,7 @@ class Game:
         self.multikidnapRecord = {}
         self.loadedRoles = loadedRoles
         self.sashaTargeted = None
+        self.gabiTargeted = None
         self.exposedReiner = None
         self.porcoGagged = None
         self.gagRole = gagRole
@@ -68,6 +76,19 @@ class Game:
         self.allianceDomination = True
         self.MVP = None
         self.badges = loadedBadges
+        self.kennyDisplayedKills = []
+        self.frecklemirTeam = None
+        self.ymirGuiding = None
+        self.ymirRevival = None
+        self.blessedPlayer = None
+        self.woundedPlayer = None
+        self.healedPlayer = None
+        self.summonedRole = None
+        for player in players:
+            if player.role.id == 'Ymir':
+                self.commanderOrder.remove(player)
+                ymirChoices = self.commanderOrder.copy()
+                self.ymirGuiding = random.choice(ymirChoices)
 
         for player in players:
             self.livingPlayers.append(player)
@@ -79,6 +100,7 @@ class Game:
                 self.livingWarriors.append(player)
             elif player.role.team == 'Wildcards':
                 self.wildcards.append(player)
+                self.livingWildcards.append(player)
     
     def turnOffline(self):
         self.online = False
@@ -144,6 +166,9 @@ class Game:
                 if killedPlayer in self.livingWarriors:
                     self.livingWarriors.remove(killedPlayer)
                     self.deadWarriors.append(killedPlayer)
+                if killedPlayer in self.livingWildcards:
+                    self.livingWildcards.remove(killedPlayer)
+                    self.deadWildcards.append(killedPlayer)
                 killedPlayer.getKilledBy(killerPlayer, causeOfDeath)
                 killerPlayer.killPlayer(killedPlayer, causeOfDeath)
                 killerPlayer.stats.processKill(killerPlayer, killedPlayer)
@@ -157,6 +182,9 @@ class Game:
 
     def sashaTarget(self, Sasha, target):
         self.sashaTargeted = target
+
+    def gabiFire(self, Gabi, target):
+        self.gabiTargeted = target
 
     def porcoGag(self, gaggedPlayer):
         self.porcoGagged = gaggedPlayer
@@ -183,7 +211,7 @@ class Game:
     def setWinCondition(self, condition):
         self.winCondition = condition
 
-    def processWinners(self):
+    async def processWinners(self):
         if self.winCondition == 'wallBreaks':
             self.winners = self.warriors.copy()
         elif self.winCondition == 'kidnapTimeout':
@@ -191,6 +219,8 @@ class Game:
         elif self.winCondition == 'kidnapSuccess':
             self.winners = self.warriors.copy()
         elif self.winCondition == 'kidnapFail':
+            self.winners = self.soldiers.copy()
+        elif self.winCondition == 'noCoordinateWin':
             self.winners = self.soldiers.copy()
         elif self.winCondition == 'multikidnapSuccess' or self.winCondition == 'multikidnapFail':
             if self.winCondition == 'multikidnapFail':
@@ -202,6 +232,18 @@ class Game:
             self.winners = self.yeagerists.copy()
         elif self.winCondition == 'Alliance':
             self.winners = self.alliance.copy()
+        Kenny = await searchFunctions.roleIDToPlayer(self, 'Kenny')
+        if Kenny != None:
+            kennyCount = 0
+            for killedPlayer, causeOfDeath in Kenny.killed.items():
+                if killedPlayer != Kenny:
+                    kennyCount += 1
+            if kennyCount >= 2:
+                self.winners.append(Kenny)
+        Ymir = await searchFunctions.roleIDToPlayer(self, 'Ymir')
+        if Ymir != None:
+            if self.ymirGuiding in self.winners:
+                self.winners.append(Ymir)
 
     def setMVP(self, MVP):
         self.MVP = MVP
@@ -217,6 +259,9 @@ class Game:
             self.currentExpo.currentlyPicking = False
             self.currentExpo.currentlyVoting = False
             self.currentExpo.currentlyExpeditioning = False
+
+    def displayKennyKill(self, killedPlayer):
+        self.kennyDisplayedKills.append(killedPlayer)
 
     def activateRumbling(self):
         self.exposOver = True
@@ -305,4 +350,116 @@ class Game:
     def attackPlayer(self, player):
         self.attackedPlayer = player
 
+    def setFrecklemirTeam(self, team):
+        self.frecklemirTeam = team
+
+    async def applyFrecklemirTeam(self):
+        Frecklemir = await searchFunctions.roleIDToPlayer(self, 'Frecklemir')
+        if Frecklemir != None:
+            if self.frecklemirTeam == 'Soldiers':
+                if Frecklemir in self.wildcards:
+                    self.wildcards.remove(Frecklemir)
+                    self.soldiers.append(Frecklemir)
+                if Frecklemir in self.deadWildcards:
+                    self.deadWildcards.remove(Frecklemir)
+                    self.deadSoldiers.append(Frecklemir)
+                if Frecklemir in self.livingWildcards:
+                    self.livingWildcards.remove(Frecklemir)
+                    self.livingSoldiers.append(Frecklemir)
+            elif self.frecklemirTeam == 'Warriors':
+                if Frecklemir in self.wildcards:
+                    self.wildcards.remove(Frecklemir)
+                    self.warriors.append(Frecklemir)
+                if Frecklemir in self.deadWildcards:
+                    self.deadWildcards.remove(Frecklemir)
+                    self.deadWarriors.append(Frecklemir)
+                if Frecklemir in self.livingWildcards:
+                    self.livingWildcards.remove(Frecklemir)
+                    self.livingWarriors.append(Frecklemir)
+    
+    def eatPlayer(self, PureTitan, eatenPlayer, currentTheme, client):
+        pureRole = PureTitan.role.copy(currentTheme, client)
+        eatenRole = eatenPlayer.role.copy(currentTheme, client)
+
+        if PureTitan in self.wildcards:
+            self.wildcards.remove(PureTitan)
+            if eatenPlayer in self.soldiers:
+                self.soldiers.append(PureTitan)
+                if PureTitan in self.livingWildcards:
+                    self.livingWildcards.remove(PureTitan)
+                    self.livingSoldiers.append(PureTitan)
+                if PureTitan in self.deadWildcards:
+                    self.deadWildcards.remove(PureTitan)
+                    self.deadSoldiers.append(PureTitan)
+            elif eatenPlayer in self.warriors:
+                self.warriors.append(PureTitan)
+                if PureTitan in self.livingWildcards:
+                    self.livingWildcards.remove(PureTitan)
+                    self.livingWarriors.append(PureTitan)
+                if PureTitan in self.deadWildcards:
+                    self.deadWildcards.remove(PureTitan)
+                    self.deadWarriors.append(PureTitan)
+
+        self.wildcards.append(eatenPlayer)
+        if eatenPlayer in self.warriors:
+            self.warriors.remove(eatenPlayer)
+        if eatenPlayer in self.soldiers:
+            self.soldiers.remove(eatenPlayer)
+        if eatenPlayer in self.livingSoldiers:
+            self.livingSoldiers.remove(eatenPlayer)
+            self.livingWildcards.append(eatenPlayer)
+        if eatenPlayer in self.deadSoldiers:
+            self.deadSoldiers.remove(eatenPlayer)
+            self.deadWildcards.append(eatenPlayer)
+        if eatenPlayer in self.livingWarriors:
+            self.livingWarriors.remove(eatenPlayer)
+            self.livingWildcards.append(eatenPlayer)
+        if eatenPlayer in self.deadWarriors:
+            self.deadWarriors.remove(eatenPlayer)
+            self.deadWildcards.append(eatenPlayer)
+
+        PureTitan.changeRole(eatenRole)
+        eatenPlayer.changeRole(pureRole)
+
+    def ymirRevive(self, player):
+        self.ymirRevival = player
+
+    def revivePlayer(self, player):
+        if player in self.deadPlayers:
+            self.deadPlayers.remove(player)
+            self.livingPlayers.append(player)
+        if player in self.deadWarriors:
+            self.deadWarriors.remove(player)
+            self.livingWarriors.append(player)
+        if player in self.deadSoldiers:
+            self.deadSoldiers.remove(player)
+            self.livingSoldiers.append(player)
+        if player in self.deadWildcards:
+            self.deadWildcards.remove(player)
+            self.livingWildcards.append(player)
+        if player not in self.commanderOrder:
+            self.commanderOrder.append(player)
+        self.ymirRevival = {player:True}
+
+    def ymirBless(self, player):
+        self.blessedPlayer = player
+
+    def removeBlessing(self):
+        self.blessedPlayer = None
+
+    def woundPlayer(self, player):
+        self.woundedPlayer = player
+        self.healedPlayer = player
+        self.gabiTargeted = None
+    
+    def healPlayers(self):
+        if self.woundedPlayer != None:
+            self.woundedPlayer = None
+            return True
+        return False
+    
+    def keithSummon(self, roleID):
+        self.summonedRole = roleID
+
+                    
         
