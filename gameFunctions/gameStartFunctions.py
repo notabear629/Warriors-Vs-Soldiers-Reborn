@@ -193,6 +193,11 @@ class gameStartFunctions:
             for role in currentLobby.currentRules.disabledWarriors:
                 if role in validRoles:
                     validRoles.remove(role)
+            if currentLobby.currentRules.noWarchief:
+                for role in Role.warriorGroupOptional:
+                    if role in Role.SoldierBannedNoZeke and role in validRoles:
+                        if role in validRoles:
+                            validRoles.remove(role)
             if existingRoles != None:
                 for role in existingRoles:
                     if role.id in validRoles:

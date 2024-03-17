@@ -68,7 +68,7 @@ class helpBuilder:
         Floch = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Floch')
         returnedEmbed = discord.Embed(title = 'Team Captains', description = 'An explanation of all of the various rules available for Team Captains', color = currentTheme.helpEmbedColor)
         returnedEmbed.add_field(name = f'✅`Coordinate and Warchief Enabled`', value = f'This option means that {Eren.shortName} and {Zeke.shortName} will be present in every single game, no matter what.', inline=True)
-        returnedEmbed.add_field(name = f'{Eren.emoji}`Coordinate Only`', value = f'This option means that {Zeke.shortName} will be disabled and will not appear in the game.', inline=True)
+        returnedEmbed.add_field(name = f'{Eren.emoji}`Coordinate Only`', value = f'This option means that {Zeke.shortName} will be disabled and will not appear in the game. {Historia.shortName} is also banned.', inline=True)
         returnedEmbed.add_field(name = f'{Zeke.emoji}`Warchief Only`', value = f'This option means that {Eren.shortName} will be disabled and will not appear in the game. There will be no kidnapping phase, and reaching the basement is an instant win for the soldiers. The soldier roles that are present in the game will be hidden, and the Warriors will be DM\'d the soldier roles present so they can choose to pretend to be players that another player isn\'t already. In this gamemode, {Floch.shortName}, {Historia.shortName}, and {Mike.shortName} will also be banned.', inline=True)
         returnedEmbed.add_field(name = f'❌`Coordinate and Warchief Disabled`', value = 'This option means that consequences for both of the captains being disabled will apply, and neither will appear in the game.', inline=True)
         return returnedEmbed
