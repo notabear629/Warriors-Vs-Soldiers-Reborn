@@ -29,7 +29,7 @@ class Role:
     soldierBannedNoEren = ['Historia', 'Mike', 'Floch', 'Keith']
 
     #List of roles banned in no zeke rulesets
-    soldierBannedNoZeke = ['Historia']
+    soldierBannedNoZeke = ['Historia', 'Keith']
 
     #Combine all optional Soldier Roles
     soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst
