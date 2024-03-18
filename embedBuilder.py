@@ -203,6 +203,8 @@ class embedBuilder:
                     roleEmoji = currentTheme.emojiSoldier
                 elif player in currentGame.deadWarriors:
                     roleEmoji = currentTheme.emojiWarrior
+                elif player in currentGame.deadWildcards:
+                    roleEmoji = currentTheme.emojiWildcard
                 deadList += f'{roleEmoji}{player.user.name}{roleEmoji}\n'
             returnedEmbed.add_field(name = f'{currentTheme.emojiDead}Dead Players{currentTheme.emojiDead}', value=deadList, inline=False)
             

@@ -94,9 +94,9 @@ class gameStartFunctions:
                 else:
                     if wildcardCount < wildcardMax:
                         if warriorCount + wildcardCount + 1 == soldierCount:
-                            wildcardCount += 1
-                        else:
                             warriorCount += 1
+                        else:
+                            wildcardCount += 1
                     else:
                         if soldierCount + 1 > warriorCount + 2:
                             warriorCount += 1
@@ -195,7 +195,7 @@ class gameStartFunctions:
                     validRoles.remove(role)
             if currentLobby.currentRules.noWarchief:
                 for role in Role.warriorGroupOptional:
-                    if role in Role.SoldierBannedNoZeke and role in validRoles:
+                    if role in Role.soldierBannedNoZeke and role in validRoles:
                         if role in validRoles:
                             validRoles.remove(role)
             if existingRoles != None:
