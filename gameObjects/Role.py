@@ -26,7 +26,7 @@ class Role:
     soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch', 'Floch']
 
     #List of roles banned in noEren rulesets
-    soldierBannedNoEren = ['Historia', 'Mike', 'Floch']
+    soldierBannedNoEren = ['Historia', 'Mike', 'Floch', 'Keith']
 
     #List of roles banned in no zeke rulesets
     soldierBannedNoZeke = ['Historia']
