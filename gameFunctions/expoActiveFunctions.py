@@ -143,13 +143,13 @@ class expoActiveFunctions:
                 if eatenPlayer == None:
                     return
                 currentGame.eatPlayer(PureTitan, eatenPlayer, currentTheme, client)
-                message = f'You have eaten a {currentTheme.titanSingle} joined the side of the **{PureTitan.role.team}**\n\n{PureTitan.role.roleMessage}'
+                message = f'You have eaten a {currentTheme.titanSingle} and joined the side of the **{PureTitan.role.team}**\n\n{PureTitan.role.roleMessage}'
                 if PureTitan.role.id in Role.infoMessageRoles:
-                    if player.role.team == 'Warriors':
+                    if PureTitan.role.team == 'Warriors':
                         functionCall = getattr(currentTheme, f'getWarriorInfo')
                         message += functionCall(currentGame, player)
                     else:
-                        functionCall = getattr(currentTheme, f'get{player.role.id}Info')
+                        functionCall = getattr(currentTheme, f'get{PureTitan.role.id}Info')
                         message += functionCall(currentGame)
                 if PureTitan.role.team == 'Soldiers':
                     color = currentTheme.soldierColor
