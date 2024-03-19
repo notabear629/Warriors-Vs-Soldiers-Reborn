@@ -17,14 +17,14 @@ class Stats:
             if player.originalKeith:
                 setattr(self, 'KeithWon', 1)
                 if player.role.id == 'Keith':
-                    setattr(self, 'KeithFinishedWon')
+                    setattr(self, 'KeithFinishedWon', 1)
         if 'kidnap' in currentGame.winCondition:
             setattr(self, f'{player.role.team}Kidnaps', 1)
             setattr(self, f'{player.role.id}Kidnaps', 1)
             if player.originalKeith:
                 setattr(self, 'KeithKidnaps', 1)
                 if player.role.id == 'Keith':
-                    setattr(self, 'KeithFinishedKidnaps')
+                    setattr(self, 'KeithFinishedKidnaps', 1)
             if player in currentGame.winners:
                 setattr(self, f'{player.role.team}KidnapWins', 1)
                 setattr(self, f'{player.role.id}KidnapWins', 1)
