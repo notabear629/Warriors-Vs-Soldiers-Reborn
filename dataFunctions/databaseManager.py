@@ -73,6 +73,10 @@ class databaseManager:
     @staticmethod
     def getSortedPoints(stat):
         return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'points.{stat}', -1)
+    
+    @staticmethod
+    def getSortedWvsStat(stat):
+        return databaseManager.gameDatabase.find({"userID":{"$ne":"GLOBAL"}}).sort(f'stats.{stat}', -1)
 
     @staticmethod
     def tallyStatsByID(userID, stats):

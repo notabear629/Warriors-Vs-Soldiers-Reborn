@@ -12,6 +12,7 @@ from helpBuilder import helpBuilder
 from statBuilder import statBuilder
 
 from dataFunctions.databaseManager import databaseManager
+from dataFunctions.userInfoManager import userInfoManager
 
 class infoFunctions:
     async def rolelist(ctx, loadedRoles, currentTheme):
@@ -84,11 +85,26 @@ class infoFunctions:
             badgesEmbed = await statBuilder.badgesEmbed(user, currentTheme, loadedBadges)
             await ctx.reply(embed=badgesEmbed)
 
-    async def leaderboard(ctx, client, homeServer, loadedBadges, currentTheme):
-        
-        lbView = await statBuilder.leaderboardView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
-        lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+    async def leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input):
+        finalInput = None
+        if input != None:
+            defaultStats = await userInfoManager.getDefaultStatistics()
+            for stat, value in defaultStats.items():
+                if stat.lower() == input.lower():
+                    finalInput = stat
+                    break
+        if finalInput == None:
+            lbView = await statBuilder.leaderboardView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+            lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+        else:
+            lbView = await statBuilder.leaderboardAltView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, finalInput, 1)
+            lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, finalInput, 1)
         await ctx.send(embed=lbEmbed, view=lbView)
+
+    async def advantage(ctx, currentGame, currentTheme):
+        if currentGame.online:
+            embed = await statBuilder.advantageEmbed(currentGame, currentTheme)
+            await ctx.reply(embed=embed)
 
         
 

@@ -39,7 +39,7 @@ class Stats:
         
 
     def processKill(self, killer, killed):
-        solKillRoles = ['Levi', 'Sasha', 'Armin']
+        solKillRoles = ['Levi', 'Sasha', 'Armin', 'Petra']
         solKillWinRoles = ['Sasha', 'Armin']
         totalKills = getattr(killer.stats, 'Kills')
         totalDeaths = getattr(killed.stats, 'Deaths')
@@ -58,6 +58,21 @@ class Stats:
     def activateGag(self):
         self.PorcoGags = 1
 
+    def smellTitans(self, num):
+        self.MikeSmells += num
+
+    def detectEren(self):
+        self.FlochDetects += 1
+
+    def hitchDiscover(self):
+        self.HitchDiscovers += 1
+
+    def nileSighting(self):
+        self.NileSightings += 1
+
+    def connieAlert(self):
+        self.ConnieAlerts += 1
+
     def gagSkip(self):
         currentGags = getattr(self, 'PorcoCommanderSkips')
         setattr(self, 'PorcoCommanderSkips', currentGags + 1)
@@ -68,6 +83,13 @@ class Stats:
         if expo.jeanActivated:
             Jean = await searchFunctions.roleIDToPlayer(currentGame, 'Jean')
             setattr(Jean.stats, 'JeanForces', 1)
+        if expo.zacharyActivated:
+            Zachary = await searchFunctions.roleIDToPlayer(currentGame, 'Zachary')
+            setattr(Zachary.stats, 'ZacharyVetoes', 1)
+            for player in currentGame.currentExpo.expeditionMembers:
+                if player in currentGame.warriors:
+                    setattr(Zachary.stats, 'ZacharyVetoWins', 1)
+                    break
         if expo.pieckActivated:
             Pieck = await searchFunctions.roleIDToPlayer(currentGame, 'Pieck')
             if Pieck in expo.accepted:
@@ -96,6 +118,9 @@ class Stats:
             if result == 'n':
                 setattr(Daz.stats, 'DazChickenWins', 1)
         else:
+            if expo.petraWatched != None:
+                Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
+                setattr(Petra.stats, 'PetraWatches', 1)
             if expo.jeanActivated and result == 'y':
                 Jean = await searchFunctions.roleIDToPlayer(currentGame, 'Jean')
                 setattr(Jean.stats, 'JeanForceWins', 1)
@@ -207,13 +232,16 @@ class Stats:
                 if check != None:
                     score = check * value
                     warrior.addMVPPoints(score)
-        mvp = currentGame.winners[0]
+        mvp = [currentGame.winners[0]]
         for winner in currentGame.winners:
-            if winner.mvpPoints > mvp.mvpPoints:
-                mvp = winner
+            if winner.mvpPoints > mvp[0].mvpPoints:
+                mvp = [winner]
+            elif winner.mvpPoints == mvp[0].mvpPoints:
+                mvp.append(winner)
         currentGame.setMVP(mvp)
-        setattr(mvp.stats, 'MVPS', 1)
-        setattr(mvp.stats, f'{winner.role.team}MVPS', 1)
+        for elem in mvp:
+            setattr(elem.stats, 'MVPS', 1)
+            setattr(elem.stats, f'{elem.role.team}MVPS', 1)
 
 
             

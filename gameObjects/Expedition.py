@@ -17,6 +17,7 @@ class Expedition:
         self.sabotagedExpedition = []
         self.resultsAvailable = False
         self.jeanActivated = False
+        self.zacharyActivated = False
         self.pieckActivated = False
         self.arminActivated = False
         self.leviAttacked = False
@@ -29,6 +30,7 @@ class Expedition:
         self.mikasaGuarded = None
         self.reinerBlocked = None
         self.kennyMurdered = None
+        self.petraWatched = None
         self.bertholdtCloaked = False
         self.annieMessage = None
         self.usedExpoAbilities = []
@@ -42,6 +44,7 @@ class Expedition:
         self.currentlyPicking = True
         self.passed = False
         self.jeanActivated = False
+        self.zacharyActivated = False
         self.pieckActivated = False
         self.falcoActivated = False
         self.erwinActivated = False
@@ -55,6 +58,7 @@ class Expedition:
         self.arminActivated = False
         self.reinerBlocked = None
         self.bertholdtCloaked = False
+        self.petraWatched = None
         self.annieMessage = None
         self.filledUp = False
 
@@ -97,6 +101,10 @@ class Expedition:
             self.accepted.append(player)
             player.role.disableAbility()
             self.jeanActivated = True
+        elif voteCase == 'Zachary':
+            self.rejected.append(player)
+            player.role.disableAbility()
+            self.zacharyActivated = True
         elif voteCase == 'PieckAccept':
             self.rejected.append(player)
             player.role.disableAbility()
@@ -145,6 +153,11 @@ class Expedition:
         elif type(actCase) == dict and 'Mikasa' in actCase:
             self.passedExpedition.append(player)
             self.mikasaGuarded = actCase['Mikasa']
+        elif type(actCase) == dict and 'Petra' in actCase:
+            self.passedExpedition.append(player)
+            self.petraWatched = actCase['Petra']
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
         elif type(actCase) == dict and 'Annie' in actCase:
             self.sabotagedExpedition.append(player)
             self.annieMessage = actCase['Annie']

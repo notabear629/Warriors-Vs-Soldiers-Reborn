@@ -20,7 +20,6 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
-        return True
         if player.user == interaction.user:
             return True
         return False
@@ -68,6 +67,16 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             jeanButton.callback = processExpeditionJean
             returnedView.add_item(jeanButton)
+
+        if player.role.id == 'Zachary' and player.role.abilityActive:
+            zacharyButton = Button(label = 'Veto', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processZacharyButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, zacharyButton.label)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            zacharyButton.callback = processZacharyButton
+            returnedView.add_item(zacharyButton)
 
         if player.role.id == 'Falco' and player.role.abilityActive:
             falcoButton = Button(label = 'Intercept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
@@ -177,6 +186,22 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             mikasaSelect.callback = processMikasaSelection
             returnedView.add_item(mikasaSelect)
+
+        if player.role.id == 'Petra' and player.role.abilityActive:
+            petraSelect = Select(placeholder = f'Choose Player to Watch')
+            for expeditioner in currentGame.currentExpo.expeditionMembers:
+                if expeditioner != player:
+                    petraSelect.add_option(label = expeditioner.user.name, emoji = player.role.emoji)
+            async def processPetraSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for expeditioner in currentGame.currentExpo.expeditionMembers:
+                        if expeditioner.user.name == str(petraSelect.values[0]):
+                            watchedPlayer = expeditioner
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Petra':watchedPlayer})
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            petraSelect.callback = processPetraSelection
+            returnedView.add_item(petraSelect)
 
         if player.role.id == 'Bertholdt':
             bertholdtButton = Button(label = 'Cloak', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)

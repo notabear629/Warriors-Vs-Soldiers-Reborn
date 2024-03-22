@@ -55,6 +55,8 @@ class expoActiveFunctions:
                 expoChoice = 'Bertholdt'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
+            elif type(choice) == dict and 'Petra' in choice and player.role.id == 'Petra':
+                expoChoice = choice
             elif type(choice) == dict and 'Annie' in choice and player.role.id == 'Annie':
                 expoChoice = choice
             elif type(choice) == dict and 'Kenny' in choice and player.role.id == 'Kenny':
@@ -218,7 +220,7 @@ class expoActiveFunctions:
             await home.send(failMessage)
 
     async def processDeaths(currentGame, currentTheme, home, client):
-        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False}
+        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             if Armin != None:
@@ -236,6 +238,12 @@ class expoActiveFunctions:
                 for player in currentGame.currentExpo.expeditionMembers:
                     if player not in currentGame.deadPlayers and player.role.id == 'PureTitan':
                         currentGame.killPlayer(player, Levi, 'Levi')
+        if currentGame.currentExpo.petraWatched != None:
+            Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
+            if Petra != None and currentGame.currentExpo.petraWatched in currentGame.currentExpo.sabotagedExpedition:
+                if currentGame.currentExpo.petraWatched not in currentGame.deadPlayers:
+                    currentGame.killPlayer(currentGame.currentExpo.petraWatched, Petra, 'Petra')
+                    deathFlags['Petra'] = True
         if currentGame.currentExpo.kennyMurdered != None:
             Kenny = await searchFunctions.roleIDToPlayer(currentGame, 'Kenny')
             if Kenny != None:
@@ -288,6 +296,11 @@ class expoActiveFunctions:
             leviMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Levi, Mikasa, Reiner)
             if leviMessage != '':
                 await home.send(leviMessage)
+        if deathFlags['Petra']:
+            Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
+            petraMessage = currentTheme.getPetraDeathMessages(currentGame, currentTheme, Petra, Mikasa, Reiner)
+            if petraMessage != '':
+                await home.send(petraMessage)
         if deathFlags['Kenny']:
             Kenny = await searchFunctions.roleIDToPlayer(currentGame, 'Kenny')
             kennyMessage = currentTheme.getKennyDeathMessages(currentGame, currentTheme, Kenny, Mikasa, Reiner)

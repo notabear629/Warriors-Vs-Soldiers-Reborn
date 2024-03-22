@@ -14,7 +14,7 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith']
+    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith', 'Zachary', 'Petra']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi', 'Mikasa']
@@ -23,7 +23,10 @@ class Role:
     soldierGroupLethal = ['Armin', 'Sasha']
 
     #A group of all Analytical Soldiers
-    soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch', 'Floch']
+    soldierGroupAnalyst = ['Hange', 'Mike', 'Hitch', 'Floch', 'Nile', 'Connie']
+
+    #A group of Soldiers with passive abilities that assist the Soldiers
+    soldierGroupPassive = ['Niccolo']
 
     #List of roles banned in noEren rulesets
     soldierBannedNoEren = ['Historia', 'Mike', 'Floch', 'Keith']
@@ -32,7 +35,7 @@ class Role:
     soldierBannedNoZeke = ['Historia', 'Keith']
 
     #Combine all optional Soldier Roles
-    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst
+    soldierGroupOptional = soldierGroupInfo + soldierGroupAbility + soldierGroupDefender + soldierGroupLethal + soldierGroupAnalyst + soldierGroupPassive
 
     #We combine all the previous groups to create a complete list of soldier roles
     soldierRoles = soldierGroupCoordinate + soldierGroupOptional + soldierGroupDefault

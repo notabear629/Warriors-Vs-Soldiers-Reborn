@@ -84,11 +84,8 @@ class Game:
         self.woundedPlayer = None
         self.healedPlayer = None
         self.summonedRole = None
-        for player in players:
-            if player.role.id == 'Ymir':
-                self.commanderOrder.remove(player)
-                ymirChoices = self.commanderOrder.copy()
-                self.ymirGuiding = random.choice(ymirChoices)
+        self.niccoloDecoy = None
+        
 
         for player in players:
             self.livingPlayers.append(player)
@@ -101,6 +98,15 @@ class Game:
             elif player.role.team == 'Wildcards':
                 self.wildcards.append(player)
                 self.livingWildcards.append(player)
+
+        for player in players:
+            if player.role.id == 'Ymir':
+                self.commanderOrder.remove(player)
+                ymirChoices = self.commanderOrder.copy()
+                self.ymirGuiding = random.choice(ymirChoices)
+            if player.role.id == 'Niccolo':
+                self.niccoloDecoy = random.choice(self.soldiers)
+
     
     def turnOffline(self):
         self.online = False

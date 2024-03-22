@@ -125,6 +125,7 @@ class defaultGameTheme:
     acceptedExpeditionColor = discord.Color.green()
     rejectedExpeditionColor = discord.Color.red()
     jeanedExpeditionColor = discord.Color.gold()
+    zacharyExpeditionColor = discord.Color.red()
     mikeSmell = 'smell'
     emojiNoEren = str('✖️')
 
@@ -161,8 +162,9 @@ class defaultGameTheme:
 
     #Webhook Message Aesthetics
     jeanMessage = f'I\'m securing this Expedition!'
-    pieckMessageWithJean = f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Jean**!'
-    pieckMessageWithoutJean = f'I flipped the votes!'
+    pieckMessageJean= f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Jean**!'
+    pieckMessageZachary= f'I tried to flip the votes, but I am not sure if I was able to successfully do so because of **Zachary**!'
+    pieckMessage = f'I flipped the votes!'
     arminMessage = f'I blew up the Expedition!'
     leviAttackMessage = f'I... Won\'t let a single one of you get away!'
     leviDefendMessage = f'I will defend this expedition at all costs!'
@@ -181,6 +183,10 @@ class defaultGameTheme:
     gabiMessage = 'I\'m firing my rifle!'
     keithMessage = 'I am but a bystander... I leave this to my students.'
     keithMessage2 = 'Reporting for duty.'
+    zacharyMessage = 'I am vetoing this Expedition Team Proposal!'
+    conflictJeanZacharyMessage = 'The confusing orders have lead to chaos! The expedition will be voted on as usual.'
+    petraMessage = 'I saw someone try to break the wall! I won\'t let them get away!'
+    connieMessage = '⚠️We have been betrayed! That Expedition was not safe!⚠️'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -643,6 +649,141 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Keith is the instructor for the cadet corps! As such, he has made many connections with his students. As he himself, is a mere bystander, he has the ability to leave the battlefield, calling one of his students to take his place. This effectively means, that the player with this role can change their role to any Soldier role not already present in the game. Their role will not be changed until the next passed round\'s results are read, however.'
 
+    class Zachary:
+        roleDict = {'roleID' : 'Zachary'}
+
+        roleDict['name'] = 'Darius Zachary'
+
+        roleDict['shortName'] = 'Zachary'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1220678440030699530
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are in charge of administration of Paradis island! As such, you oversee the expedition operations, and will have a one-time ability to Veto and expedition proposal, forcing it to cancel!\n\n'
+
+        roleDict['gameRole'] = ':man_judge:Administrator:man_judge:'
+
+        roleDict['helpInfo'] = 'Zachary is the administrator of Paradis Island and its defense forces! Thanks to this, he has the ability to veto an expedition one time to ensure that it does not pass. This role is a reverse Jean. However, if both Jean and Zackary use their abilities on the same turn, neither will work and they will both cancel.'
+    
+    class Petra:
+        roleDict = {'roleID' : 'Petra'}
+
+        roleDict['name'] = 'Petra Ral'
+
+        roleDict['shortName'] = 'Petra'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1220701264967635057
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are one of Paradis\' finest Soldiers and are in Levi Squad! As such, you have an outsized level of strength. Once per game, in an expo, you may choose one expedition member to keep a watch on. If you see them attempt to break the Walls, you will be able to catch them and kill them. But unfortunately, not before they break the walls.\n\n'
+
+        roleDict['gameRole'] = ':axe:Executioner:axe:'
+
+        roleDict['helpInfo'] = 'Petra Ral is a top Soldier, as expected of a member of Levi Squad. For those who remember the "Hunter" role from Entropi\'s game, this is that, but with death. Petra can once per game, pick a fellow expeditioner member to watch. If that player is caught breaking the walls, they will be killed. But not before they are able to break the wall.'
+
+    class Niccolo:
+        roleDict = {'roleID' : 'Niccolo'}
+
+        roleDict['name'] = 'Niccolo'
+
+        roleDict['shortName'] = 'Niccolo'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1220729879926931516
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are originally from the homeland of the Warriors. But, as you came to Paradis island you realized that you didn\'t actually want to attack the Soldiers. As such, you have joined the side of the Soldiers. While having access to the Warriors documents, you tampered with them, and now a random Soldier\'s name appears among the list.\n\n'
+
+        roleDict['gameRole'] = ':ninja:Ex Warrior:ninja:'
+
+        roleDict['helpInfo'] = 'Niccolo grew up in the homeland of the Warriors. But, as he came to Paradis island, he switched allegiances and realized he did not want to attack the Soldiers. He has, in fact, joined the Soldiers. While he had access to the Warriors important documentation, he tampered with them. As such, one of the Warriors in the list of names they receives is actually a random soldier.'
+
+    class Nile:
+        roleDict = {'roleID' : 'Nile'}
+
+        roleDict['name'] = 'Nile Dok'
+
+        roleDict['shortName'] = 'Nile'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1220742818042085416
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the Commander of the Military Police. You have direct access to police reports submitted by the citizens of Paradis, whenever a wall is broken, you will be informed of which Warrior role was responsible.\n\n'
+
+        roleDict['gameRole'] = ':man_police_officer:Police Chief:man_police_officer:'
+
+        roleDict['helpInfo'] = 'Nile Dok is the Commander of the Military Police. As such, he has direct access to all of the police reports filed by the citizenry of Paradis. Whenever a wall is sabotaged, he wil learn about the reports of Warrior sightings filed. As such, he will be informed of which Roles were responsible for breaking the Wall.'
+
+    class Connie:
+        roleDict = {'roleID' : 'Connie'}
+
+        roleDict['name'] = 'Connie Springer'
+
+        roleDict['shortName'] = 'Connie'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1220773736257552486
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are someone who is eternally betrayed! As such, you recognize betrayal when you see it. When you are on an expedition that successfully passes, you will be alerted if there was actually a Warrior within it.\n\n'
+
+        roleDict['gameRole'] = ':fishing_pole_and_fish:Bait Spotter:fishing_pole_and_fish:'
+
+        roleDict['helpInfo'] = 'Connie Springer is perpetually betrayed! As such, he has gotten very good at spotting betrayal when he sees it. If he is on an expedition that successfully passes, he will be alerted if it actually secretly contained a Warrior within it.'
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -1057,8 +1198,8 @@ class defaultGameTheme:
         for warrior in warriorList:
             if warrior.role.id != 'Zeke':
                 erenInfo += f'**{warrior.user.name}**'
-            if warriorList.index(warrior) != len(warriorList) -1:
-                erenInfo += '\n'
+                if warriorList.index(warrior) != len(warriorList) -1:
+                    erenInfo += '\n'
         return erenInfo
     
     def getHistoriaInfo(currentGame):
@@ -1083,6 +1224,7 @@ class defaultGameTheme:
     def getHitchInfo(currentGame, Hitch, hitchInfo):
         hitchMessage = ''
         for role, player in hitchInfo.items():
+            Hitch.stats.hitchDiscover()
             altPlayers = currentGame.livingPlayers.copy()
             if Hitch in altPlayers:
                 altPlayers.remove(Hitch)
@@ -1100,6 +1242,8 @@ class defaultGameTheme:
     def getWarriorInfo(currentGame, player):
         warriorInfo = 'Your fellow Warriors are:\n'
         warriorList = currentGame.warriors.copy()
+        if currentGame.niccoloDecoy != None:
+            warriorList.append(currentGame.niccoloDecoy)
         warriorList = random.sample(warriorList, len(warriorList))
         for warrior in warriorList:
             if player.user.name != warrior.user.name:
@@ -1109,9 +1253,14 @@ class defaultGameTheme:
                     else:
                         warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
                 else:
-                    warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
-            if warriorList.index(warrior) != len(warriorList) - 1:
-                warriorInfo += '\n'
+                    if warrior in currentGame.warriors:
+                        warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
+                    else:
+                        warriorInfo += f'**{warrior.user.name}**'
+                if warriorList.index(warrior) != len(warriorList) - 1:
+                    warriorInfo += '\n'
+        if currentGame.niccoloDecoy != None:
+            warriorInfo += '\n❗This list was tampered with❗'
         return warriorInfo
     
     def getLeviRevealMessage(Levi):
@@ -1161,6 +1310,27 @@ class defaultGameTheme:
                 if value == 'Levi':
                     leviDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Levi\'s onslaught!{Reiner.role.secondaryEmoji}\n\n'
         return leviDeathMessages
+    
+    def getPetraDeathMessages(currentGame, currentTheme, Petra, Mikasa, Reiner):
+        petraDeathMessages = ''
+        for killedPlayer, causeOfDeath in Petra.killed.items():
+            if causeOfDeath == 'Petra':
+                petraDeathMessages += f'**{killedPlayer.user.name}** was slain by Petra!\n'
+                if killedPlayer in currentGame.soldiers:
+                    petraDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    petraDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    petraDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Petra':
+                    petraDeathMessages += f'**{key.user.name}** was attacked by Petra!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Petra':
+                    petraDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Petra\'s attack!{Reiner.role.secondaryEmoji}\n\n'
+        return petraDeathMessages
     
     def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner):
         sashaDeathMessages = ''

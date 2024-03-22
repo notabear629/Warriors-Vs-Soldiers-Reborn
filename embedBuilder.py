@@ -257,17 +257,23 @@ class embedBuilder:
             if titansSmelled == 1:
                 titanName = currentTheme.titanSingle
             playerList += f'\n{player.role.secondaryEmoji}You {currentTheme.mikeSmell} **{titansSmelled}** {titanName}!{player.role.secondaryEmoji}'
+            if player not in currentGame.currentExpo.accepted and player not in currentGame.currentExpo.rejected and player not in currentGame.currentExpo.abstained:
+                player.stats.smellTitans(titansSmelled)
         if player.role.id == 'Floch' and player in currentGame.currentExpo.expeditionMembers:
             Eren = await searchFunctions.roleIDToPlayer(currentGame, 'Eren')
             erenEmoji = Eren.role.emoji
             playerList += '\n'
             if Eren in currentGame.currentExpo.expeditionMembers:
                 playerList += f'{erenEmoji}{currentTheme.flochMessageEren}{erenEmoji}'
+                if player not in currentGame.currentExpo.accepted and player not in currentGame.currentExpo.rejected and player not in currentGame.currentExpo.abstained:
+                    player.stats.detectEren()
             else:
                 playerList += f'{currentTheme.emojiNoEren}{currentTheme.flochMessageNoEren}{currentTheme.emojiNoEren}'
         returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
         if player.role.id == 'Jean' and currentGame.currentExpo.jeanActivated:
             voteDesc = f'You have voted to secure this {currentTheme.expeditionTeam}.'
+        elif player.role.id == 'Zachary' and currentGame.currentExpo.zacharyActivated:
+            voteDesc = f'You have chosen to veto this {currentTheme.expeditionTeam}'
         elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.rejected:
             voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
         elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.accepted:
@@ -284,6 +290,8 @@ class embedBuilder:
             voteDesc = f'You have not yet voted on this {currentTheme.expeditionTeam}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {currentTheme.expeditionTeam}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {currentTheme.expeditionTeam}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {currentTheme.expeditionTeam}'
             if player.role.id == 'Jean' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji} Click the Secure Button to Secure the {currentTheme.expeditionTeam}.'
+            elif player.role.id == 'Zachary' and player.role.abilityActive:
+                voteDesc += f'\n{player.role.emoji} Click the Veto button to Veto the {currentTheme.expeditionTeam}'
             if player.role.id == 'Falco' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji} Click the Intercept Button to Intercept the {currentTheme.expeditionTeam} votes, which will turn to an accept ONLY IF it will pass.'
             elif player.role.id == 'Pieck' and player.role.abilityActive:
@@ -293,11 +301,16 @@ class embedBuilder:
         return returnedEmbed
     
     async def showVotingResults(currentGame, currentTheme, expeditionPassed):
-        if currentGame.currentExpo.jeanActivated:
+        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
             playerList = ''
             for voter in currentGame.currentExpo.eligibleVoters:
                 playerList += f'**{voter.user.name}**'
                 playerList += f'{currentTheme.emojiAcceptExpedition}\n'
+        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+            playerList = ''
+            for voter in currentGame.currentExpo.eligibleVoters:
+                playerList += f'**{voter.user.name}**'
+                playerList += f'{currentTheme.emojiRejectExpedition}\n'
         else:
             playerList = ''
             displayAccept = f'{currentTheme.emojiAcceptExpedition}'
@@ -314,8 +327,10 @@ class embedBuilder:
                 elif voter in currentGame.currentExpo.abstained:
                     playerList += f'{currentTheme.emojiAbstainExpedition}'
                 playerList += '\n'
-        if currentGame.currentExpo.jeanActivated:
+        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
             embedColor = currentTheme.jeanedExpeditionColor
+        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+            embedColor = currentTheme.zacharyExpeditionColor
         elif expeditionPassed:
             embedColor = currentTheme.acceptedExpeditionColor
         elif expeditionPassed == False:
@@ -345,7 +360,9 @@ class embedBuilder:
         if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             playerList += f'{player.role.secondaryEmoji} Select Chicken Out to cancel this {currentTheme.expeditionName} and go back to the picking phase.\n'
         if player.role.id == 'Mikasa':
-            playerList += f'{player.role.emoji} Select a player from the "Choose Player to Guard to Pass this {currentTheme.expeditionName}, and guard that player.\n'
+            playerList += f'{player.role.emoji} Select a player from the "Choose Player to Guard" to Pass this {currentTheme.expeditionName}, and guard that player.\n'
+        if player.role.id == 'Petra' and player.role.abilityActive:
+            playerList += f'{player.role.emoji} Select a player from the "Choose Player to Watch" to keep watch over that player.\n'
         if player.role.id == 'Bertholdt':
             playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
         if player.role.id == 'Annie' and player.role.abilityActive:
@@ -362,7 +379,9 @@ class embedBuilder:
         elif player.role.id == 'Daz' and currentGame.currentExpo.dazActivated:
             decisionString = f'You have chosen to chicken out from going on this {currentTheme.expeditionName}.'
         elif player.role.id == 'Mikasa' and currentGame.currentExpo.mikasaGuarded != None and type(currentGame.currentExpo.mikasaGuarded) != dict:
-            decisionString = f'You have chosen to pass the expedition while guarding **{currentGame.currentExpo.mikasaGuarded.user.name}**.'
+            decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while guarding **{currentGame.currentExpo.mikasaGuarded.user.name}**.'
+        elif player.role.id == 'Petra' and currentGame.currentExpo.petraWatched != None:
+            decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while watching **{currentGame.currentExpo.petraWatched.user.name}**.'
         elif player.role.id == 'Bertholdt' and currentGame.currentExpo.bertholdtCloaked:
             decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
         elif player.role.id == 'Annie' and currentGame.currentExpo.annieMessage != None:
@@ -468,7 +487,7 @@ class embedBuilder:
             if search != None:
                 if type(search) == list:
                     for player in search:
-                        if player == currentGame.MVP:
+                        if player in currentGame.MVP:
                             addedEmoji = currentTheme.emojiMVP
                         elif player in currentGame.winners:
                             addedEmoji = currentTheme.emojiWinner
@@ -476,7 +495,7 @@ class embedBuilder:
                             addedEmoji = currentTheme.emojiLoser
                         returnedEmbed.add_field(name = f'{addedEmoji}{player.user.name}{addedEmoji}', value=f'MVP Points: {player.mvpPoints}', inline=True)
                 else:
-                    if search == currentGame.MVP:
+                    if search in currentGame.MVP:
                         addedEmoji = currentTheme.emojiMVP
                     elif search in currentGame.winners:
                         addedEmoji = currentTheme.emojiWinner
@@ -546,6 +565,14 @@ class embedBuilder:
         elif player.role.team == 'Warriors':
             selectedColor = currentTheme.warriorColor
         returnedEmbed = discord.Embed(title= f'{player.role.name} Information Update', description=infoMessage, color = selectedColor)
+        return returnedEmbed
+    
+    async def nileEmbed(currentGame, currentTheme, Nile):
+        desc = ''
+        for player in currentGame.currentExpo.sabotagedExpedition:
+            desc += f'{player.role.emoji}{player.role.name}{player.role.emoji}\n'
+            Nile.stats.nileSighting()
+        returnedEmbed = discord.Embed(title = f'Reported {currentTheme.warriorPlural} Sightings', description= desc, color = currentTheme.soldierColor)
         return returnedEmbed
 
     async def rumblingStatusEmbed(currentGame, currentTheme, futureExpoCounts, altCase = None):
@@ -686,8 +713,12 @@ class embedBuilder:
                 wildcardRoles.append(role)
         returnedEmbed = discord.Embed(title = 'Roles Implemented into the Game', color = currentTheme.rolesEmbedColor)
         soldierList = ''
+        soldierList2 = ''
         for role in soldierRoles:
-            soldierList += f'{role.emoji}{role.name}{role.emoji}\n'
+            if soldierRoles.index(role) <= len(soldierRoles) / 2:
+                soldierList += f'{role.emoji}{role.name}{role.emoji}\n'
+            else:
+                soldierList2 += f'{role.emoji}{role.name}{role.emoji}\n'
         warriorList = ''
         for role in warriorRoles:
             warriorList += f'{role.emoji}{role.name}{role.emoji}\n'
@@ -695,7 +726,8 @@ class embedBuilder:
         for role in wildcardRoles:
             wildcardList += f'{role.emoji}{role.name}{role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}', value = f'{soldierList}', inline=True)
-        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier} (cont)', value = f'{soldierList2}', inline=True)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=False)
         returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}{currentTheme.wildcardPlural}{currentTheme.emojiWildcard}', value = f'{wildcardList}', inline=True)
         return returnedEmbed
     

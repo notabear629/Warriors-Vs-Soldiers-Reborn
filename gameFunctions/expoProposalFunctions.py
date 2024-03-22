@@ -215,6 +215,8 @@ class expoProposalFunctions:
                 voteToProcess = 'n'
             elif vote == 'Secure' and player.role.id == 'Jean' and player.role.abilityActive:
                 voteToProcess = 'Jean'
+            elif vote == 'Veto' and player.role.id == 'Zachary' and player.role.abilityActive:
+                voteToProcess = 'Zachary'
             elif 'Flip and Accept' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
                 voteToProcess = 'PieckAccept'
             elif 'Flip and Reject' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
@@ -230,8 +232,10 @@ class expoProposalFunctions:
             await currentGame.sendTemporaryMessage(currentTheme, home)
 
     async def getVotingResults(currentGame):
-        if currentGame.currentExpo.jeanActivated:
+        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
             return True
+        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+            return False
         elif currentGame.currentExpo.pieckActivated:
             if len(currentGame.currentExpo.rejected) > len(currentGame.currentExpo.accepted):
                 return True

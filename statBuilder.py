@@ -317,6 +317,9 @@ class statBuilder:
         elif role.id == 'Jean':
             returnedEmbed.add_field(name = 'Proposals Secured', value = db['JeanForces'], inline=True)
             returnedEmbed.add_field(name = f'Forced Proposal {currentTheme.expeditionName} Passes', value= f'{db['JeanForceWins']} ({await statBuilder.getPercentage(db, 'JeanForceWins', 'JeanForces')}%)')
+        elif role.id == 'Zachary':
+            returnedEmbed.add_field(name = 'Proposals Vetoed', value = db['ZacharyVetoes'], inline=True)
+            returnedEmbed.add_field(name = 'Bad Teams Vetoed', value = f'{db['ZacharyVetoWins']} ({await statBuilder.getPercentage(db, 'ZacharyVetoWins', 'ZacharyVetoes')}% of Vetoes)', inline=True)
         elif role.id == 'Erwin':
             returnedEmbed.add_field(name = 'Flares Fired', value = db['ErwinFlaresFired'], inline=True)
         elif role.id == 'Daz':
@@ -327,9 +330,12 @@ class statBuilder:
             returnedEmbed.add_field(name = 'Kills', value = f'{db['LeviKills']} ({await statBuilder.getDivider(db, 'LeviKills', 'LeviAttacks')} per Attack)', inline = True)
             returnedEmbed.add_field(name = 'Defends', value = db['LeviDefends'], inline=True)
             returnedEmbed.add_field(name = f'Levi {currentTheme.expeditionName} Saves', value = f'{db['LeviDefendWins']} ({await statBuilder.getPercentage(db, 'LeviDefendWins', 'LeviDefends')}% of Defends)')
+        elif role.id == 'Petra':
+            returnedEmbed.add_field(name = 'Players Watched', value = db['PetraWatches'], inline=True)
+            returnedEmbed.add_field(name = 'Players Killed', value = f'{db['PetraKills']} ({await statBuilder.getPercentage(db, 'PetraKills', 'PetraWatches')}% of Watches)', inline=True)
         elif role.id == 'Mikasa':
             returnedEmbed.add_field(name = 'Players Guarded', value = db['MikasaGuards'], inline=True)
-            returnedEmbed.add_field(name = 'Players Saved', value = f'{db['MikasaSaved']} ({await statBuilder.getPercentage(db, 'MikasaSaved', 'MikasaGuards')}% of Guards)')
+            returnedEmbed.add_field(name = 'Players Saved', value = f'{db['MikasaSaved']} ({await statBuilder.getPercentage(db, 'MikasaSaved', 'MikasaGuards')}% of Guards)', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Saved', value = f'{db['MikasaSaveWins']} ({await statBuilder.getPercentage(db, 'MikasaSaveWins', 'MikasaGuards')}% of Guards, {await statBuilder.getPercentage(db, 'MikasaSaveWins', 'MikasaSaved')}% of Saves)')
         elif role.id == 'Keith':
             returnedEmbed.add_field(name = f'Times Summoned', value = f'{db['KeithPlayed']-db['KeithFinishedPlayed']} ({round((100 - await statBuilder.getPercentage(db, 'KeithFinishedPlayed', 'KeithPlayed')),1)}% of Games Played)', inline=True)
@@ -337,7 +343,16 @@ class statBuilder:
             returnedEmbed.add_field(name = f'Games Won as {role.shortName}', value = f'{db['KeithFinishedWon']} ({await statBuilder.getPercentage(db, 'KeithFinishedWon', 'KeithFinishedPlayed')}% of Non-Summoning Games)', inline=True)
             returnedEmbed.add_field(name = f'Basements Reached as {role.shortName}', value = f'{db['KeithFinishedKidnaps']} ({await statBuilder.getPercentage(db, 'KeithFinishedKidnaps', 'KeithFinishedPlayed')}% of Non-Summoning Games)', inline=True)
             returnedEmbed.add_field(name = f'Coords Hidden as {role.shortName}', value = f'{db['KeithFinishedKidnapWins']} ({await statBuilder.getPercentage(db, 'KeithFinishedKidnapWins', 'KeithFinishedKidnaps')}% of Non-Summoning Basements)', inline=True)
-            
+        elif role.id == 'Mike':
+            returnedEmbed.add_field(name = f'{currentTheme.titanPlural} Detected', value = f'{db['MikeSmells']} ({await statBuilder.getDivider(db, 'MikeSmells', 'MikePlayed')} per Game)', inline=True)   
+        elif role.id == 'Floch':
+            returnedEmbed.add_field(name = f'Coordinates Detected', value = f'{db['FlochDetects']} ({await statBuilder.getDivider(db, 'FlochDetects', 'FlochPlayed')} per Game)', inline=True)
+        elif role.id == 'Hitch':
+            returnedEmbed.add_field(name = f'{role.shortName} Discoveries', value = f'{db['HitchDiscovers']} ({await statBuilder.getDivider(db,'HitchDiscovers', 'HitchPlayed')} per Game)', inline=True)
+        elif role.id == 'Nile':
+            returnedEmbed.add_field(name = f'{role.shortName} Sightings', value = f'{db['NileSightings']} ({await statBuilder.getDivider(db, 'NileSightings', 'NilePlayed')} per Game)', inline=True)
+        elif role.id == 'Connie':
+            returnedEmbed.add_field(name = f'{role.shortName} Bait Alerts', value = f'{db['ConnieAlerts']} ({await statBuilder.getDivider(db, 'ConnieAlerts', 'ConniePlayed')} per Game)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -567,7 +582,10 @@ class statBuilder:
 
         numberEmojis = [str('🥇'), str('🥈'), str('🥉'), str('4️⃣'), str('5️⃣'), str('6️⃣'), str('7️⃣'), str('8️⃣'), str('9️⃣'), str('🔟')]
         
-        allPlayers = databaseManager.getSortedPoints(statType)
+        if statType in titles:
+            allPlayers = databaseManager.getSortedPoints(statType)
+        else:
+            allPlayers = databaseManager.getSortedWvsStat(statType)
         for player in allPlayers:
             if index == 0:
                 leader = player
@@ -591,23 +609,35 @@ class statBuilder:
                     playerList += numberEmojis[gatheredPlayers.index(player)]
             else:
                 playerList += f'{gatheredPlayers.index(player) + 1 + (10*(page-1))}. '
-            playerList += f'{client.get_user(player['userID']).mention}\n'
+            user = client.get_user(player['userID'])
+            if user != None:
+                playerList += f'{user.mention}\n'
+            else:
+                playerList += f'<@{player['userID']}>\n'
         
         valueList = ''
         if 'Points' not in statType:
             for player in gatheredPlayers:
-                valueList += f'{round(player['calcs'][statType], 1)}\n'
+                if statType in titles:
+                    valueList += f'{round(player['calcs'][statType], 1)}\n'
+                else:
+                    valueList += f'{player['stats'][statType]}\n'
 
         pointList = ''
-        for player in gatheredPlayers:
-            pointList += f'{player['points'][statType]}\n'
+        if statType in titles:
+            for player in gatheredPlayers:
+                pointList += f'{player['points'][statType]}\n'
 
-
-        returnedEmbed = discord.Embed(title = titles[statType], color = color)
+        if statType in titles:
+            title = titles[statType]
+        else:
+            title = f'{statType} Leaderboard'
+        returnedEmbed = discord.Embed(title = title, color = color)
         returnedEmbed.add_field(name = 'Players', value=playerList, inline=True)
         if 'Points' not in statType:
             returnedEmbed.add_field(name = 'True Value', value = valueList, inline=True)
-        returnedEmbed.add_field(name = 'Legacy Points(LP)', value = pointList, inline=True)
+        if pointList != '':
+            returnedEmbed.add_field(name = 'Legacy Points(LP)', value = pointList, inline=True)
         returnedEmbed.set_thumbnail(url = client.get_user(leader['userID']).avatar.url)
         return returnedEmbed
     
@@ -675,5 +705,66 @@ class statBuilder:
         returnedView.add_item(pageSelection)
 
         return returnedView
+    
+    async def leaderboardAltView(navigator, client, homeServer, loadedBadges, currentTheme, statType, page):
+        returnedView = View()
+
+        pageSelection = Select(placeholder= 'Select Page', min_values=1, max_values=1)
+        
+        allPlayers = databaseManager.getSortedPoints(statType)
+        index = 0
+        for player in allPlayers:
+            index += 1
+        pageLimit = math.ceil(index/10)
+        index = 1
+        while index <= pageLimit:
+            pageSelection.add_option(label = f'{index}')
+            index += 1
+
+        async def processPageSelection(interaction):
+            if interaction.user == navigator:
+                newView = await statBuilder.leaderboardAltView(navigator, client, homeServer, loadedBadges, currentTheme, statType, int(pageSelection.values[0]))
+                newEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, statType, int(pageSelection.values[0]))
+                await interaction.message.edit(view=newView, embed=newEmbed)
+                await interaction.response.defer()
+        pageSelection.callback = processPageSelection
+        returnedView.add_item(pageSelection)
+        return returnedView
+    
+    async def advantageEmbed(currentGame, currentTheme):
+        globalDB = databaseManager.getGlobal()['stats']
+        soldierCalc = 0
+        warriorCalc = 0
+        for soldier in currentGame.soldiers:
+            if globalDB[f'{soldier.role.id}Played'] == 0:
+                soldierCalc += 0.5 / len(currentGame.soldiers)
+            else:
+                soldierCalc += (globalDB[f'{soldier.role.id}Won']/globalDB[f'{soldier.role.id}Played']/len(currentGame.soldiers))
+        for warrior in currentGame.warriors:
+            if globalDB[f'{warrior.role.id}Played'] == 0:
+                warriorCalc += 0.5 / len(currentGame.warriors)
+            else:
+                warriorCalc += (globalDB[f'{warrior.role.id}Won']/globalDB[f'{warrior.role.id}Played']/len(currentGame.warriors))
+        if soldierCalc == 0 and warriorCalc == 0:
+            soldierCalc = 0.5
+            warriorCalc = 0.5
+        totalCalc = soldierCalc + warriorCalc
+
+        if soldierCalc > warriorCalc:
+            color = currentTheme.soldierColor
+            msg = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural} with a {round(soldierCalc/totalCalc*100,1)}% Chance to Win{currentTheme.emojiSoldier}'
+        elif warriorCalc > soldierCalc:
+            color = currentTheme.warriorColor
+            msg = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural} with a {round(warriorCalc/totalCalc*100,1)}% Chance to Win{currentTheme.emojiWarrior}'
+        else:
+            color = currentTheme.wildcardColor
+            msg = f'⚖️Perfectly Balanced⚖️'
+        returnedEmbed = discord.Embed(title = 'Advantage Calculation', color = color)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}Average {currentTheme.soldierPlural} Win Percentage{currentTheme.emojiSoldier}', value = f'{round(soldierCalc*100, 1)}%', inline=False)
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}Average {currentTheme.warriorPlural} Win Percentage{currentTheme.emojiWarrior}', value = f'{round(warriorCalc*100, 1)}%', inline=False)
+        returnedEmbed.add_field(name = 'Advantage', value = msg, inline=False)
+        return returnedEmbed
+
+
 
 

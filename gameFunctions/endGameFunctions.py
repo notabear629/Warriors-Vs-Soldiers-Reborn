@@ -165,7 +165,10 @@ class endGameFunctions:
         if currentGame.currentRules.casual == False:
             embed = await embedBuilder.scoreboard(currentGame, currentTheme)
             await home.send(embed=embed)
-            await home.send(f'{currentTheme.emojiMVP}{currentGame.MVP.user.mention} has won Match MVP with **{currentGame.MVP.mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
+            if len(currentGame.MVP) == 1:
+                await home.send(f'{currentTheme.emojiMVP}{currentGame.MVP[0].user.mention} has won Match MVP with **{currentGame.MVP[0].mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
+            else:
+                await home.send(f'{currentTheme.emojiMVP} Multiple players won Match MVP with **{currentGame.MVP[0].mvpPoints}** MVP Points!{currentTheme.emojiMVP}')
         if currentGame.currentRules.casual == False:
             await endGameFunctions.saveStats(currentGame)
             await endGameFunctions.notifyBadges(currentGame, home)

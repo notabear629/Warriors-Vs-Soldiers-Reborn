@@ -93,6 +93,9 @@ async def reset(ctx):
             if currentGame.online and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
+                if currentGame.online and currentGame.commanderOrder[0].user == currentLobby.host:
+                    await ctx.reply(f'...You didn\'t by chance mean to use `{prefix}clear`, did you? If you really want to reset, use `{prefix}pass` and then reset the game.')
+                    return
                 await resetFunction()
                 embed = await embedBuilder.buildReset(prefix)
                 await home.send(embed=embed)
@@ -281,23 +284,20 @@ async def badges(ctx, *, input=None):
     await infoFunctions.badges(ctx, currentTheme, client, loadedBadges, input)
 
 @client.command('lb')
-async def lb(ctx):
-    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme)
+async def lb(ctx, *, input=None):
+    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input)
 
 @client.command('leaderboard')
-async def leaderboard(ctx):
-    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme)
+async def leaderboard(ctx, *, input=None):
+    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input)
+
+@client.command('advantage')
+async def advantage(ctx):
+    await infoFunctions.advantage(ctx, currentGame, currentTheme)
 
 @client.command('admin')
 async def admin(ctx):
     await userInfoManager.toggleAdmin(ctx, home, adminRole)
-
-
-@client.command('test')
-async def test(ctx):
-    embed = await statBuilder.testBadgesEmbed(ctx.message.author)
-    await ctx.reply(embed=embed)
-
 
 #TEST COMMAND ONLY
 @client.command('fill')
