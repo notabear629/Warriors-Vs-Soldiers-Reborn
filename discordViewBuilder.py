@@ -28,8 +28,14 @@ class discordViewBuilder:
     async def expeditionVoteView(currentTheme, currentGame, player, client, home, voteExpoFunction):
         returnedView = View()
 
+        acceptEmoji = currentTheme.emojiAcceptExpedition
+        rejectEmoji = currentTheme.emojiRejectExpedition
 
-        acceptButton = Button(label= 'Accept', emoji = currentTheme.emojiAcceptExpedition, style= discord.ButtonStyle.grey)
+        if player.role.id == 'Marco' and player in currentGame.deadPlayers:
+            acceptEmoji = player.role.secondaryEmoji
+            rejectEmoji = player.role.secondaryEmoji
+
+        acceptButton = Button(label= 'Accept', emoji = acceptEmoji, style= discord.ButtonStyle.grey)
         async def processExpeditionAccept(interaction):
             if await discordViewBuilder.isInteractionIntended(player, interaction):
                 await voteExpoFunction(currentGame, player, client, currentTheme, home, acceptButton.label)
@@ -37,7 +43,7 @@ class discordViewBuilder:
                 await interaction.message.edit(embed=embed, view = None)
         acceptButton.callback = processExpeditionAccept
 
-        rejectButton = Button(label = 'Reject', emoji = currentTheme.emojiRejectExpedition, style=discord.ButtonStyle.grey)
+        rejectButton = Button(label = 'Reject', emoji = rejectEmoji, style=discord.ButtonStyle.grey)
         async def processExpeditionReject(interaction):
             if await discordViewBuilder.isInteractionIntended(player, interaction):
                 await voteExpoFunction(currentGame, player, client, currentTheme, home, rejectButton.label)
@@ -106,6 +112,22 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             pieckButtonReject.callback = processPieckReject
             returnedView.add_item(pieckButtonReject)
+
+        if player.role.id == 'Yelena' and player.role.abilityActive:
+            yelenaSelect = Select(placeholder = 'Choose Vote to Steal')
+            for voter in currentGame.currentExpo.eligibleVoters:
+                if voter != player and ((voter.role.id == 'Marco' and voter in currentGame.deadPlayers) == False):
+                    yelenaSelect.add_option(label = voter.user.name, emoji=player.role.emoji)
+            async def processYelenaSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for voter in currentGame.currentExpo.eligibleVoters:
+                        if voter.user.name == str(yelenaSelect.values[0]):
+                            stolenPlayer = voter
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, {'Yelena':stolenPlayer})
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            yelenaSelect.callback = processYelenaSelection
+            returnedView.add_item(yelenaSelect)
 
         return returnedView
     
@@ -203,6 +225,33 @@ class discordViewBuilder:
             petraSelect.callback = processPetraSelection
             returnedView.add_item(petraSelect)
 
+        if player.role.id == 'Hange' and player.role.abilityActive:
+            hangeSelect = Select(placeholder = f'Choose Player to Wiretap')
+            for expeditioner in currentGame.currentExpo.expeditionMembers:
+                if expeditioner != player:
+                    hangeSelect.add_option(label = expeditioner.user.name, emoji = player.role.secondaryEmoji)
+            async def processHangeSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for expeditioner in currentGame.currentExpo.expeditionMembers:
+                        if expeditioner.user.name == str(hangeSelect.values[0]):
+                            wiretappedPlayer = expeditioner
+                    currentGame.wiretapPlayer(wiretappedPlayer)
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Hange':wiretappedPlayer})
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            hangeSelect.callback = processHangeSelection
+            returnedView.add_item(hangeSelect)
+
+        if player.role.id == 'Hannes' and player.role.abilityActive:
+            hannesButton = Button(label = 'Escape', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
+            async def processHannesButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Hannes')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            hannesButton.callback = processHannesButton
+            returnedView.add_item(hannesButton)
+
         if player.role.id == 'Bertholdt':
             bertholdtButton = Button(label = 'Cloak', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processBertholdtButton(interaction):
@@ -231,6 +280,22 @@ class discordViewBuilder:
                     
             annieButton.callback = processAnnieButton
             returnedView.add_item(annieButton)
+
+        if player.role.id == 'Willy' and player.role.abilityActive:
+            willySelect = Select(placeholder = 'Choose Player to Kamikaze')
+            for expeditioner in currentGame.currentExpo.expeditionMembers:
+                if expeditioner != player:
+                    willySelect.add_option(label = expeditioner.user.name, emoji = player.role.emoji)
+            async def processWillySelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for expeditioner in currentGame.currentExpo.expeditionMembers:
+                        if expeditioner.user.name == str(willySelect.values[0]):
+                            killedPlayer = expeditioner
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Willy':killedPlayer})
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            willySelect.callback = processWillySelection
+            returnedView.add_item(willySelect)
 
         if player.role.id == 'Kenny':
             kennySelect = Select(placeholder = 'Choose Player to Kill')

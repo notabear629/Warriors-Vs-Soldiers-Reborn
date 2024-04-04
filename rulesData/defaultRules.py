@@ -16,7 +16,7 @@ class defaultRules:
     disabledWildcards = []
 
     #Rules that define game options
-    multikidnap = False
+    multikidnap = True
     rumbling = False
     casual = False
     noCoordinate = False

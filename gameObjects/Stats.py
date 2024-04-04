@@ -43,8 +43,16 @@ class Stats:
         solKillWinRoles = ['Sasha', 'Armin']
         totalKills = getattr(killer.stats, 'Kills')
         totalDeaths = getattr(killed.stats, 'Deaths')
-        setattr(killer.stats, 'Kills', totalKills+1)
+        if killer != killed:
+            setattr(killer.stats, 'Kills', totalKills+1)
         setattr(killed.stats, 'Deaths', totalDeaths+1)
+        if killer.role.id == 'Willy':
+            if killed.role.id == 'Willy':
+                setattr(killer.stats, 'WillyDeaths', 1)
+            else:
+                setattr(killer.stats, 'WillyKills', 1)
+        if killed.role.id == 'Marco':
+            setattr(killed.stats, 'MarcoDeaths', 1)
         if killer.role.id in solKillRoles:
             killAttribute = getattr(self, f'{killer.role.id}Kills')
             setattr(self, f'{killer.role.id}Kills', killAttribute+1)
@@ -80,6 +88,9 @@ class Stats:
     @staticmethod
     async def processVoteStats(currentGame, voteResult, searchFunctions):
         expo = currentGame.currentExpo
+        if expo.yelenaStolen != None and expo.yelenaStolen not in expo.abstained:
+            Yelena = await searchFunctions.roleIDToPlayer(currentGame, 'Yelena')
+            setattr(Yelena.stats, 'YelenaSteals', 1)
         if expo.jeanActivated:
             Jean = await searchFunctions.roleIDToPlayer(currentGame, 'Jean')
             setattr(Jean.stats, 'JeanForces', 1)
@@ -108,6 +119,13 @@ class Stats:
         if expo.commander in currentGame.soldiers:
             commandCount = getattr(expo.commander.stats, 'ExposCommanded')
             setattr(expo.commander.stats, 'ExposCommanded', commandCount + 1)
+        Marco = await searchFunctions.roleIDToPlayer(currentGame, 'Marco')
+        if Marco != None and Marco in currentGame.deadPlayers:
+            marcoRoundCount = getattr(Marco.stats, 'MarcoRounds')
+            setattr(Marco.stats, 'MarcoRounds', marcoRoundCount+1)
+            if Marco in expo.accepted or Marco in expo.rejected:
+                marcoVoteCount = getattr(Marco.stats, 'MarcoVoted')
+                setattr(Marco.stats, 'MarcoVoted', marcoVoteCount+1)
 
     @staticmethod
     async def processResults(currentGame, result, searchFunctions):
@@ -118,9 +136,15 @@ class Stats:
             if result == 'n':
                 setattr(Daz.stats, 'DazChickenWins', 1)
         else:
+            if expo.hannesActivated != None:
+                Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
+                setattr(Hannes.stats, 'HannesEscapes', 1)
             if expo.petraWatched != None:
                 Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
                 setattr(Petra.stats, 'PetraWatches', 1)
+            if expo.hangeActivated:
+                Hange = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
+                setattr(Hange.stats, 'HangeWiretaps', 1)
             if expo.jeanActivated and result == 'y':
                 Jean = await searchFunctions.roleIDToPlayer(currentGame, 'Jean')
                 setattr(Jean.stats, 'JeanForceWins', 1)
@@ -242,6 +266,15 @@ class Stats:
         for elem in mvp:
             setattr(elem.stats, 'MVPS', 1)
             setattr(elem.stats, f'{elem.role.team}MVPS', 1)
+    
+    def processWiretap(self, currentGame):
+        if currentGame.hangeWiretapped in currentGame.soldiers:
+            setattr(self, 'HangeWiretapsSoldier', 1)
+        else:
+            setattr(self, 'HangeWiretapsWarrior', 1)
+
+    def processBodyID(self, currentGame):
+        setattr(self, 'MarloweIdentified', len(currentGame.deadPlayers))
 
 
             

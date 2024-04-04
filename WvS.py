@@ -93,7 +93,7 @@ async def reset(ctx):
             if currentGame.online and currentLobby.host != ctx.message.author:
                 await home.send('Only the host may reset the game once the game has begun!')
             else:
-                if currentGame.online and currentGame.commanderOrder[0].user == currentLobby.host:
+                if currentGame.online and currentGame.commanderOrder[0].user == currentLobby.host and currentGame.currentExpo != None and currentGame.currentExpo.currentlyPicking:
                     await ctx.reply(f'...You didn\'t by chance mean to use `{prefix}clear`, did you? If you really want to reset, use `{prefix}pass` and then reset the game.')
                     return
                 await resetFunction()

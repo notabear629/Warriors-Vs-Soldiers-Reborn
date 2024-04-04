@@ -71,6 +71,8 @@ class midGameFunctions:
             if Sasha != None and Sasha.user == ctx.message.author and Sasha.role.abilityActive and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
                 await userChannel.send('Choose who to target!', view=view)
+                if Sasha == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def fire(ctx, currentGame, currentTheme):
         if currentGame.online:
@@ -80,6 +82,8 @@ class midGameFunctions:
             if Gabi != None and Gabi.user == ctx.message.author and Gabi.role.abilityActive and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.gabiFireView(currentGame, currentTheme, Gabi)
                 await userChannel.send('Choose who to fire upon!', view=view)
+                if Gabi == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def summon(ctx, currentGame, currentTheme):
         if currentGame.online:
@@ -89,6 +93,8 @@ class midGameFunctions:
             if Keith != None and Keith.user == ctx.message.author and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.keithSummonView(currentGame, Keith)
                 await userChannel.send('Choose who to summon!', view = view)
+                if Keith == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def gag(ctx, currentGame, currentTheme, prefix, client, gagRole, gagFunction):
         if currentGame.online:
@@ -98,6 +104,8 @@ class midGameFunctions:
             if Porco != None and Porco.user == ctx.message.author and Porco.role.abilityActive and ctx.message.channel == userChannel:
                 view = await discordViewBuilder.porcoTargetView(currentGame, currentTheme, Porco, gagRole, gagFunction, client)
                 await userChannel.send('Choose who to gag!', view=view)
+                if Porco == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def paths(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:

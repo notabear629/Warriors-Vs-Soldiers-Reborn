@@ -40,11 +40,13 @@ class defaultGameTheme:
     soldierThumbnail = 'https://cdn.discordapp.com/emojis/934488343343927367.webp?size=128&quality=lossless'
     warriorThumbnail = 'https://cdn.discordapp.com/emojis/934488802213384292.webp?size=128&quality=lossless'
     wildcardThumbnail ='https://cdn.discordapp.com/emojis/934489212277882932.webp?size=128&quality=lossless'
+    deadThumbnail =  'https://em-content.zobj.net/source/twitter/53/skull-and-crossbones_2620.png'
     globalThumbnail = 'https://em-content.zobj.net/source/twitter/376/globe-showing-americas_1f30e.png'
 
     soldierColor = discord.Color.blue()
     warriorColor = discord.Color.red()
     wildcardColor = discord.Color.gold()
+    deadColor = discord.Color.default()
 
     soldierDefaultMessage = 'Work with your fellow Soldiers to successfully complete 3 expeditions and reach the basement. Remember to conceal the true identity of Eren! Securing the walls is not enough, after the rounds of expeditions, the Warriors will have one last shot of winning if they can successfully identity Eren!'
     warriorDefaultMessage = 'Work with your fellow Warriors to try to knock down the walls before the Soldiers can reach the basement. Be mindful of how the Soldiers behave, even if you fail to destroy the walls, you will have one last chance of victory if you can successfully identify Eren!'
@@ -187,6 +189,8 @@ class defaultGameTheme:
     conflictJeanZacharyMessage = 'The confusing orders have lead to chaos! The expedition will be voted on as usual.'
     petraMessage = 'I saw someone try to break the wall! I won\'t let them get away!'
     connieMessage = '⚠️We have been betrayed! That Expedition was not safe!⚠️'
+    hannesMessage = 'I\'m getting out of here!'
+    willyMessage = 'To the enemy forces of Paradis, a declaration of war!'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -339,17 +343,17 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 1205677240982183967
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = str('📡')
 
         roleDict['imageURL'] = None
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'At the end of each round, you will be given a statistical analysis on each player that can help you figure out who to trust! Be careful though, this statistical analysis is NOT 100% guaranteed, merely a game of probabilities, and it doesn\'t take into account more "human" sides to the game like who you think is lying.'
+        roleDict['roleMessage'] = f'You are the leader of the Engineering corps of Paradis. As such, you have access to the latest technology in espionage. Once on an expo, you may choose someone to Wiretap. Then, throughout the rest of the game you will be alerted as to their votes and when they use a special ability! Be wary though and understand when the wiretap goes off. The wiretap will NOT go off when Sasha or Gabi fire their shots for instance, but will go off when a player uses ~target or ~fire. The actual player selection is what you track, because you are tracking their choices.'
 
-        roleDict['gameRole'] = ':bulb:Analyst:bulb:'
+        roleDict['gameRole'] = ':satellite:Wiretapper:satellite:'
 
-        roleDict['helpInfo'] = 'Hange is one of the more academically gifted members of the Survey Corps. Thanks to these abilities, it is very easy for her to identify statistical trends, and at the end of each round, will be given probabilities on each player being a Warrior.'
+        roleDict['helpInfo'] = 'Hange is the leader of the Engineering corps and a spearhead of many innovations in anti-warrior technologies. As such, she has excellent espionage equipment. Once per game, she can choose somebody in the same expedition as her to wiretap. This will watch them the rest of the game, instantly pinging her when they vote or choose to use a special ability for the rest of the game. However, it is important to note WHEN the alert is made. She will NOT be alerted when Keith transforms, but she WILL be alerted when Keith uses ~summon. She tracks the decision making.'
     
     class Jean:
         roleDict = {'roleID' : 'Jean'}
@@ -784,6 +788,87 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = 'Connie Springer is perpetually betrayed! As such, he has gotten very good at spotting betrayal when he sees it. If he is on an expedition that successfully passes, he will be alerted if it actually secretly contained a Warrior within it.'
     
+    class Marco:
+        roleDict = {'roleID' : 'Marco'}
+
+        roleDict['name'] = 'Marco Bodt'
+
+        roleDict['shortName'] = 'Marco'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225241493443444736
+
+        roleDict['secondaryEmoji'] = 1225241959111856148
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You... May be destined for death. But that\'s okay! Your comrades will remember you and your memory will last with them forever. Because of this, when you die, you will still be able to vote. BUT LISTEN CAREFULLY. If you "Abstain", it will NOT show your name, so will therefore not reveal your role. If you "Accept" or "Reject", it WILL. So use this when there is a gridlocked emergency only!\n\n'
+
+        roleDict['gameRole'] = ':ghost:Phantom:ghost:'
+
+        roleDict['helpInfo'] = 'Marco had a rather quick and undignified death. Despite this, his death stuck with his comrades and his memory and wishes lived on, especially through Jean. Because of this, he can still vote on expeditions after he dies. HOWEVER. If he "Abstains" his name will not appear in the vote results, therefore not blowing his cover. If he uses "Accept" or "Reject", his name will appear, and therefore he will be exposed.'
+
+    class Marlowe:
+        roleDict = {'roleID' : 'Marlowe'}
+
+        roleDict['name'] = 'Marlowe Freudenberg'
+
+        roleDict['shortName'] = 'Marlowe'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225263662734770307
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have special training from the Military Police! As such, when players die, you will be able to perform basic searches of the corpses and identify their roles.\n\n'
+
+        roleDict['gameRole'] = ':police_car:Detective:police_car:'
+
+        roleDict['helpInfo'] = 'Marlowe was a member of the Military Police before coming over to the Scouts. Thanks to this, he has some basic crime scene investigatory skills. When players die, he will know their roles.'
+    
+    class Hannes:
+        roleDict = {'roleID' : 'Hannes'}
+
+        roleDict['name'] = 'Hannes'
+
+        roleDict['shortName'] = 'Hannes'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225274587663831040
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'Unfortunately... You are mostly known for running away. But fortunately, running away is a skill. Once per game, on an expedition, you will have the ability to choose to `Escape`, which will keep the expedition going, but you will leave and escape it before it can continue. But be careful! Choosing this option WILL expose your role identity.\n\n'
+
+        roleDict['gameRole'] = ':rocket:Escape Pod:rocket:'
+
+        roleDict['helpInfo'] = 'Hannes is... Mostly known for running away from the smiling titan in season 1. But hey, running away is a skill! Once per game, while on an expo, Hannes can choose to `Escape`, which will allow him to leave the expedition. The expedition will still go on as usual, but he will not be in it. The advantage to this is that you can clear yourself of suspicion by showing what role you are, you lower the suspect list for any possible sabotagers, and you can avoid an untimely death!'
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -836,7 +921,7 @@ class defaultGameTheme:
 
         roleDict['gameRole'] = ':man_supervillain:Warchief:man_supervillain:'
 
-        roleDict['helpInfo'] = f'Zeke is the warchief and team captain for the Warriors! He will not be seen as a Warrior by Eren, and is a mandatory role that appears every game. He is more important than just being invisible to the Coordinate, however. He alone has the ability to choose to kidnap in the middle of the game to stop all of the Warriors from being killed if the situation looks grim!'  
+        roleDict['helpInfo'] = f'Zeke is the warchief and team captain for the Warriors! He will not be seen as a Warrior by Eren, and is a mandatory role that appears every game. He is more important than just being invisible to the Coordinate, however. He alone has the ability to end the expedition rounds early and cut to the basement early if the situation looks grim!'  
     
 
     class Pieck:
@@ -973,7 +1058,7 @@ class defaultGameTheme:
 
         roleDict['gameRole'] = ':shushing_face:Gag Orderer:shushing_face:'
 
-        roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, you are prohibited from gagging players when 2 walls are broken and the spy is active. Finally, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers.'
+        roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, you are prohibited from gagging players when 2 walls are broken and the spy is active. Finally, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers. Hitch is not notified about this ability!'
 
     class Falco:
         roleDict = {'roleID' : 'Falco'}
@@ -1055,6 +1140,60 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':gun:Marksman:gun:'
 
         roleDict['helpInfo'] =  f'The worst character on the face of the planet, if I had my way they would instantly lose as soon as they start the game. Unfortunately... That wouldn\'t make for a very good role. Gabi is a ranged weapons "expert" and can somehow wield weapons that outweigh her by 5x expertly. Gabi can use `{prefix}fire` to open a menu to choose a player to fire upon. Then, when the next results are read, she will fire a shot that wounds the player. A wounded player cannot be chosen for an expedition for a round.'
+
+    class Willy:
+        roleDict = {'roleID' : 'Willy'}
+
+        roleDict['name'] = 'Willy Tybur'
+
+        roleDict['shortName'] = 'Willy'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225288761810747423
+
+        roleDict['secondaryEmoji'] = 1225289648268509327
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the shadowy figure behind the Marleyian Government! You are devoted to seeing this out through the end. As such, once in an expo (and for the rest of your life), you will have the option to sacrifice your life to kill somebody else!\n\n'
+
+        roleDict['gameRole'] = ':bomb:Suicide Bomber:bomb:'
+
+        roleDict['helpInfo'] =  f'Willy is the shadowy figure behind the Marleyian Government! He also has great devotion to seeing this operation out through the end. Thanks to this, once a game, and for the rest of his life for that matter, inside the expo he will have the option to sacrifice himself in order to kill somebody else.'
+    
+    class Yelena:
+        roleDict = {'roleID' : 'Yelena'}
+
+        roleDict['name'] = 'Yelena'
+
+        roleDict['shortName'] = 'Yelena'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225304583882932234
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have inflitrated Paradis for Zeke! As such, you have tampered with their voting system ahead of time. Once per game, you will be able to choose to choose a player\'s vote to steal when voting on an expo. When you select this option, you will vote whatever they did, and they will vote the opposite. If you use this ability on someone who rejected, they will now accept, but you will reject in turn.\n\n'
+
+        roleDict['gameRole'] = ':moneybag:Vote Thief:moneybag:'
+
+        roleDict['helpInfo'] =  f'**Credit to JustAboutEnoughSpace for this role!**\n\nThe Soldiers gave Yelena the ability to run around Paradis. Big Mistake. As it turns out, she is uniquely personally loyal to Zeke. Therefore, has had plenty of time to tamper with the Soldiers\' voting systems. Once per game, she can steal the vote of another player, switching that player\'s vote with the opposite of which they voted'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
@@ -1378,6 +1517,30 @@ class defaultGameTheme:
                 if value == 'Kenny':
                     kennyDeathMessages += f'{Reiner.role.secondaryEmoji}Kenny\'s pitiful murder attempt was no match for **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
         return kennyDeathMessages
+    
+    def getWillyDeathMessages(currentGame, currentTheme, Willy, Mikasa, Reiner):
+        willyDeathMessages = ''
+        for killedPlayer, causeOfDeath in Willy.killed.items():
+            if causeOfDeath == 'Willy':
+                if killedPlayer.role.id == 'Willy':
+                    willyDeathMessages += f'{Willy.role.secondaryEmoji}**{killedPlayer.user.name}** has sacrificed himself!{Willy.role.secondaryEmoji}\n'
+                else:
+                    willyDeathMessages += f'{Willy.role.secondaryEmoji}**{killedPlayer.user.name}** has been killed by Willy!{Willy.role.secondaryEmoji}\n'
+                if killedPlayer in currentGame.soldiers:
+                    willyDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    willyDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    willyDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        if type(currentGame.currentExpo.mikasaGuarded) == dict:
+            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+                if value == 'Willy':
+                    willyDeathMessages += f'{Mikasa.role.emoji}Mikasa has saved **{key.user.name}** from Willy\'s attack!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Willy':
+                    willyDeathMessages += f'{Reiner.role.secondaryEmoji}Willy\'s traitorous attack was no match for **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
+        return willyDeathMessages
     
     def getGabiWoundMessage(currentGame, currentTheme, Gabi):
         gabiWoundMessage = f'{Gabi.role.secondaryEmoji}Gabi has shot **{currentGame.woundedPlayer.user.name}**! They have been evacuated to the Field Hospital and will not be able to attend the next expedition!{Gabi.role.secondaryEmoji}\n\n'

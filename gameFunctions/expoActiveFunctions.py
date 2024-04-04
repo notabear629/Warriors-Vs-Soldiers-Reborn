@@ -57,7 +57,13 @@ class expoActiveFunctions:
                 expoChoice = choice
             elif type(choice) == dict and 'Petra' in choice and player.role.id == 'Petra':
                 expoChoice = choice
+            elif type(choice) == dict and 'Hange' in choice and player.role.id == 'Hange':
+                expoChoice = choice
+            elif choice == 'Hannes' and player.role.id == 'Hannes':
+                expoChoice = 'Hannes'
             elif type(choice) == dict and 'Annie' in choice and player.role.id == 'Annie':
+                expoChoice = choice
+            elif type(choice) == dict and 'Willy' in choice and player.role.id == 'Willy':
                 expoChoice = choice
             elif type(choice) == dict and 'Kenny' in choice and player.role.id == 'Kenny':
                 expoChoice = choice
@@ -70,6 +76,8 @@ class expoActiveFunctions:
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Choice Received.')
             await currentGame.sendTemporaryMessage(currentTheme, home)
+            if player == currentGame.hangeWiretapped:
+                await webhookManager.processHangeWebhook(currentGame, currentTheme, choice)
 
 
     async def results(ctx, currentGame, currentTheme, home, expoPredictFunction, client, homeServer, discord):
@@ -84,6 +92,9 @@ class expoActiveFunctions:
                     if rumblingCheck:
                         await expoActiveFunctions.startRumbling(currentGame, currentTheme, home, client, homeServer, discord)
                         return True
+                Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
+                if Hannes != None and currentGame.currentExpo.hannesActivated == Hannes:
+                    currentGame.currentExpo.ejectPlayer(Hannes)
                 result = await expoActiveFunctions.getExpeditionResult(currentGame)
                 await expoActiveFunctions.checkFrecklemir(currentGame, currentTheme, result, client)
                 await expoActiveFunctions.checkPureTitan(currentGame, currentTheme, client)
@@ -220,7 +231,7 @@ class expoActiveFunctions:
             await home.send(failMessage)
 
     async def processDeaths(currentGame, currentTheme, home, client):
-        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False}
+        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Willy':False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             if Armin != None:
@@ -244,11 +255,18 @@ class expoActiveFunctions:
                 if currentGame.currentExpo.petraWatched not in currentGame.deadPlayers:
                     currentGame.killPlayer(currentGame.currentExpo.petraWatched, Petra, 'Petra')
                     deathFlags['Petra'] = True
-        if currentGame.currentExpo.kennyMurdered != None:
+        if currentGame.currentExpo.kennyMurdered != None and currentGame.currentExpo.kennyMurdered in currentGame.currentExpo.expeditionMembers:
             Kenny = await searchFunctions.roleIDToPlayer(currentGame, 'Kenny')
             if Kenny != None:
                 currentGame.killPlayer(currentGame.currentExpo.kennyMurdered, Kenny, 'Kenny')
                 deathFlags['Kenny'] = True
+        if currentGame.currentExpo.willyBombed != None:
+            Willy = await searchFunctions.roleIDToPlayer(currentGame, 'Willy')
+            if Willy != None:
+                currentGame.killPlayer(Willy, Willy, 'Willy')
+                deathFlags['Willy'] = True
+                if currentGame.currentExpo.willyBombed in currentGame.currentExpo.expeditionMembers:
+                    currentGame.killPlayer(currentGame.currentExpo.willyBombed, Willy, 'Willy')
         if currentGame.sashaTargeted != None:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
             if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
@@ -275,6 +293,19 @@ class expoActiveFunctions:
             if Ymir != None:
                 currentGame.revivePlayer(currentGame.ymirRevival)
                 deathFlags['YmirRevival'] = True
+        Marlowe = await searchFunctions.roleIDToPlayer(currentGame, 'Marlowe')
+        if Marlowe != None and Marlowe in currentGame.livingPlayers:
+            marloweFlag = False
+            for key, value in deathFlags.items():
+                if value:
+                    marloweFlag = True
+                    break
+            if marloweFlag:
+                user = databaseManager.searchForUser(Marlowe.user)
+                userChannel = client.get_channel(user['channelID'])
+                embed = await embedBuilder.marloweMessageEmbed(currentGame, currentTheme)
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Marlowe.user.mention}', 'Marlowe', client, embed)
+                Marlowe.stats.processBodyID(currentGame)
 
 
         await expoActiveFunctions.processDeathMessages(currentGame, currentTheme, home, deathFlags, client)
@@ -306,6 +337,11 @@ class expoActiveFunctions:
             kennyMessage = currentTheme.getKennyDeathMessages(currentGame, currentTheme, Kenny, Mikasa, Reiner)
             if kennyMessage != '':
                 await home.send(kennyMessage)
+        if deathFlags['Willy']:
+            Willy = await searchFunctions.roleIDToPlayer(currentGame, 'Willy')
+            willyMessage = currentTheme.getWillyDeathMessages(currentGame, currentTheme, Willy, Mikasa, Reiner)
+            if willyMessage != '':
+                await home.send(willyMessage)
         if deathFlags['Sasha']:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
             sashaMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner)
@@ -323,7 +359,7 @@ class expoActiveFunctions:
             await home.send(ymirMessage)
 
     async def checkRumblingClause(currentGame):
-        if currentGame.currentRound >= 3:
+        if currentGame.currentRound >= 1:
             rolesInExpo = []
             for player in currentGame.currentExpo.expeditionMembers:
                 rolesInExpo.append(player.role.id)

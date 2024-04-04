@@ -289,10 +289,10 @@ class statBuilder:
                 value = f'Played: {db[f'{role.id}Played']}'
                 value += f'\nWon: {db[f'{role.id}Won']} ({await statBuilder.getPercentage(db, f'{role.id}Won', f'{role.id}Played')}%, {await statBuilder.getRoleTW(db, globalDB, f'{role.id}Won', f'{role.id}Played')}TW%)'
                 value += f'\nBasements: {db[f'{role.id}Kidnaps']} ({await statBuilder.getPercentage(db, f'{role.id}Kidnaps', f'{role.id}Played')}% Games)'
-                value += f'\nBasement Wins: {db[f'{role.id}KidnapWins']} ({await statBuilder.getPercentage(db, f'{role.id}KidnapWins', f'{role.id}Kidnaps')}%)'
                 returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value = value, inline = True)
         returnedEmbed.set_thumbnail(url = currentTheme.soldierThumbnail)
         returnedEmbed.set_footer(icon_url=thumbnail, text = f'{name} Stats')
+        print(len(returnedEmbed))
         return returnedEmbed
     
     async def soldierSpecificRoleEmbed(currentTheme, user, name, thumbnail, rootDB, rootGlobalDB, loadedRoles, role):
@@ -353,6 +353,18 @@ class statBuilder:
             returnedEmbed.add_field(name = f'{role.shortName} Sightings', value = f'{db['NileSightings']} ({await statBuilder.getDivider(db, 'NileSightings', 'NilePlayed')} per Game)', inline=True)
         elif role.id == 'Connie':
             returnedEmbed.add_field(name = f'{role.shortName} Bait Alerts', value = f'{db['ConnieAlerts']} ({await statBuilder.getDivider(db, 'ConnieAlerts', 'ConniePlayed')} per Game)', inline=True)
+        elif role.id == 'Hange':
+            returnedEmbed.add_field(name = f'{role.shortName} Wiretaps', value = f'{db['HangeWiretaps']} ({await statBuilder.getPercentage(db, 'HangeWiretaps', 'HangePlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Wiretap Detected', value = f'{db['HangeWiretapsSoldier']} ({await statBuilder.getPercentage(db, 'HangeWiretapsSoldier', 'HangeWiretaps')}% of Wiretaps, {await statBuilder.getPercentage(db, 'HangeWiretapsSoldier', 'HangePlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.warriorPlural} Wiretap Detected', value = f'{db['HangeWiretapsWarrior']} ({await statBuilder.getPercentage(db, 'HangeWiretapsWarrior', 'HangeWiretaps')}% of Wiretaps, {await statBuilder.getPercentage(db, 'HangeWiretapsWarrior', 'HangePlayed')}% of Games)', inline=True)
+        elif role.id == 'Marco':
+            returnedEmbed.add_field(name = f'{role.shortName} Deaths', value = f'{db['MarcoDeaths']} ({await statBuilder.getPercentage(db, 'MarcoDeaths', 'MarcoPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Proposals when Dead', value  = f'{db['MarcoRounds']} ({await statBuilder.getDivider(db, 'MarcoRounds', 'MarcoPlayed')} per Game, {await statBuilder.getDivider(db, 'MarcoRounds', 'MarcoDeaths')} per Death)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Voted when Dead', value = f'{db['MarcoVoted']} ({await statBuilder.getDivider(db, 'MarcoVoted', 'MarcoPlayed')} per Game, {await statBuilder.getDivider(db, 'MarcoVoted', 'MarcoDeaths')} per Death, {await statBuilder.getPercentage(db, 'MarcoVoted', 'MarcoRounds')}% of Dead Rounds)', inline=True)
+        elif role.id == 'Marlowe':
+            returnedEmbed.add_field(name = f'{role.shortName} Bodies Identified', value = f'{db['MarloweIdentified']} ({await statBuilder.getDivider(db, 'MarloweIdentified', 'MarlowePlayed')} per Game)')
+        elif role.id == 'Hannes':
+            returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Escaped', value = f'{db['HannesEscapes']} ({await statBuilder.getPercentage(db, 'HannesEscapes', 'HannesPlayed')}% of Games)')
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -395,8 +407,6 @@ class statBuilder:
                 value = f'Played: {db[f'{role.id}Played']}'
                 value += f'\nWon: {db[f'{role.id}Won']} ({await statBuilder.getPercentage(db, f'{role.id}Won', f'{role.id}Played')}%, {await statBuilder.getRoleTW(db, globalDB, f'{role.id}Won', f'{role.id}Played')}TW%)'
                 value += f'\nSab Wins: {db[f'{role.id}Played'] - db[f'{role.id}Kidnaps']} ({await statBuilder.getAltPercentage(db, db[f'{role.id}Played'] - db[f'{role.id}Kidnaps'], f'{role.id}Played')}%)'
-                value += f'\nKidnaps: {db[f'{role.id}Kidnaps']} ({await statBuilder.getPercentage(db, f'{role.id}Kidnaps', f'{role.id}Played')}% Games)'
-                value += f'\nKidnap Wins: {db[f'{role.id}KidnapWins']} ({await statBuilder.getPercentage(db, f'{role.id}KidnapWins', f'{role.id}Kidnaps')}%)'
                 returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value = value, inline = True)
         returnedEmbed.set_thumbnail(url = currentTheme.warriorThumbnail)
         returnedEmbed.set_footer(icon_url=thumbnail, text = f'{name} Stats')
@@ -435,6 +445,11 @@ class statBuilder:
         elif role.id == 'Gabi':
             returnedEmbed.add_field(name = 'Fires', value = f'{db['GabiFires']} ({await statBuilder.getDivider(db, 'GabiFires', 'GabiPlayed')} per Game)', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Fired Upon', value = f'{db['GabiFireWins']} ({await statBuilder.getPercentage(db, 'GabiFireWins', 'GabiFires')}% of Fires, {await statBuilder.getDivider(db, 'GabiFireWins', 'GabiPlayed')} per Game)', inline=True)
+        elif role.id == 'Willy':
+            returnedEmbed.add_field(name = f'{role.shortName} Deaths', value = f'{db['WillyDeaths']} ({await statBuilder.getPercentage(db, 'WillyDeaths', 'WillyPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{role.shortName} Kills', value = f'{db['WillyKills']} ({await statBuilder.getPercentage(db, 'WillyKills', 'WillyPlayed')}% of Games, {await statBuilder.getPercentage(db, 'WillyKills', 'WillyDeaths')}% of Deaths)', inline=True)
+        elif role.id == 'Yelena':
+            returnedEmbed.add_field(name = f'{role.shortName} Vote Steals', value = f'{db['YelenaSteals']} ({await statBuilder.getPercentage(db, 'YelenaSteals', 'YelenaPlayed')}% of Games)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

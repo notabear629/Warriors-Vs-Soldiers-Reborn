@@ -45,6 +45,8 @@ class expoProposalFunctions:
             woundOffset = 1
         if expeditionNumber > (len(currentGame.livingSoldiers) - woundOffset):
             expeditionNumber = (len(currentGame.livingSoldiers) - woundOffset)
+        if expeditionNumber == 0:
+            expeditionNumber = 1
         return expeditionNumber
     
     async def getExpeditionPrediction(currentGame):
@@ -223,13 +225,19 @@ class expoProposalFunctions:
                 voteToProcess = 'PieckReject'
             elif vote == 'Intercept' and player.role.id == 'Falco' and player.role.abilityActive:
                 voteToProcess = 'Falco'
+            elif type(vote) == dict and 'Yelena' in vote and player.role.id == 'Yelena' and player.role.abilityActive:
+                voteToProcess = vote
             else:
                 voteToProcess = 'a'
             currentGame.currentExpo.voteExpo(player, voteToProcess)
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')
-            await currentGame.sendTemporaryMessage(currentTheme, home)
+            Marco = await searchFunctions.roleIDToPlayer(currentGame, 'Marco')
+            if Marco not in currentGame.deadPlayers or (Marco in currentGame.deadPlayers and len(currentGame.currentExpo.voted) != len(currentGame.currentExpo.eligibleVoters)-1):
+                await currentGame.sendTemporaryMessage(currentTheme, home)
+            if player == currentGame.hangeWiretapped:
+                await webhookManager.processHangeWebhook(currentGame, currentTheme, vote)
 
     async def getVotingResults(currentGame):
         if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
@@ -252,6 +260,9 @@ class expoProposalFunctions:
         if currentGame.currentExpo.falcoActivated:
             Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
             currentGame.currentExpo.processFalco(Falco)
+        if currentGame.currentExpo.yelenaStolen != None:
+            Yelena = await searchFunctions.roleIDToPlayer(currentGame, 'Yelena')
+            currentGame.currentExpo.processYelena(Yelena)
         voteResult = await expoProposalFunctions.getVotingResults(currentGame)
         await Stats.processVoteStats(currentGame, voteResult, searchFunctions)
         embed = await embedBuilder.showVotingResults(currentGame, currentTheme, voteResult)

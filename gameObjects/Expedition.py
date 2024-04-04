@@ -33,6 +33,10 @@ class Expedition:
         self.petraWatched = None
         self.bertholdtCloaked = False
         self.annieMessage = None
+        self.hangeActivated = False
+        self.hannesActivated = None
+        self.willyBombed = None
+        self.yelenaStolen = None
         self.usedExpoAbilities = []
         self.filledUp = False
 
@@ -60,6 +64,10 @@ class Expedition:
         self.bertholdtCloaked = False
         self.petraWatched = None
         self.annieMessage = None
+        self.hangeActivated = False
+        self.hannesActivated = None
+        self.yelenaStolen = None
+        self.willyBombed = None
         self.filledUp = False
 
     def fillUp(self):
@@ -84,6 +92,9 @@ class Expedition:
     def beginVoting(self, currentGame):
         self.currentlyVoting = True
         self.eligibleVoters = currentGame.livingPlayers.copy()
+        for player in currentGame.deadPlayers:
+            if player.role.id == 'Marco':
+                self.eligibleVoters.append(player)
         self.accepted = []
         self.rejected = []
         self.abstained = []
@@ -116,6 +127,10 @@ class Expedition:
         elif voteCase == 'Falco':
             self.falcoActivated = True
             player.role.disableAbility()
+        elif type(voteCase) == dict and 'Yelena' in voteCase:
+            self.abstained.append(player)
+            player.role.disableAbility()
+            self.yelenaStolen = voteCase['Yelena']
         if len(self.voted) == len(self.eligibleVoters):
             self.currentlyVoting = False
 
@@ -158,9 +173,24 @@ class Expedition:
             self.petraWatched = actCase['Petra']
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
+        elif type(actCase) == dict and 'Hange' in actCase:
+            self.passedExpedition.append(player)
+            self.hangeActivated = True
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
+        elif actCase == 'Hannes':
+            self.passedExpedition.append(player)
+            self.hannesActivated = player
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
         elif type(actCase) == dict and 'Annie' in actCase:
             self.sabotagedExpedition.append(player)
             self.annieMessage = actCase['Annie']
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
+        elif type(actCase) == dict and 'Willy' in actCase:
+            self.sabotagedExpedition.append(player)
+            self.willyBombed = actCase['Willy']
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
         elif type(actCase) == dict and 'Kenny' in actCase:
@@ -185,6 +215,23 @@ class Expedition:
             self.accepted.append(Falco)
         else:
             self.rejected.append(Falco)
+
+    def processYelena(self, Yelena):
+        if self.yelenaStolen not in self.abstained:
+            self.abstained.remove(Yelena)
+            if self.yelenaStolen in self.accepted:
+                self.accepted.append(Yelena)
+                self.accepted.remove(self.yelenaStolen)
+                self.rejected.append(self.yelenaStolen)
+            else:
+                self.rejected.append(Yelena)
+                self.rejected.remove(self.yelenaStolen)
+                self.accepted.append(self.yelenaStolen)
+
+    def ejectPlayer(self, Hannes):
+        self.expeditioned.remove(Hannes)
+        self.passedExpedition.remove(Hannes)
+        self.expeditionMembers.remove(Hannes)
 
 
 

@@ -85,6 +85,7 @@ class Game:
         self.healedPlayer = None
         self.summonedRole = None
         self.niccoloDecoy = None
+        self.hangeWiretapped = None
         
 
         for player in players:
@@ -194,6 +195,9 @@ class Game:
 
     def porcoGag(self, gaggedPlayer):
         self.porcoGagged = gaggedPlayer
+
+    def wiretapPlayer(self, wiretappedPlayer):
+        self.hangeWiretapped = wiretappedPlayer
 
     def removeGag(self):
         self.porcoGagged = None

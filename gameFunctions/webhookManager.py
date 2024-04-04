@@ -71,6 +71,9 @@ class webhookManager:
         if currentGame.currentExpo.pieckActivated and Hitch != None:
             Pieck = await searchFunctions.roleIDToPlayer(currentGame, 'Pieck')
             hitchInfo['Pieck'] = Pieck
+        if currentGame.currentExpo.yelenaStolen != None and Hitch != None:
+            Yelena = await searchFunctions.roleIDToPlayer(currentGame, 'Yelena')
+            hitchInfo['Yelena'] = Yelena
         if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
             user = databaseManager.searchForUser(Hitch.user)
             userChannel = client.get_channel(user['channelID'])
@@ -83,6 +86,10 @@ class webhookManager:
         Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
         if Hitch != None:
             hitchInfo = {}
+        if currentGame.currentExpo.hannesActivated != None:
+            Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.hannesMessage, 'Hannes', client)
+            await home.send(f'**{Hannes.user.name}** was spotted fleeing the {currentTheme.expeditionName}!')
         if currentGame.currentExpo.arminActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.arminMessage, '{ALTERNATE}Armin', client)
             if Hitch != None:
@@ -126,6 +133,9 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, kennyMsg, 'Kenny', client)
             if Hitch != None:
                 hitchInfo['Kenny'] = Kenny
+        if currentGame.currentExpo.willyBombed != None:
+            willyMsg = currentTheme.willyMessage
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, willyMsg, '{ALTERNATE}Willy', client)
         Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
         if Sasha != None and currentGame.sashaTargeted in currentGame.currentExpo.expeditionMembers and Sasha not in currentGame.currentExpo.expeditionMembers and Sasha.role.abilityActive:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.sashaMessage, 'Sasha', client)
@@ -174,15 +184,24 @@ class webhookManager:
 
 
     async def processNewRoundWebhooks(currentGame, currentTheme, home, client):
+        pass
+
+    async def processHangeWebhook(currentGame, currentTheme, arg):
+        client = currentGame.client
         Hange = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
-        if Hange != None and Hange in currentGame.livingPlayers:
+        if currentGame.currentExpo.hangeActivated == False and Hange != None and Hange in currentGame.livingPlayers:
             user = databaseManager.searchForUser(Hange.user)
             userChannel = client.get_channel(user['channelID'])
-            await Hange.role.hangeProcess(currentGame)
-            hangeInfo = currentTheme.getHangeInfo(currentGame, Hange)
-            embed = await embedBuilder.infoUpdate(currentTheme, Hange, hangeInfo)
-            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client)
-            await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, '', 'Hange', client, embed)
+            msg = ''
+            if arg in ['Accept', 'Reject', 'Abstain']:
+                msg = f'**{currentGame.hangeWiretapped.user.name}** has submitted a vote to {arg}!'
+            elif arg not in ['Pass', 'Sabotage']:
+                msg = f'❗An ability of {currentGame.hangeWiretapped.role.emoji}{currentGame.hangeWiretapped.role.name}{currentGame.hangeWiretapped.role.emoji} has been detected❗'
+            if msg != '':
+                embed = await embedBuilder.hangeEmbed(currentGame, currentTheme, msg)
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client, embed)
+        if currentGame.currentRules.casual == False:
+            Hange.stats.processWiretap(currentGame)
 
     async def erwinWebhook(currentGame, currentTheme, home, client):
         Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')

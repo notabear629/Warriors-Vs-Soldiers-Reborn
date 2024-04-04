@@ -76,9 +76,6 @@ class gameStartFunctions:
             players.append(newPlayer)
             index += 1
         currentGame.start(currentLobby, players, currentRules, loadedRoles, gagRole, loadedBadges)
-        search = await searchFunctions.roleIDToPlayer(currentGame, 'Hange')
-        if search != None:
-            await search.role.startHange(currentGame, search)
 
     async def getPlayerCounts(currentLobby):
         playerCount = len(currentLobby.users)
@@ -135,9 +132,6 @@ class gameStartFunctions:
         sampleLimit = int(soldierCount - len(roleNames))
         if sampleLimit > 0:
             validRoles = Role.soldierGroupOptional.copy()
-            if currentLobby.currentRules.wildcards:
-                if 'Hange' in validRoles:
-                    validRoles.remove('Hange')
             for role in roleNames:
                 if role in validRoles:
                     validRoles.remove(role)
