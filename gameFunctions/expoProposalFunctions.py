@@ -97,8 +97,12 @@ class expoProposalFunctions:
                             minimumFloor = 4
                             maximumCeiling = 5
                         elif currentGame.currentRound == 3:
-                            minimumFloor = currentGame.currentExpo.size
-                            maximumCeiling = currentGame.currentExpo.size
+                            if currentGame.currentExpo.displaySize == None:
+                                shownSize = currentGame.currentExpo.size
+                            else:
+                                shownSize = currentGame.currentExpo.displaySize
+                            minimumFloor = shownSize
+                            maximumCeiling = shownSize
                             if currentGame.roundFails >= 2:
                                 minimumFloor += 1
                             if currentGame.roundWins < 2:
@@ -121,8 +125,24 @@ class expoProposalFunctions:
     async def resetExpedition(currentGame, currentTheme, noMentions, home, prefix):
         if currentGame.currentExpo.erwinActivated:
             await expoProposalFunctions.erwinTakeover(currentGame, currentTheme, home, currentGame.client)
+        elif currentGame.currentExpo.warhammerActivated == 'Erwin':
+            await expoProposalFunctions.fakeErwinTakeover(currentGame, currentTheme, home, currentGame.client)
+        elif currentGame.currentExpo.pyxisTrial != None:
+            await expoProposalFunctions.pyxisTakeover(currentGame, currentTheme, home, currentGame.client)
+        elif type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
+            await expoProposalFunctions.pyxisTakeover(currentGame, currentTheme, home, currentGame.client)
         else:
             currentGame.nextCommander()
+        if currentGame.currentExpo.pyxisTrial != None:
+            await home.send(f'**{currentGame.currentExpo.pyxisTrial.user.name}** has been brought to trial! Voting will now begin on if they should be executed or not!')
+            currentGame.pyxisOrderFix()
+            await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, currentGame.client, noMentions)
+            return
+        if type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
+            await home.send(f'**{currentGame.currentExpo.warhammerActivated['Pyxis'].user.name}** has been brought to trial! Voting will now begin on if they should be executed or not!')
+            currentGame.pyxisOrderFix()
+            await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, currentGame.client, noMentions)
+            return
         currentGame.currentExpo.resetExpo()
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
@@ -140,6 +160,18 @@ class expoProposalFunctions:
                 await home.send(f'You have passed the responsibility of choice to the next {currentTheme.commanderName}.')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.currentExpo.erwinActivated:
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif currentGame.currentExpo.warhammerActivated == 'Erwin':
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif currentGame.currentExpo.pyxisTrial:
+                currentGame.currentExpo.prepareExpoForPyxis()
+                Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
+                if currentGame.currentRules.casual == False:
+                    Pyxis.stats.startTrial()
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
+                currentGame.currentExpo.prepareExpoForFakePyxis()
+                Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.porcoGagged == currentGame.currentExpo.commander:
                 await home.send(f'The {currentTheme.commanderName} is under a gag order and will be skipped!')
@@ -189,19 +221,22 @@ class expoProposalFunctions:
             await home.send(f'Your {currentTheme.expeditionTeam} proposal has been reset.')
 
     async def beginVoting(currentGame, home, prefix, currentTheme, client, noMentions):
+        if (currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated)):
+            voteType = currentTheme.executionName
+        else:
+            voteType = currentTheme.expeditionTeam
         currentGame.currentExpo.beginVoting(currentGame)
         for player in currentGame.currentExpo.eligibleVoters:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
             view = await discordViewBuilder.expeditionVoteView(currentTheme, currentGame, player, client, home, expoProposalFunctions.voteExpo)
-            await userChannel.send(player.user.mention)
-            await userChannel.send(embed=embed, view=view)
+            await userChannel.send(player.user.mention, embed=embed, view=view)
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Vote')
         if timeout == None:
             return
         elif timeout and currentGame.exposOver == False:
-            await home.send(f'Time to vote on the {currentTheme.expeditionTeam} has run out. The remaining voters that did not vote will be marked as abstaining.')
+            await home.send(f'Time to vote on the {voteType} has run out. The remaining voters that did not vote will be marked as abstaining.')
             for player in currentGame.currentExpo.eligibleVoters:
                 if player not in currentGame.currentExpo.voted:
                     currentGame.currentExpo.voteExpo(player, 'a')
@@ -217,7 +252,9 @@ class expoProposalFunctions:
                 voteToProcess = 'n'
             elif vote == 'Secure' and player.role.id == 'Jean' and player.role.abilityActive:
                 voteToProcess = 'Jean'
-            elif vote == 'Veto' and player.role.id == 'Zachary' and player.role.abilityActive:
+            elif vote == 'Clownery' and (player.role.id == 'Samuel' or player.role.id == 'Warhammer') and player.role.abilityActive:
+                voteToProcess = 'Samuel'
+            elif vote == 'Veto' and (player.role.id == 'Zachary' or player.role.id == 'Warhammer') and player.role.abilityActive:
                 voteToProcess = 'Zachary'
             elif 'Flip and Accept' in vote and player.role.id == 'Pieck' and player.role.abilityActive:
                 voteToProcess = 'PieckAccept'
@@ -229,7 +266,7 @@ class expoProposalFunctions:
                 voteToProcess = vote
             else:
                 voteToProcess = 'a'
-            currentGame.currentExpo.voteExpo(player, voteToProcess)
+            currentGame.currentExpo.voteExpo(currentGame, player, voteToProcess)
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
             await userChannel.send('Vote Received.')
@@ -240,9 +277,9 @@ class expoProposalFunctions:
                 await webhookManager.processHangeWebhook(currentGame, currentTheme, vote)
 
     async def getVotingResults(currentGame):
-        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
+        if currentGame.currentExpo.jeanActivated and (currentGame.currentExpo.zacharyActivated or currentGame.currentExpo.warhammerActivated == 'Zachary') == False:
             return True
-        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+        elif (currentGame.currentExpo.zacharyActivated or currentGame.currentExpo.warhammerActivated == 'Zachary') and currentGame.currentExpo.jeanActivated == False:
             return False
         elif currentGame.currentExpo.pieckActivated:
             if len(currentGame.currentExpo.rejected) > len(currentGame.currentExpo.accepted):
@@ -257,6 +294,10 @@ class expoProposalFunctions:
         return False
     
     async def showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client):
+        if (currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated)):
+            voteType = currentTheme.executionName
+        else:
+            voteType = currentTheme.expeditionName
         if currentGame.currentExpo.falcoActivated:
             Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
             currentGame.currentExpo.processFalco(Falco)
@@ -269,11 +310,41 @@ class expoProposalFunctions:
         await home.send(embed=embed)
         await webhookManager.processExpoVoteWebhooks(currentGame, currentTheme, home, client)
         if voteResult:
-            await home.send(f'The {currentTheme.expeditionName} Proposal has Passed!')
-            await expoActiveFunctions.activateExpedition(currentGame, currentTheme, home, client, prefix)
+            await home.send(f'The {voteType} Proposal has Passed!')
+            if currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated):
+                if currentGame.currentRules.casual == False:
+                    Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
+                    Pyxis.stats.trialWin()
+                await expoProposalFunctions.executePyxis(currentGame, currentTheme, home, client, prefix)
+                currentGame.currentExpo.deactivatePyxis()
+                newSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+                currentGame.currentExpo.changeExpoSize(newSize)
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            else:
+                await expoActiveFunctions.activateExpedition(currentGame, currentTheme, home, client, prefix)
         else:
-            await home.send(f'The {currentTheme.expeditionName} Proposal has Failed!')
+            await home.send(f'The {voteType} Proposal has Failed!')
+            currentGame.currentExpo.deactivatePyxis()
+            newSize = await expoProposalFunctions.getExpeditionSize(currentGame)
+            currentGame.currentExpo.changeExpoSize(newSize)
             await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+
+    async def executePyxis(currentGame, currentTheme, home, client, prefix):
+        Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
+        Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+        Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
+        Reiner = await searchFunctions.roleIDToPlayer(currentGame, 'Reiner')
+        if currentGame.currentExpo.pyxisTrial != None:
+            await currentGame.killPlayer(currentGame.currentExpo.pyxisTrial, Pyxis, 'Pyxis')
+            pyxisMessage = currentTheme.getPyxisDeathMessages(currentGame, currentTheme, Pyxis, Mikasa, Reiner)
+            if pyxisMessage != '':
+                await home.send(pyxisMessage)
+        if type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
+            await currentGame.killPlayer(currentGame.currentExpo.warhammerActivated['Pyxis'], Warhammer, 'Pyxis')
+            pyxisMessage = currentTheme.getPyxisDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner, Pyxis)
+            if pyxisMessage != '':
+                await home.send(pyxisMessage)
+
 
     async def advanceRound(currentGame, currentTheme, home, noMentions, prefix, client):
         currentGame.advanceRound()
@@ -294,19 +365,38 @@ class expoProposalFunctions:
     async def flare(ctx, currentGame, client, gagRole):
         if currentGame.online:
             Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
-            user = databaseManager.searchForUser(Erwin.user)
-            userChannel = client.get_channel(user['channelID'])
-            if Erwin.user == ctx.message.author and Erwin.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
-                if gagRole in Erwin.user.roles:
-                    await Erwin.user.remove_roles(gagRole)
-                    currentGame.removeGag()
-                currentGame.currentExpo.activateErwin(Erwin)
-                Erwin.stats.fireFlare()
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Erwin != None:
+                user = databaseManager.searchForUser(Erwin.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Erwin.user == ctx.message.author and Erwin.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                    if gagRole in Erwin.user.roles:
+                        await Erwin.user.remove_roles(gagRole)
+                        currentGame.removeGag()
+                    currentGame.currentExpo.activateErwin(Erwin)
+                    Erwin.stats.fireFlare()
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Warhammer.user == ctx.message.author and Warhammer.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                    if gagRole in Warhammer.user.roles:
+                        await Warhammer.user.remove_roles(gagRole)
+                        currentGame.removeGag()
+                    currentGame.currentExpo.activateErwin(Warhammer)
 
     async def erwinTakeover(currentGame, currentTheme, home, client):
         await webhookManager.erwinWebhook(currentGame, currentTheme, home, client)
         Erwin = await searchFunctions.roleIDToPlayer(currentGame, 'Erwin')
         currentGame.erwinCommander(Erwin)
+
+    async def fakeErwinTakeover(currentGame, currentTheme, home, client):
+        await webhookManager.erwinWebhook(currentGame, currentTheme, home, client)
+        Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+        currentGame.erwinCommander(Warhammer)
+
+    async def pyxisTakeover(currentGame, currentTheme, home, client):
+        await webhookManager.pyxisWebhook(currentGame, currentTheme, home, client)
+
 
                 
 

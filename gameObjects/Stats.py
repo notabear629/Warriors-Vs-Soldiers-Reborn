@@ -18,6 +18,10 @@ class Stats:
                 setattr(self, 'KeithWon', 1)
                 if player.role.id == 'Keith':
                     setattr(self, 'KeithFinishedWon', 1)
+            if player.role.id == 'Warhammer':
+                setattr(self, 'LaraWon', 1)
+            if player.role.id == 'Lara':
+                setattr(self, 'LaraFinishedWon', 1)
         if 'kidnap' in currentGame.winCondition:
             setattr(self, f'{player.role.team}Kidnaps', 1)
             setattr(self, f'{player.role.id}Kidnaps', 1)
@@ -25,6 +29,10 @@ class Stats:
                 setattr(self, 'KeithKidnaps', 1)
                 if player.role.id == 'Keith':
                     setattr(self, 'KeithFinishedKidnaps', 1)
+            if player.role.id == 'Warhammer':
+                setattr(self, 'LaraKidnaps', 1)
+            if player.role.id == 'Lara':
+                setattr(self, 'LaraFinishedKidnaps', 1)
             if player in currentGame.winners:
                 setattr(self, f'{player.role.team}KidnapWins', 1)
                 setattr(self, f'{player.role.id}KidnapWins', 1)
@@ -32,15 +40,23 @@ class Stats:
                     setattr(self, 'KeithKidnapWins', 1)
                     if player.role.id == 'Keith':
                         setattr(self, 'KeithFinishedKidnapWins', 1)
+                if player.role.id == 'Lara':
+                    setattr(self, 'LaraFinishedKidnapWins', 1)
+                if player.role.id == 'Warhammer':
+                    setattr(self, 'LaraKidnapWins', 1)
         setattr(self, f'{player.role.team}WallsBroken', currentGame.roundFails)
         setattr(self, f'{player.role.team}Passes', currentGame.roundWins)
         if player.role.id == 'Keith':
             setattr(self, 'KeithFinishedPlayed', 1)
+        if player.role.id == 'Lara':
+            setattr(self, 'LaraFinishedPlayed', 1)
+        if player.role.id == 'Warhammer' and player.role.abilityActive == False:
+            setattr(self, 'WarhammerAbilities', 1)
         
 
     def processKill(self, killer, killed):
-        solKillRoles = ['Levi', 'Sasha', 'Armin', 'Petra']
-        solKillWinRoles = ['Sasha', 'Armin']
+        solKillRoles = ['Levi', 'Sasha', 'Armin', 'Petra', 'Pyxis']
+        solKillWinRoles = ['Sasha', 'Armin', 'Pyxis']
         totalKills = getattr(killer.stats, 'Kills')
         totalDeaths = getattr(killed.stats, 'Deaths')
         if killer != killed:
@@ -53,6 +69,8 @@ class Stats:
                 setattr(killer.stats, 'WillyKills', 1)
         if killed.role.id == 'Marco':
             setattr(killed.stats, 'MarcoDeaths', 1)
+            if killer.role.id == 'Marco':
+                setattr(killed.stats, 'MarcoSuicides', 1)
         if killer.role.id in solKillRoles:
             killAttribute = getattr(self, f'{killer.role.id}Kills')
             setattr(self, f'{killer.role.id}Kills', killAttribute+1)
@@ -91,6 +109,11 @@ class Stats:
         if expo.yelenaStolen != None and expo.yelenaStolen not in expo.abstained:
             Yelena = await searchFunctions.roleIDToPlayer(currentGame, 'Yelena')
             setattr(Yelena.stats, 'YelenaSteals', 1)
+        if expo.samuelActivated:
+            Samuel = await searchFunctions.roleIDToPlayer(currentGame, 'Samuel')
+            setattr(Samuel.stats, 'SamuelClowns', 1)
+            if Samuel in expo.accepted:
+                setattr(Samuel.stats, 'SamuelClownAccepts', 1)
         if expo.jeanActivated:
             Jean = await searchFunctions.roleIDToPlayer(currentGame, 'Jean')
             setattr(Jean.stats, 'JeanForces', 1)
@@ -156,9 +179,6 @@ class Stats:
                     setattr(Levi.stats, 'LeviDefends', 1)
                     if len(expo.sabotagedExpedition) > 0 and result == 'y':
                         setattr(Levi.stats, 'LeviDefendWins', 1)
-            if expo.annieMessage != None:
-                Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
-                setattr(Annie.stats, 'AnnieScreams', 1)
             if expo.mikasaGuarded != None:
                 Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
                 guardCount = getattr(Mikasa.stats, 'MikasaGuards')
@@ -275,6 +295,25 @@ class Stats:
 
     def processBodyID(self, currentGame):
         setattr(self, 'MarloweIdentified', len(currentGame.deadPlayers))
+
+    def startTrial(self):
+        setattr(self, 'PyxisTrials', 1)
+
+    def trialWin(self):
+        setattr(self, 'PyxisTrialWins', 1)
+
+    def mikasaSave(self):
+        setattr(self, 'MikasaSaved', 1)
+
+    def mikasaSoldierSave(self):
+        setattr(self, 'MikasaSaveWins', 1)
+
+    def guardPlayer(self):
+        mikasaGuards = getattr(self, 'MikasaGuards')
+        setattr(self, 'MikasaGuards', mikasaGuards+1)
+
+    def annieScream(self):
+        setattr(self, 'AnnieScreams', 1)
 
 
             

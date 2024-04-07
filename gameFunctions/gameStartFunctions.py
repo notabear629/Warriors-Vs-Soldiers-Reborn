@@ -293,8 +293,7 @@ class gameStartFunctions:
         
         user = databaseManager.searchForUser(player.user)
         userChannel = client.get_channel(user['channelID'])
-        await userChannel.send(player.user.mention)
-        await userChannel.send(embed=embed)
+        await userChannel.send(player.user.mention, embed=embed)
 
         if player.role.team == 'Warriors' and currentGame.currentRules.noCoordinate:
             embed = await embedBuilder.soldierRoleDM(currentGame, currentTheme)

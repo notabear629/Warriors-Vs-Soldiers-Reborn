@@ -241,7 +241,11 @@ class embedBuilder:
         return returnedEmbed
     
     async def voteDM(currentGame, player, currentTheme):
-        playerList = f'The current {currentTheme.expeditionTeam}:\n'
+        if currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated):
+            voteType = currentTheme.executionName
+        else:
+            voteType = currentTheme.expeditionTeam
+        playerList = f'The current {voteType}:\n'
         titansSmelled = 0
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
@@ -269,50 +273,54 @@ class embedBuilder:
                     player.stats.detectEren()
             else:
                 playerList += f'{currentTheme.emojiNoEren}{currentTheme.flochMessageNoEren}{currentTheme.emojiNoEren}'
-        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Approval', description = playerList, color=currentTheme.voteDMColor)
+        returnedEmbed = discord.Embed(title = f'{voteType} Approval', description = playerList, color=currentTheme.voteDMColor)
         if player.role.id == 'Jean' and currentGame.currentExpo.jeanActivated:
-            voteDesc = f'You have voted to secure this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have voted to secure this {voteType}.'
         elif player.role.id == 'Zachary' and currentGame.currentExpo.zacharyActivated:
-            voteDesc = f'You have chosen to veto this {currentTheme.expeditionTeam}'
+            voteDesc = f'You have chosen to veto this {voteType}'
+        elif player.role.id == 'Samuel' and currentGame.currentExpo.samuelActivated:
+            voteDesc = f'You have chosen to be a clown on this {voteType}'
         elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.rejected:
-            voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have chosen to flip and accept this {voteType}.'
         elif player.role.id == 'Pieck' and currentGame.currentExpo.pieckActivated and player in currentGame.currentExpo.accepted:
-            voteDesc = f'You have chosen to flip and accept this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have chosen to flip and accept this {voteType}.'
         elif player.role.id == 'Falco' and currentGame.currentExpo.falcoActivated and player in currentGame.currentExpo.voted:
-            voteDesc = f'You have chosen to intercept the votes on this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have chosen to intercept the votes on this {voteType}.'
         elif player.role.id == 'Yelena' and currentGame.currentExpo.yelenaStolen and player in currentGame.currentExpo.voted:
             voteDesc = f'You have chosen to steal {currentGame.currentExpo.yelenaStolen.user.name}\'s vote.'
         elif player in currentGame.currentExpo.accepted:
-            voteDesc = f'You have voted to accept this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have voted to accept this {voteType}.'
         elif player in currentGame.currentExpo.rejected:
-            voteDesc = f'You have voted to reject this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have voted to reject this {voteType}.'
         elif player in currentGame.currentExpo.abstained:
-            voteDesc = f'You have abstained from voting on this {currentTheme.expeditionTeam}.'
+            voteDesc = f'You have abstained from voting on this {voteType}.'
         else:
-            voteDesc = f'You have not yet voted on this {currentTheme.expeditionTeam}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {currentTheme.expeditionTeam}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {currentTheme.expeditionTeam}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {currentTheme.expeditionTeam}'
+            voteDesc = f'You have not yet voted on this {voteType}.\n\n{currentTheme.emojiAcceptExpedition} Click the Accept Button to Accept the {voteType}\n{currentTheme.emojiRejectExpedition} Click the Reject Button to Reject the {voteType}\n{currentTheme.emojiAbstainExpedition} Click the Abstain Button to Abstain from voting on the {voteType}'
             if player.role.id == 'Jean' and player.role.abilityActive:
-                voteDesc += f'\n{player.role.emoji} Click the Secure Button to Secure the {currentTheme.expeditionTeam}.'
+                voteDesc += f'\n{player.role.emoji} Click the Secure Button to Secure the {voteType}.'
             elif player.role.id == 'Zachary' and player.role.abilityActive:
-                voteDesc += f'\n{player.role.emoji} Click the Veto button to Veto the {currentTheme.expeditionTeam}'
+                voteDesc += f'\n{player.role.emoji} Click the Veto button to Veto the {voteType}'
+            elif player.role.id == 'Samuel' and player.role.abilityActive and currentGame.currentRound > 1:
+                voteDesc += f'\n{player.role.secondaryEmoji} Click the Clownery button to make the wrong decision'
             if player.role.id == 'Falco' and player.role.abilityActive:
-                voteDesc += f'\n{player.role.emoji} Click the Intercept Button to Intercept the {currentTheme.expeditionTeam} votes, which will turn to an accept ONLY IF it will pass.'
+                voteDesc += f'\n{player.role.emoji} Click the Intercept Button to Intercept the {voteType} votes, which will turn to an accept ONLY IF it will pass.'
             elif player.role.id == 'Pieck' and player.role.abilityActive:
-                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {currentTheme.expeditionTeam}. Click this if you want to stay accepted after flip.'
-                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {currentTheme.expeditionTeam}. Click this if you want to stay rejected after flip.'
+                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiAcceptExpedition} Click the Flip and Accept Button to Flip the votes, and **AFTER FLIPPING** accept the {voteType}. Click this if you want to stay accepted after flip.'
+                voteDesc += f'\n{player.role.secondaryEmoji}{currentTheme.emojiRejectExpedition} Click the Flip and Reject Button to Flip the votes, and **AFTER FLIPPING** reject the {voteType}. Click this if you want to stay rejected after flip.'
             elif player.role.id == 'Yelena' and player.role.abilityActive:
                 voteDesc += f'\n{player.role.emoji} Choose a Vote to Steal to take their vote and give them the opposite vote.'
         returnedEmbed.add_field(name = f'Your Vote', value=voteDesc)
         return returnedEmbed
     
     async def showVotingResults(currentGame, currentTheme, expeditionPassed):
-        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
+        if currentGame.currentExpo.jeanActivated and (currentGame.currentExpo.zacharyActivated == False and currentGame.currentExpo.warhammerActivated != 'Zachary'):
             playerList = ''
             for voter in currentGame.currentExpo.eligibleVoters:
                 if voter.role.id == 'Marco' and voter in currentGame.deadPlayers:
                     continue
                 playerList += f'**{voter.user.name}**'
                 playerList += f'{currentTheme.emojiAcceptExpedition}\n'
-        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+        elif (currentGame.currentExpo.zacharyActivated or currentGame.currentExpo.warhammerActivated == 'Zachary') and currentGame.currentExpo.jeanActivated == False:
             playerList = ''
             for voter in currentGame.currentExpo.eligibleVoters:
                 if voter.role.id == 'Marco' and voter in currentGame.deadPlayers:
@@ -337,15 +345,19 @@ class embedBuilder:
                 elif voter in currentGame.currentExpo.abstained:
                     playerList += f'{currentTheme.emojiAbstainExpedition}'
                 playerList += '\n'
-        if currentGame.currentExpo.jeanActivated and currentGame.currentExpo.zacharyActivated == False:
+        if currentGame.currentExpo.jeanActivated and (currentGame.currentExpo.zacharyActivated == False and currentGame.currentExpo.warhammerActivated != 'Zachary'):
             embedColor = currentTheme.jeanedExpeditionColor
-        elif currentGame.currentExpo.zacharyActivated and currentGame.currentExpo.jeanActivated == False:
+        elif (currentGame.currentExpo.zacharyActivated or currentGame.currentExpo.warhammerActivated == 'Zachary') and currentGame.currentExpo.jeanActivated == False:
             embedColor = currentTheme.zacharyExpeditionColor
         elif expeditionPassed:
             embedColor = currentTheme.acceptedExpeditionColor
         elif expeditionPassed == False:
             embedColor = currentTheme.rejectedExpeditionColor
-        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Voting Results', description= playerList, color = embedColor)
+        if currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated):
+            voteType = currentTheme.executionName
+        else:
+            voteType = currentTheme.expeditionName
+        returnedEmbed = discord.Embed(title = f'{voteType} Voting Results', description= playerList, color = embedColor)
         return returnedEmbed
     
     async def expeditionDM(currentGame, player, currentTheme):
@@ -369,20 +381,21 @@ class embedBuilder:
             playerList += f'{player.role.emoji} Select Defend to defend the {currentTheme.expeditionName} and guarantee its success, but let any attackers survive.\n'
         if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             playerList += f'{player.role.secondaryEmoji} Select Chicken Out to cancel this {currentTheme.expeditionName} and go back to the picking phase.\n'
-        if player.role.id == 'Mikasa':
-            playerList += f'{player.role.emoji} Select a player from the "Choose Player to Guard" to Pass this {currentTheme.expeditionName}, and guard that player.\n'
         if player.role.id == 'Petra' and player.role.abilityActive:
             playerList += f'{player.role.emoji} Select a player from the "Choose Player to Watch" to keep watch over that player.\n'
         if player.role.id == 'Hange' and player.role.abilityActive:
             playerList += f'{player.role.secondaryEmoji} Select a player from the "Choose Player to Wiretap" to plant a wiretap on that player.\n'
         if player.role.id == 'Hannes' and player.role.abilityActive:
             playerList += f'{player.role.emoji} Select Escape to escape from the {currentTheme.expeditionName}.\n'
+        if player.role.id == 'Marco':
+            playerList += f'{currentTheme.emojiSuicide} Select {currentTheme.suicideLabel} to embrace death\'s sweet release\n'
         if player.role.id == 'Bertholdt':
             playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
-        if player.role.id == 'Annie' and player.role.abilityActive:
-            playerList += f'{player.role.secondaryEmoji} Select Input Scream Message to sabotage this {currentTheme.expeditionName} and then pass a secret message to your fellow {currentTheme.warriorPlural}.\n'
         if player.role.id == 'Willy':
             playerList += f'{player.role.emoji} Select a player from the Kamikaze selection to kill them and yourselves while sabotaging this {currentTheme.expeditionName}!\n'
+        if player.role.id == 'Lara':
+            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
+            playerList += f'{Warhammer.emoji} Select Transform to Sabotage this {currentTheme.expeditionName} and transform into {Warhammer.name}!\n'
         if player.role.id == 'Kenny':
             playerList += f'{player.role.secondaryEmoji} Select a player to Kill to kill them and pass this {currentTheme.expeditionName}.\n'
 
@@ -394,20 +407,21 @@ class embedBuilder:
             decisionString = f'You have chosen to defend this {currentTheme.expeditionName}.'
         elif player.role.id == 'Daz' and currentGame.currentExpo.dazActivated:
             decisionString = f'You have chosen to chicken out from going on this {currentTheme.expeditionName}.'
-        elif player.role.id == 'Mikasa' and currentGame.currentExpo.mikasaGuarded != None and type(currentGame.currentExpo.mikasaGuarded) != dict:
-            decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while guarding **{currentGame.currentExpo.mikasaGuarded.user.name}**.'
         elif player.role.id == 'Petra' and currentGame.currentExpo.petraWatched != None:
             decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while watching **{currentGame.currentExpo.petraWatched.user.name}**.'
         elif player.role.id == 'Hange' and currentGame.currentExpo.hangeActivated:
             decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while wiretapping **{currentGame.hangeWiretapped.user.name}**.'
         elif player.role.id == 'Hannes' and currentGame.currentExpo.hannesActivated != None:
             decisionString = f'You have chosen to escape from the {currentTheme.expeditionName}.'
+        elif player.role.id == 'Marco' and currentGame.currentExpo.marcoActivated:
+            decisionString = f'You have chosen to {currentTheme.suicideLabel}'
         elif player.role.id == 'Bertholdt' and currentGame.currentExpo.bertholdtCloaked:
             decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
-        elif player.role.id == 'Annie' and currentGame.currentExpo.annieMessage != None:
-            decisionString = f'You have chosen to sabotage the {currentTheme.expeditionName} and send a secret message to your fellow {currentTheme.warriorPlural}'
         elif player.role.id == 'Willy' and currentGame.currentExpo.willyBombed != None:
             decisionString = f'You have chosen to Kamikaze {currentGame.currentExpo.willyBombed.user.name}.'
+        elif player.role.id == 'Lara' and currentGame.currentExpo.laraActivated:
+            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
+            decisionString = f'You have chosen to transform into {Warhammer.name}!'
         elif player.role.id == 'Kenny' and currentGame.currentExpo.kennyMurdered != None:
             decisionString = f'You have chosen to Kill {currentGame.currentExpo.kennyMurdered.user.name}.'
         elif player in currentGame.currentExpo.passedExpedition:
@@ -424,11 +438,15 @@ class embedBuilder:
     
     async def temporaryMessage(currentGame, currentTheme):
         if currentGame.currentExpo.currentlyVoting:
+            if (currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated)):
+                voteType = currentTheme.executionName
+            else:
+                voteType = currentTheme.expeditionName
             voteCount = len(currentGame.currentExpo.eligibleVoters)
             Marco = await searchFunctions.roleIDToPlayer(currentGame, 'Marco')
             if Marco != None and Marco in currentGame.deadPlayers:
                 voteCount -= 1
-            returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} Voters', description= f'{len(currentGame.currentExpo.voted)}/{voteCount}', color = currentTheme.temporaryMessageColor)
+            returnedEmbed = discord.Embed(title = f'{voteType} Voters', description= f'{len(currentGame.currentExpo.voted)}/{voteCount}', color = currentTheme.temporaryMessageColor)
             return returnedEmbed
         elif currentGame.currentExpo.currentlyExpeditioning:
             returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionTeamMembers}', description= f'{len(currentGame.currentExpo.expeditioned)}/{len(currentGame.currentExpo.expeditionMembers)}', color = currentTheme.temporaryMessageColor)
@@ -448,7 +466,7 @@ class embedBuilder:
         elif result == 'Armin':
             resultColor = currentTheme.arminNukeColor
         outcomeList = ''
-        if currentGame.currentExpo.arminActivated:
+        if currentGame.currentExpo.arminActivated or currentGame.currentExpo.warhammerActivated == 'Armin':
             for player in currentGame.currentExpo.expeditionMembers:
                 outcomeList += f'{currentTheme.emojiNuke}\n'
         elif currentGame.currentExpo.leviDefended:

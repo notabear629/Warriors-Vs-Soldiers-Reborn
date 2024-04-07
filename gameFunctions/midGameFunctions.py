@@ -66,14 +66,73 @@ class midGameFunctions:
     async def target(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
             Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
-            user = databaseManager.searchForUser(Sasha.user)
-            userChannel = client.get_channel(user['channelID'])
-            if Sasha != None and Sasha.user == ctx.message.author and Sasha.role.abilityActive and ctx.message.channel == userChannel:
-                view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
-                await userChannel.send('Choose who to target!', view=view)
-                if Sasha == currentGame.hangeWiretapped:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Sasha != None:
+                user = databaseManager.searchForUser(Sasha.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Sasha.user == ctx.message.author and Sasha.role.abilityActive and ctx.message.channel == userChannel:
+                    view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Sasha)
+                    await userChannel.send('Choose who to target!', view=view)
+                    if Sasha == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Warhammer.user == ctx.message.author and Warhammer.role.abilityActive and ctx.message.channel == userChannel:
+                    view = await discordViewBuilder.sashaTargetView(currentGame, currentTheme, Warhammer)
+                    await userChannel.send('Choose who to target!', view=view)
+                    if Warhammer == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+
+    async def trial(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Pyxis != None:
+                user = databaseManager.searchForUser(Pyxis.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Pyxis.user == ctx.message.author and Pyxis.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                    validOptions = []
+                    for player in currentGame.livingPlayers:
+                        if player in currentGame.playersOnExpos:
+                            validOptions.append(player)
+                            break
+                    if validOptions != []:
+                        view = await discordViewBuilder.pyxisTrialView(currentGame, currentTheme, Pyxis)
+                        await userChannel.send('Choose who to send to trial!', view=view)
+                        if Pyxis == currentGame.hangeWiretapped:
+                            await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    else:
+                        await userChannel.send(f'You may only send living players that have been on at least one {currentTheme.expeditionName} to trial. None of these players exist, so you may not send anyone to trial.')
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Warhammer.user == ctx.message.author and Warhammer.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                    validOptions = []
+                    for player in currentGame.livingWarriors:
+                        if player in currentGame.playersOnExpos:
+                            validOptions.append(player)
+                            break
+                    if validOptions != []:
+                        view = await discordViewBuilder.pyxisTrialView(currentGame, currentTheme, Warhammer)
+                        await userChannel.send('Choose who to send to trial!', view=view)
+                        if Warhammer == currentGame.hangeWiretapped:
+                            await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    else:
+                        await userChannel.send(f'You may only send living {currentTheme.warriorPlural} that have been on at least one {currentTheme.expeditionName} to trial. None of these players exist, so you may not send anyone to trial.')
+
+    async def guard(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
+            user = databaseManager.searchForUser(Mikasa.user)
+            userChannel = client.get_channel(user['channelID']) 
+            if Mikasa != None and Mikasa.user == ctx.message.author and Mikasa.role.abilityActive and ctx.message.channel == userChannel:
+                view = await discordViewBuilder.mikasaGuardView(currentGame, currentTheme, Mikasa)
+                await userChannel.send('Choose who to guard!', view=view)
+                if Mikasa == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
+    
     async def fire(ctx, currentGame, currentTheme):
         if currentGame.online:
             Gabi = await searchFunctions.roleIDToPlayer(currentGame, 'Gabi')
@@ -83,6 +142,17 @@ class midGameFunctions:
                 view = await discordViewBuilder.gabiFireView(currentGame, currentTheme, Gabi)
                 await userChannel.send('Choose who to fire upon!', view=view)
                 if Gabi == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+
+    async def scream(ctx, currentGame, currentTheme):
+        if currentGame.online:
+            Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
+            user = databaseManager.searchForUser(Annie.user)
+            userChannel = currentGame.client.get_channel(user['channelID'])
+            if Annie != None and Annie.user == ctx.message.author and Annie.role.abilityActive and ctx.message.channel == userChannel:
+                view = await discordViewBuilder.annieView(currentGame, currentTheme, Annie)
+                await userChannel.send('Enter your message!', view=view)
+                if Annie == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def summon(ctx, currentGame, currentTheme):

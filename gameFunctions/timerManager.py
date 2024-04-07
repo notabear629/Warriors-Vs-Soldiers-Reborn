@@ -38,8 +38,11 @@ class timerManager:
         elif context == 'Vote':
             timerValue = currentGame.currentRules.voteExpeditionTimer
             breakoutCondition = timerManager.voteWillBreakOut
-            timerMessage = currentTheme.timeoutVote
-        
+            if currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated):
+                timerMessage = currentTheme.timeoutExecution
+            else:
+                timerMessage = currentTheme.timeoutVote
+
         elif context == 'Expo':
             timerValue = currentGame.currentRules.actExpeditionTimer
             breakoutCondition = timerManager.expoWillBreakOut
@@ -63,7 +66,7 @@ class timerManager:
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition, 'timerMessage' : timerMessage}
     
     async def pickWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or currentGame.exposOver:
+        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or currentGame.currentExpo.warhammerActivated == 'Erwin' or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) or currentGame.exposOver:
             return True
         return False
     

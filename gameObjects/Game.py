@@ -86,7 +86,10 @@ class Game:
         self.summonedRole = None
         self.niccoloDecoy = None
         self.hangeWiretapped = None
-        
+        self.playersOnExpos = []
+        self.mikasaGuarded = None
+        self.annieMessage = None
+        self.warhammerAbility = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -132,6 +135,12 @@ class Game:
         self.commanderOrder = [Erwin] + oldCommanderOrder
         self.currentExpo.changeCommander(Erwin)
 
+    def pyxisOrderFix(self):
+        oldCommanderOrder = self.commanderOrder.copy()
+        lastCommander = oldCommanderOrder[len(oldCommanderOrder)-1]
+        oldCommanderOrder.remove(lastCommander)
+        self.commanderOrder = [lastCommander] + oldCommanderOrder
+
     async def sendTemporaryMessage(self, currentTheme, home):
         embed = await embedBuilder.temporaryMessage(self, currentTheme)
         try:
@@ -156,9 +165,13 @@ class Game:
             self.exposOver = True
         self.resultsAvailable = False
 
-    def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
-        if self.currentExpo.mikasaGuarded == killedPlayer:
+    async def killPlayer(self, killedPlayer, killerPlayer, causeOfDeath):
+        if self.mikasaGuarded == killedPlayer and (killedPlayer.role.id != 'Marco' or self.currentExpo.marcoActivated == False):
             self.updateMikasaTarget(killedPlayer, causeOfDeath)
+            Mikasa = await searchFunctions.roleIDToPlayer(self, 'Mikasa')
+            Mikasa.stats.mikasaSave()
+            if killedPlayer in self.soldiers:
+                Mikasa.stats.mikasaSoldierSave()
         elif killedPlayer.role.id == 'Reiner':
             self.updateReinerDefense(killedPlayer, causeOfDeath)
             self.exposedReiner = killedPlayer
@@ -182,13 +195,19 @@ class Game:
                 
 
     def updateMikasaTarget(self, target, causeOfDeath):
-        self.currentExpo.mikasaGuarded = {target: causeOfDeath}
+        self.mikasaGuarded = {target: causeOfDeath}
+
+    def guardPlayer(self, guard):
+        self.mikasaGuarded = guard
 
     def updateReinerDefense(self,Reiner, causeOfDeath):
         self.currentExpo.reinerBlocked = {Reiner: causeOfDeath}
 
     def sashaTarget(self, Sasha, target):
-        self.sashaTargeted = target
+        if Sasha.role.id == 'Sasha':
+            self.sashaTargeted = target
+        if Sasha.role.id == 'Warhammer':
+            self.warhammerAbility = {'Sasha':target}
 
     def gabiFire(self, Gabi, target):
         self.gabiTargeted = target
@@ -470,6 +489,17 @@ class Game:
     
     def keithSummon(self, roleID):
         self.summonedRole = roleID
+
+    def updateExpoPlayers(self):
+        for player in self.currentExpo.expeditionMembers:
+            if player not in self.playersOnExpos:
+                self.playersOnExpos.append(player)
+
+    def changeAnnieMessage(self, msg):
+        self.annieMessage = msg
+
+    def clearWarhammmerAbility(self):
+        self.warhammerAbility = None
 
                     
         

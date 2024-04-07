@@ -233,6 +233,14 @@ async def retreat(ctx):
 @client.command('target')
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
+
+@client.command('trial')
+async def trial(ctx):
+    await midGameFunctions.trial(ctx, currentGame, currentTheme, prefix, client)
+
+@client.command('guard')
+async def guard(ctx):
+    await midGameFunctions.guard(ctx, currentGame, currentTheme, prefix, client)
     
 @client.command('summon')
 async def summon(ctx):
@@ -241,6 +249,10 @@ async def summon(ctx):
 @client.command('fire')
 async def fire(ctx):
     await midGameFunctions.fire(ctx, currentGame, currentTheme)
+
+@client.command('scream')
+async def scream(ctx):
+    await midGameFunctions.scream(ctx, currentGame, currentTheme)
 
 @client.command('gag')
 async def gag(ctx):
@@ -298,6 +310,28 @@ async def advantage(ctx):
 @client.command('admin')
 async def admin(ctx):
     await userInfoManager.toggleAdmin(ctx, home, adminRole)
+
+#test command only
+@client.command('debug')
+async def debug(ctx, *, var):
+    if ctx.message.author.name == 'cerberus629': 
+        attrRequests = var.split('.')
+        rootVar = globals()[attrRequests[0]]
+        if len(attrRequests) > 1:
+            newVar = rootVar
+            newRequests = attrRequests.copy()
+            newRequests.remove(newRequests[0])
+            for elem in newRequests:
+                newVar = getattr(newVar, elem)
+            if newVar == None:
+                await ctx.send('None')
+                return
+            await ctx.send(newVar)
+        else:
+            if rootVar == None:
+                await ctx.send('None')
+                return
+            await ctx.send(rootVar)
 
 #TEST COMMAND ONLY
 @client.command('fill')

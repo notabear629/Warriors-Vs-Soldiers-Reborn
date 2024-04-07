@@ -14,13 +14,13 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith', 'Zachary', 'Hange', 'Hannes']
+    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith', 'Zachary', 'Hange', 'Hannes', 'Samuel']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi', 'Mikasa']
 
     #A group of all Lethal Soldiers
-    soldierGroupLethal = ['Armin', 'Sasha', 'Petra']
+    soldierGroupLethal = ['Armin', 'Sasha', 'Petra', 'Pyxis']
 
     #A group of all Analytical Soldiers
     soldierGroupAnalyst = ['Mike', 'Hitch', 'Floch', 'Nile', 'Connie', 'Marlowe']
@@ -44,13 +44,16 @@ class Role:
     warriorGroupWarchief = ['Zeke']
 
     #The group of all option Warriors with one-time special abilities
-    warriorGroupAbility = ['Pieck', 'Annie', 'Porco', 'Falco', 'Gabi', 'Yelena']
+    warriorGroupAbility = ['Pieck', 'Annie', 'Porco', 'Falco', 'Gabi', 'Yelena', 'Lara']
 
     #The group of all option Warriors with multi-use perks
     warriorGroupPerk = ['Reiner', 'Bertholdt', 'Magath']
 
     #The group of all option Warriors that are lethal
     warriorGroupLethal = ['Willy']
+
+    #Group of all Warriors that can't be selected or started the game with
+    warriorGroupUnselectable = ['Warhammer']
 
     #The default Warrior classes.
     warriorGroupDefault = ['Warrior']
@@ -59,7 +62,7 @@ class Role:
     warriorGroupOptional = warriorGroupAbility + warriorGroupPerk + warriorGroupLethal
 
     #Combine all warrior groups to make a complete warrior list
-    warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupDefault
+    warriorRoles = warriorGroupWarchief + warriorGroupOptional + warriorGroupUnselectable + warriorGroupDefault
 
     #List of Wildcard Roles
     wildcardRoles = ['Kenny', 'Frecklemir', 'PureTitan', 'Ymir']

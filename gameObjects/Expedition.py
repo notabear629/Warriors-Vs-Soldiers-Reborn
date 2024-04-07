@@ -32,13 +32,17 @@ class Expedition:
         self.kennyMurdered = None
         self.petraWatched = None
         self.bertholdtCloaked = False
-        self.annieMessage = None
         self.hangeActivated = False
         self.hannesActivated = None
         self.willyBombed = None
         self.yelenaStolen = None
         self.usedExpoAbilities = []
         self.filledUp = False
+        self.pyxisTrial = None
+        self.samuelActivated = False
+        self.marcoActivated = False
+        self.laraActivated = False
+        self.warhammerActivated = None
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -63,18 +67,26 @@ class Expedition:
         self.reinerBlocked = None
         self.bertholdtCloaked = False
         self.petraWatched = None
-        self.annieMessage = None
         self.hangeActivated = False
         self.hannesActivated = None
         self.yelenaStolen = None
         self.willyBombed = None
         self.filledUp = False
+        self.pyxisTrial = None
+        self.samuelActivated = False
+        self.displaySize = None
+        self.marcoActivated = False
+        self.laraActivated = False
+        self.warhammerActivated = None
 
     def fillUp(self):
         self.filledUp = True
     
     def activateErwin(self, Erwin):
-        self.erwinActivated = True
+        if Erwin.role.id == 'Erwin':
+            self.erwinActivated = True
+        if Erwin.role.id == 'Warhammer':
+            self.warhammerActivated = 'Erwin'
         Erwin.role.disableAbility()
         
 
@@ -100,7 +112,7 @@ class Expedition:
         self.abstained = []
         self.voted = []
 
-    def voteExpo(self, player, voteCase):
+    def voteExpo(self, currentGame, player, voteCase):
         self.voted.append(player)
         if voteCase == 'y':
             self.accepted.append(player)
@@ -112,10 +124,34 @@ class Expedition:
             self.accepted.append(player)
             player.role.disableAbility()
             self.jeanActivated = True
+        elif voteCase == 'Samuel':
+            player.role.disableAbility()
+            if player.role.id == 'Samuel':
+                self.samuelActivated = True
+            else:
+                self.warhammerActivated = 'Samuel'
+            isWarriorInExpo = False
+            for expeditioner in self.expeditionMembers:
+                if expeditioner in currentGame.warriors or (expeditioner.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors'):
+                    isWarriorInExpo = True
+                    break
+            if self.pyxisTrial != None:
+                if isWarriorInExpo:
+                    self.rejected.append(player)
+                else:
+                    self.accepted.append(player)
+            else:
+                if isWarriorInExpo:
+                    self.accepted.append(player)
+                else:
+                    self.rejected.append(player)
         elif voteCase == 'Zachary':
             self.rejected.append(player)
             player.role.disableAbility()
-            self.zacharyActivated = True
+            if player.role.id == 'Zachary':
+                self.zacharyActivated = True
+            else:
+                self.warhammerActivated = 'Zachary'
         elif voteCase == 'PieckAccept':
             self.rejected.append(player)
             player.role.disableAbility()
@@ -145,32 +181,50 @@ class Expedition:
         self.expeditioned.append(player)
         if actCase == 'Armin':
             self.passedExpedition.append(player)
-            self.arminActivated = True
+            if player.role.id == 'Armin':
+                self.arminActivated = True
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = 'Armin'
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
         elif actCase == 'LeviAttack':
             self.passedExpedition.append(player)
-            self.leviAttacked = True
+            if player.role.id == 'Levi':
+                self.leviAttacked = True
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = 'LeviAttack'
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
         elif actCase == 'LeviDefend':
             self.passedExpedition.append(player)
-            self.leviDefended = True
+            if player.role.id == 'Levi':
+                self.leviDefended = True
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = 'LeviDefend'
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
         elif actCase == 'Daz':
             self.passedExpedition.append(player)
-            self.dazActivated = True
+            if player.role.id == 'Daz':
+                self.dazActivated = True
+            else:
+                self.warhammerActivated = 'Daz'
             player.role.disableAbility()
         elif actCase == 'Bertholdt':
             self.sabotagedExpedition.append(player)
             self.bertholdtCloaked = True
+        elif actCase == 'Lara':
+            self.sabotagedExpedition.append(player)
+            self.laraActivated = True
         elif type(actCase) == dict and 'Mikasa' in actCase:
             self.passedExpedition.append(player)
             self.mikasaGuarded = actCase['Mikasa']
         elif type(actCase) == dict and 'Petra' in actCase:
             self.passedExpedition.append(player)
-            self.petraWatched = actCase['Petra']
+            if player.role.id == 'Petra':
+                self.petraWatched = actCase['Petra']
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = {'Petra':actCase['Petra']}
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
         elif type(actCase) == dict and 'Hange' in actCase:
@@ -180,14 +234,18 @@ class Expedition:
             self.usedExpoAbilities.append(player)
         elif actCase == 'Hannes':
             self.passedExpedition.append(player)
-            self.hannesActivated = player
+            if player.role.id == 'Hannes':
+                self.hannesActivated = player
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = 'Hannes'
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
-        elif type(actCase) == dict and 'Annie' in actCase:
-            self.sabotagedExpedition.append(player)
-            self.annieMessage = actCase['Annie']
-            player.role.disableAbility()
-            self.usedExpoAbilities.append(player)
+        elif actCase == 'Marco':
+            self.passedExpedition.append(player)
+            if player.role.id == 'Marco':
+                self.marcoActivated = True
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = 'Marco'
         elif type(actCase) == dict and 'Willy' in actCase:
             self.sabotagedExpedition.append(player)
             self.willyBombed = actCase['Willy']
@@ -233,6 +291,36 @@ class Expedition:
         self.passedExpedition.remove(Hannes)
         self.expeditionMembers.remove(Hannes)
 
+    def trialPlayer(self, Pyxis, player):
+        if Pyxis.role.id == 'Pyxis':
+            self.pyxisTrial = player
+        if Pyxis.role.id == 'Warhammer':
+            self.warhammerActivated = {'Pyxis':player}
+
+    def deactivatePyxis(self):
+        self.pyxisTrial = None
+        self.warhammerActivated = None
+
+    def prepareExpoForPyxis(self):
+        self.displaySize = None
+        self.size = 1
+        self.expeditionMembers = [self.pyxisTrial]
+        self.currentlyPicking = False
+
+
+    def prepareExpoForFakePyxis(self):
+        self.displaySize = None
+        self.size = 1
+        self.expeditionMembers = [self.warhammerActivated['Pyxis']]
+        self.currentlyPicking = False
+
+    
+    def changeExpoSize(self, newSize):
+        self.size = newSize
+        self.displaySize = None
+
+    def changeWarhammerAbility(self, ability):
+        self.warhammerActivated = ability
 
 
         

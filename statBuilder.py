@@ -34,13 +34,17 @@ class statBuilder:
         return per
     
     async def getRoleTW(db, globalDB, wins, plays):
-        if wins.startswith('Keith'):
-            if globalDB['KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+        if wins.startswith('Keith') or wins.startswith('Lara'):
+            if wins.startswith('Keith'):
+                role = 'Keith'
+            elif wins.startswith('Lara'):
+                role = 'Lara'
+            if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                 return 0.0
-            elif db['KeithFinishedWon'] == globalDB['KeithFinishedWon']:
+            elif db[f'{role}FinishedWon'] == globalDB[f'{role}FinishedWon']:
                 return 100.0
-            g = globalDB['KeithFinishedWon']/globalDB['KeithFinishedPlayed']
-            x = db['KeithFinishedWon']/db['KeithFinishedPlayed']
+            g = globalDB[f'{role}FinishedWon']/globalDB[f'{role}FinishedPlayed']
+            x = db[f'{role}FinishedWon']/db[f'{role}FinishedPlayed']
             return round((x ** (math.log(0.5,g))) * 100, 1)
         else:
             if globalDB[plays] == 0 or db[wins] == 0:
@@ -62,20 +66,21 @@ class statBuilder:
         #initialize t = total
         t = 0
         for role in roles:
-            if role == 'Keith':
-                if globalDB[f'KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+            specialRoles = ['Keith', 'Lara']
+            if role in specialRoles:
+                if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                     continue
-                if db[f'KeithFinishedWon'] == db[f'KeithFinishedPlayed']:
-                    t += (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                if db[f'{role}FinishedWon'] == db[f'{role}FinishedPlayed']:
+                    t += (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
                     continue
                 #let g = average win percentage of given role
-                g = globalDB[f'KeithFinishedWon']/globalDB[f'KeithFinishedPlayed']
+                g = globalDB[f'{role}FinishedWon']/globalDB[f'{role}FinishedPlayed']
                 #let x = user's win percentage
-                x = db[f'KeithFinishedWon']/db[f'KeithFinishedPlayed']
+                x = db[f'{role}FinishedWon']/db[f'{role}FinishedPlayed']
                 #let y = the raw tw% calculation
                 y = x ** (math.log(0.5, g))
                 #let z = y times the proportion of the time they played as that role relative to playing as the team
-                z = y * (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                z = y * (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
                 #increment t by z
                 t += z
             else:
@@ -101,20 +106,21 @@ class statBuilder:
         roles = Role.allRoles.copy()
         t = 0
         for role in roles:
-            if role == 'Keith':
-                if globalDB[f'KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+            specialRoles = ['Keith', 'Lara']
+            if role in specialRoles:
+                if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                     continue
-                if db[f'KeithFinishedWon'] == db[f'KeithFinishedPlayed']:
-                    t += (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                if db[f'{role}FinishedWon'] == db[f'{role}FinishedPlayed']:
+                    t += (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
                     continue
                 #let g = average win percentage of given role
-                g = globalDB[f'KeithFinishedWon']/globalDB[f'KeithFinishedPlayed']
+                g = globalDB[f'{role}FinishedWon']/globalDB[f'{role}FinishedPlayed']
                 #let x = user's win percentage
-                x = db[f'KeithFinishedWon']/db[f'KeithFinishedPlayed']
+                x = db[f'{role}FinishedWon']/db[f'{role}FinishedPlayed']
                 #let y = the raw tw% calculation
                 y = x ** (math.log(0.5, g))
                 #let z = y times the proportion of the time they played as that role relative to playing as the team
-                z = y * (db[f'KeithFinishedPlayed']/db[f'GamesPlayed'])
+                z = y * (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
                 #increment t by z
                 t += z
             else:
@@ -137,13 +143,14 @@ class statBuilder:
         return round(t*100, 1)
     
     async def getRoleWORP(db, globalDB, role, stackCase=False):
-        if role == 'Keith':
-            if globalDB['KeithFinishedPlayed'] == 0 or db['KeithFinishedWon'] == 0:
+        specialRoles = ['Keith', 'Lara']
+        if role in specialRoles:
+            if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                 return 0.0
-            g = globalDB['KeithFinishedWon']/globalDB['KeithFinishedPlayed']
-            x = db['KeithFinishedWon']/db['KeithFinishedPlayed']
+            g = globalDB[f'{role}FinishedWon']/globalDB[f'{role}FinishedPlayed']
+            x = db[f'{role}FinishedWon']/db[f'{role}FinishedPlayed']
             y = x - g
-            z = y * db['KeithFinishedPlayed']
+            z = y * db[f'{role}FinishedPlayed']
             if stackCase:
                 return z
             else:
@@ -292,7 +299,6 @@ class statBuilder:
                 returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value = value, inline = True)
         returnedEmbed.set_thumbnail(url = currentTheme.soldierThumbnail)
         returnedEmbed.set_footer(icon_url=thumbnail, text = f'{name} Stats')
-        print(len(returnedEmbed))
         return returnedEmbed
     
     async def soldierSpecificRoleEmbed(currentTheme, user, name, thumbnail, rootDB, rootGlobalDB, loadedRoles, role):
@@ -359,12 +365,21 @@ class statBuilder:
             returnedEmbed.add_field(name = f'{currentTheme.warriorPlural} Wiretap Detected', value = f'{db['HangeWiretapsWarrior']} ({await statBuilder.getPercentage(db, 'HangeWiretapsWarrior', 'HangeWiretaps')}% of Wiretaps, {await statBuilder.getPercentage(db, 'HangeWiretapsWarrior', 'HangePlayed')}% of Games)', inline=True)
         elif role.id == 'Marco':
             returnedEmbed.add_field(name = f'{role.shortName} Deaths', value = f'{db['MarcoDeaths']} ({await statBuilder.getPercentage(db, 'MarcoDeaths', 'MarcoPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{role.shortName} Suicides', value = f'{db['MarcoSuicides']} ({await statBuilder.getPercentage(db, 'MarcoSuicides', 'MarcoPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MarcoSuicides', 'MarcoDeaths')}% of Deaths)')
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Proposals when Dead', value  = f'{db['MarcoRounds']} ({await statBuilder.getDivider(db, 'MarcoRounds', 'MarcoPlayed')} per Game, {await statBuilder.getDivider(db, 'MarcoRounds', 'MarcoDeaths')} per Death)', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Voted when Dead', value = f'{db['MarcoVoted']} ({await statBuilder.getDivider(db, 'MarcoVoted', 'MarcoPlayed')} per Game, {await statBuilder.getDivider(db, 'MarcoVoted', 'MarcoDeaths')} per Death, {await statBuilder.getPercentage(db, 'MarcoVoted', 'MarcoRounds')}% of Dead Rounds)', inline=True)
         elif role.id == 'Marlowe':
             returnedEmbed.add_field(name = f'{role.shortName} Bodies Identified', value = f'{db['MarloweIdentified']} ({await statBuilder.getDivider(db, 'MarloweIdentified', 'MarlowePlayed')} per Game)')
         elif role.id == 'Hannes':
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Escaped', value = f'{db['HannesEscapes']} ({await statBuilder.getPercentage(db, 'HannesEscapes', 'HannesPlayed')}% of Games)')
+        elif role.id == 'Pyxis':
+            returnedEmbed.add_field(name = f'Trials Started', value = f'{db['PyxisTrials']} ({await statBuilder.getPercentage(db, 'PyxisTrials', 'PyxisPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'Trials Won', value = f'{db['PyxisTrialWins']} ({await statBuilder.getPercentage(db, 'PyxisTrialWins', 'PyxisTrials')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'Trial Kills', value = f'{db['PyxisKills']} ({await statBuilder.getPercentage(db, 'PyxisKills', 'PyxisTrials')}% of Trials, {await statBuilder.getPercentage(db, 'PyxisKills', 'PyxisTrialWins')}% of Trial Wins)', inline=True)
+            returnedEmbed.add_field(name = f'Trial Kill Wins', value = f'{db['PyxisKillWins']} ({await statBuilder.getPercentage(db, 'PyxisKillWins', 'PyxisKills')}% of Kills)', inline=True)
+        elif role.id == 'Samuel':
+            returnedEmbed.add_field(name = f'Clowneries', value = f'{db['SamuelClowns']} ({await statBuilder.getPercentage(db, 'SamuelClowns', 'SamuelPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'Accepted Clowneries', value = f'{db['SamuelClownAccepts']} ({await statBuilder.getPercentage(db, 'SamuelClownAccepts', 'SamuelClowns')}% of Clowneries)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -430,7 +445,7 @@ class statBuilder:
             returnedEmbed.add_field(name = 'Flip Rejects', value = db['PieckFlipRejects'], inline=True)
             returnedEmbed.add_field(name = 'Flip Reject Wins', value = f'{db['PieckFlipRejectWins']} ({await statBuilder.getPercentage(db, 'PieckFlipRejectWins', 'PieckFlipRejects')}% of Flips)', inline=True)
         elif role.id == 'Annie':
-            returnedEmbed.add_field(name = 'Screams', value = db['AnnieScreams'], inline=True)
+            returnedEmbed.add_field(name = 'Screams', value = f'{db['AnnieScreams']} ({await statBuilder.getPercentage(db, 'AnnieScreams', 'AnniePlayed')}% of Games)', inline=True)
         elif role.id == 'Porco':
             returnedEmbed.add_field(name = 'Gags', value = db['PorcoGags'], inline=True)
             returnedEmbed.add_field(name = f'Gag {currentTheme.commanderName} Skips', value = f'{db['PorcoCommanderSkips']} ({await statBuilder.getDivider(db, 'PorcoCommanderSkips', 'PorcoPlayed')} per Game, {await statBuilder.getDivider(db, 'PorcoCommanderSkips', 'PorcoGags')} per Gag)')
@@ -450,6 +465,15 @@ class statBuilder:
             returnedEmbed.add_field(name = f'{role.shortName} Kills', value = f'{db['WillyKills']} ({await statBuilder.getPercentage(db, 'WillyKills', 'WillyPlayed')}% of Games, {await statBuilder.getPercentage(db, 'WillyKills', 'WillyDeaths')}% of Deaths)', inline=True)
         elif role.id == 'Yelena':
             returnedEmbed.add_field(name = f'{role.shortName} Vote Steals', value = f'{db['YelenaSteals']} ({await statBuilder.getPercentage(db, 'YelenaSteals', 'YelenaPlayed')}% of Games)', inline=True)
+        elif role.id == 'Lara':
+            returnedEmbed.add_field(name = f'Times Transformed', value = f'{db['WarhammerPlayed']} ({await statBuilder.getPercentage(db, 'WarhammerPlayed', 'LaraPlayed')}% of Games Played)', inline=True)
+            returnedEmbed.add_field(name = f'Games Finished as {role.shortName}', value = f'{db['LaraFinishedPlayed']}', inline=True)
+            returnedEmbed.add_field(name = f'Games Won as {role.shortName}', value = f'{db['LaraFinishedWon']} ({await statBuilder.getPercentage(db, 'LaraFinishedWon', 'LaraFinishedPlayed')}% of Non-Summoning Games)', inline=True)
+            returnedEmbed.add_field(name = f'Sabotage wins as {role.shortName}', value = f'{db['LaraFinishedWon'] - db['LaraFinishedKidnapWins']} ({await statBuilder.getAltPercentage(db, (db[f'LaraFinishedPlayed'] - db[f'LaraFinishedKidnaps']), f'LaraFinishedPlayed')})', inline=True)
+            returnedEmbed.add_field(name = f'Kidnap Attempts as {role.shortName}', value = f'{db['LaraFinishedKidnaps']} ({await statBuilder.getPercentage(db, 'LaraFinishedKidnaps', 'LaraFinishedPlayed')}% of Non-Summoning Games)', inline=True)
+            returnedEmbed.add_field(name = f'Coordinates Identified as {role.shortName}', value = f'{db['LaraFinishedKidnapWins']} ({await statBuilder.getPercentage(db, 'LaraFinishedKidnapWins', 'LaraFinishedKidnaps')}% of Non-Summoning Basements)', inline=True)
+        elif role.id == 'Warhammer':
+            returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} Abilities Used', value = f'{db['WarhammerAbilities']} ({await statBuilder.getPercentage(db, 'WarhammerAbilities', 'WarhammerPlayed')}% of Games Played)')
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

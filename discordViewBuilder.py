@@ -74,7 +74,19 @@ class discordViewBuilder:
             jeanButton.callback = processExpeditionJean
             returnedView.add_item(jeanButton)
 
-        if player.role.id == 'Zachary' and player.role.abilityActive:
+        Samuel = await searchFunctions.roleIDToPlayer(currentGame, 'Samuel')
+        if (player.role.id == 'Samuel' or (player.role.id == 'Warhammer' and Samuel != None)) and player.role.abilityActive and currentGame.currentRound > 1:
+            samuelButton = Button(label = 'Clownery', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processSamuelButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, samuelButton.label)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            samuelButton.callback = processSamuelButton
+            returnedView.add_item(samuelButton)
+
+        Zachary = await searchFunctions.roleIDToPlayer(currentGame, 'Zachary')
+        if (player.role.id == 'Zachary' or (player.role.id == 'Warhammer' and Zachary != None)) and player.role.abilityActive:
             zacharyButton = Button(label = 'Veto', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processZacharyButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -155,7 +167,8 @@ class discordViewBuilder:
         if player in currentGame.warriors or (player.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors'):
             returnedView.add_item(sabotageButton)
 
-        if player.role.id == 'Armin' and player.role.abilityActive and currentGame.roundFails < 2:
+        Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
+        if (player.role.id == 'Armin' or (player.role.id == 'Warhammer' and Armin != None)) and player.role.abilityActive and currentGame.roundFails < 2:
             nukeButton = Button(label = 'Nuke', emoji = currentTheme.emojiNuke, style=discord.ButtonStyle.grey)
             async def processExpeditionNuke(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -165,7 +178,8 @@ class discordViewBuilder:
             nukeButton.callback = processExpeditionNuke
             returnedView.add_item(nukeButton)
 
-        if player.role.id == 'Levi' and player.role.abilityActive:
+        Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
+        if (player.role.id == 'Levi' or (player.role.id == 'Warhammer' and Levi != None)) and player.role.abilityActive:
             if currentGame.roundFails < 2:
                 leviAttackButton = Button(label = 'Attack', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
                 async def processLeviAttack(interaction):
@@ -184,7 +198,8 @@ class discordViewBuilder:
             leviDefendButton.callback = processLeviDefend
             returnedView.add_item(leviDefendButton)
 
-        if player.role.id == 'Daz' and player.role.abilityActive and player in currentGame.currentExpo.rejected:
+        Daz = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+        if (player.role.id == 'Daz' or (player.role.id == 'Warhammer' and Daz != None))and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             dazButton = Button(label = 'Chicken Out', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processDazButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -192,24 +207,10 @@ class discordViewBuilder:
                     embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view = None)
             dazButton.callback = processDazButton
-            returnedView.add_item(dazButton)
-
-        if player.role.id == 'Mikasa':
-            mikasaSelect = Select(placeholder=f'Choose Player to Guard')
-            for expeditioner in currentGame.currentExpo.expeditionMembers:
-                mikasaSelect.add_option(label = expeditioner.user.name, emoji= player.role.secondaryEmoji)
-            async def processMikasaSelection(interaction):
-                if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    for expeditioner in currentGame.currentExpo.expeditionMembers:
-                        if expeditioner.user.name == str(mikasaSelect.values[0]):
-                            guardedPlayer = expeditioner
-                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Mikasa':guardedPlayer})
-                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                    await interaction.message.edit(embed=embed, view = None)
-            mikasaSelect.callback = processMikasaSelection
-            returnedView.add_item(mikasaSelect)
-
-        if player.role.id == 'Petra' and player.role.abilityActive:
+            returnedView.add_item(dazButton) 
+        
+        Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
+        if (player.role.id == 'Petra' or (player.role.id == 'Warhammer' and Petra != None)) and player.role.abilityActive and currentGame.currentExpo.size > 1:
             petraSelect = Select(placeholder = f'Choose Player to Watch')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
                 if expeditioner != player:
@@ -242,7 +243,8 @@ class discordViewBuilder:
             hangeSelect.callback = processHangeSelection
             returnedView.add_item(hangeSelect)
 
-        if player.role.id == 'Hannes' and player.role.abilityActive:
+        Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
+        if (player.role.id == 'Hannes' or (player.role.id == 'Warhammer' and Hannes != None)) and player.role.abilityActive:
             hannesButton = Button(label = 'Escape', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processHannesButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -251,6 +253,17 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view=None)
             hannesButton.callback = processHannesButton
             returnedView.add_item(hannesButton)
+
+        Marco = await searchFunctions.roleIDToPlayer(currentGame, 'Marco')
+        if (player.role.id == 'Marco' or (player.role.id == 'Warhammer' and Marco != None and player.role.abilityActive)):
+            marcoButton = Button(label = currentTheme.suicideLabel, emoji = currentTheme.emojiSuicide, style=discord.ButtonStyle.grey)
+            async def processMarcoButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Marco')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            marcoButton.callback = processMarcoButton
+            returnedView.add_item(marcoButton)
 
         if player.role.id == 'Bertholdt':
             bertholdtButton = Button(label = 'Cloak', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
@@ -262,24 +275,16 @@ class discordViewBuilder:
             bertholdtButton.callback = processBertholdtButton
             returnedView.add_item(bertholdtButton)
 
-        if player.role.id == 'Annie' and player.role.abilityActive:
-            annieButton = Button(label = 'Input Scream Message', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
-            async def processAnnieButton(interaction):
+        if player.role.id == 'Lara':
+            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
+            laraButton = Button(label = 'Transform', emoji = Warhammer.emoji, style=discord.ButtonStyle.grey)
+            async def processLaraButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    annieModal = Modal(title = 'Scream Message')
-                    annieInput = TextInput(label='Type Scream Message Here', style=discord.TextStyle.paragraph)
-                    annieModal.add_item(annieInput)
-                    async def processAnnieInput(newInteraction):
-                        if await discordViewBuilder.isInteractionIntended(player, newInteraction):
-                            await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Annie':str(annieInput.value)})
-                            embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                            await interaction.message.edit(embed=embed, view = None)
-                            await newInteraction.response.defer()
-                    annieModal.on_submit = processAnnieInput
-                    await interaction.response.send_modal(annieModal)
-                    
-            annieButton.callback = processAnnieButton
-            returnedView.add_item(annieButton)
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Lara')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            laraButton.callback = processLaraButton
+            returnedView.add_item(laraButton)
 
         if player.role.id == 'Willy' and player.role.abilityActive:
             willySelect = Select(placeholder = 'Choose Player to Kamikaze')
@@ -319,9 +324,14 @@ class discordViewBuilder:
         returnedView = View()
         sashaTargetSelection = Select(placeholder= 'Choose who to target!', min_values=1, max_values=1)
         sashaTargetSelection.add_option(label = f'Remove Target')
-        for player in currentGame.livingPlayers:
-            if player != Sasha:
-                sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji) 
+        if Sasha.role.id == 'Sasha':
+            for player in currentGame.livingPlayers:
+                if player != Sasha:
+                    sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji) 
+        if Sasha.role.id == 'Warhammer':
+            for player in currentGame.livingWarriors:
+                if player != Sasha:
+                    sashaTargetSelection.add_option(label = f'{player.user.name}', emoji=Sasha.role.secondaryEmoji) 
         async def processSashaSelection(interaction):
             if await discordViewBuilder.isInteractionIntended(Sasha, interaction):
                 if currentGame.online and interaction.user == Sasha.user and Sasha.role.abilityActive and Sasha in currentGame.livingPlayers:
@@ -340,6 +350,58 @@ class discordViewBuilder:
                         await interaction.response.defer()
         sashaTargetSelection.callback = processSashaSelection
         returnedView.add_item(sashaTargetSelection)
+        return returnedView
+    
+    @staticmethod
+    async def pyxisTrialView(currentGame, currentTheme, Pyxis):
+        returnedView = View()
+        pyxisTrialSelection = Select(placeholder = 'Choose Player to go on Trial')
+        if Pyxis.role.id == 'Pyxis':
+            for player in currentGame.playersOnExpos:
+                if player in currentGame.livingPlayers:
+                    pyxisTrialSelection.add_option(label = f'{player.user.name}', emoji = Pyxis.role.emoji)
+        if Pyxis.role.id == 'Warhammer':
+            for player in currentGame.playersOnExpos:
+                if player in currentGame.livingWarriors:
+                    pyxisTrialSelection.add_option(label = f'{player.user.name}', emoji = Pyxis.role.emoji)
+        async def processPyxisSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(Pyxis, interaction):
+                if currentGame.online and interaction.user == Pyxis.user and Pyxis.role.abilityActive and Pyxis in currentGame.livingPlayers:
+                    selection = str(pyxisTrialSelection.values[0])
+                for player in currentGame.livingPlayers:
+                    if player.user.name == selection:
+                        selectedPlayer = player
+                        break
+                Pyxis.role.disableAbility()
+                currentGame.currentExpo.trialPlayer(Pyxis, selectedPlayer)
+                await interaction.message.edit(content = f'You have chosen to bring **{player.user.name}** to trial.')
+                await interaction.response.defer()
+        pyxisTrialSelection.callback = processPyxisSelection
+        returnedView.add_item(pyxisTrialSelection)
+        return returnedView
+    
+    @staticmethod
+    async def mikasaGuardView(currentGame, currentTheme, Mikasa):
+        returnedView = View()
+        mikasaSelect = Select(placeholder=f'Choose Player to Guard')
+        mikasaSelect.add_option(label = 'Cancel Guard', emoji = str('✖️'))
+        for expeditioner in currentGame.livingPlayers:
+            mikasaSelect.add_option(label = expeditioner.user.name, emoji= Mikasa.role.secondaryEmoji)
+        async def processMikasaSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(Mikasa, interaction):
+                if str(mikasaSelect.values[0]) == 'Cancel Guard':
+                    currentGame.guardPlayer(None)
+                    msg = 'You have chosen to guard nobody.'
+                else:
+                    for expeditioner in currentGame.livingPlayers:
+                        if expeditioner.user.name == str(mikasaSelect.values[0]):
+                            guardedPlayer = expeditioner
+                            msg = f'You have chosen to guard **{guardedPlayer.user.name}**.'
+                    currentGame.guardPlayer(guardedPlayer)
+                await interaction.message.edit(content=msg)
+                await interaction.response.defer()
+        mikasaSelect.callback = processMikasaSelection
+        returnedView.add_item(mikasaSelect)
         return returnedView
     
     @staticmethod
@@ -368,6 +430,36 @@ class discordViewBuilder:
                         await interaction.response.defer()
         gabiTargetSelection.callback = processGabiSelection
         returnedView.add_item(gabiTargetSelection)
+        return returnedView
+    
+    @staticmethod
+    async def annieView(currentGame, currentTheme, Annie):
+        returnedView = View()
+        if Annie.role.id == 'Annie' and Annie.role.abilityActive:
+                annieButton = Button(label = 'Input Scream Message', emoji = Annie.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+                async def processAnnieButton(interaction):
+                    if await discordViewBuilder.isInteractionIntended(Annie, interaction):
+                        annieModal = Modal(title = 'Scream Message')
+                        annieInput = TextInput(label='Type Scream Message Here', style=discord.TextStyle.paragraph)
+                        annieModal.add_item(annieInput)
+                        async def processAnnieInput(newInteraction):
+                            if await discordViewBuilder.isInteractionIntended(Annie, newInteraction):
+                                currentGame.changeAnnieMessage(annieInput.value)
+                                await interaction.message.edit(content = 'Your Message has been set.')
+                                await newInteraction.response.defer()
+                        annieModal.on_submit = processAnnieInput
+                        await interaction.response.send_modal(annieModal)
+                annieButton.callback = processAnnieButton
+                returnedView.add_item(annieButton)
+
+                cancelButton = Button(label = 'Cancel Scream', emoji = str('✖️'), style=discord.ButtonStyle.grey)
+                async def processCancelButton(interaction):
+                    if await discordViewBuilder.isInteractionIntended(Annie, interaction):
+                        currentGame.changeAnnieMessage(None)
+                        await interaction.message.edit(content = 'You will no longer send a message.')
+                        await interaction.response.defer()
+                cancelButton.callback = processCancelButton
+                returnedView.add_item(cancelButton)
         return returnedView
     
     @staticmethod

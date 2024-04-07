@@ -79,6 +79,8 @@ class defaultGameTheme:
     expeditionName = 'Expedition'
     expoMembersName = 'members'
 
+    executionName = 'Execution'
+
     #Note that for emojis, you may use a string of the unicode emoji for a default emoji, or an ID of a custom emoji.
     #Please be sure to put the emojis in the form of str('emoji') if you are using default unicode emojis.
     #The reason for typecasting a string as a string, is because the str() function is just an easy way to enable UTF-8 encoding to get the emoji to work.
@@ -143,6 +145,8 @@ class defaultGameTheme:
     expoSecuredColor = discord.Color.blue()
     arminNukeColor = discord.Color.default()
     emojiNuke = 1205687713429327952
+    suicideLabel = 'Feed The Titans'
+    emojiSuicide = 1205684706431991818
     wallMariaBreakMessage = str('💥Wall Maria has Fallen!💥')
     wallRoseBreakMessage = str('💥Wall Rose has Fallen!💥')
     wallSinaBreakMessage = str('💥Wall Sina has Fallen!💥')
@@ -191,6 +195,11 @@ class defaultGameTheme:
     connieMessage = '⚠️We have been betrayed! That Expedition was not safe!⚠️'
     hannesMessage = 'I\'m getting out of here!'
     willyMessage = 'To the enemy forces of Paradis, a declaration of war!'
+    pyxisMessage = 'You will stand trial for your crimes.'
+    marcoMessage = '...'
+    laraMessage = '...'
+    warhammerMessage = 'Soldiers of Paradis... Any last words?'
+    warhammerApologyMessage = 'Comrades... I am sorry.'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -201,6 +210,7 @@ class defaultGameTheme:
     timeoutCoreEnd = ' left to'
     timeoutPick = ' pick your Expedition Team!'
     timeoutVote = ' vote on the Expedition Team!'
+    timeoutExecution = ' vote on the Execution!'
     timeoutExpo = ' act on the Expedition!'
     timeoutKidnap = ' kidnap the Coordinate!'
     timeoutRumblingFight = ' to choose who to attack!'
@@ -620,11 +630,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = 'You have the ability to act as a personal bodyguard to any **one** person on any expedition you are on (Inlcuding yourself if you choose yourself!) and prevent them from being killed. Use this ability wisely, only to protect yourself and Soldiers you really trust! If someone is saved by you, everyone will know Mikasa was in the expo and used the guard on them as well, so be careful about giving out role information!\n\n'
+        roleDict['roleMessage'] = f'You have the ability to act as a personal bodyguard to any **one** person on any expedition (Inlcuding yourself if you choose yourself!) and prevent them from being killed. Use this ability wisely, only to protect yourself and Soldiers you really trust! After you successfully save someone, you will lose your ability for the rest of the game. Use `{prefix}guard` to set which player you want to guard.\n\n'
 
         roleDict['gameRole'] = ':fencer:Bodyguard:fencer:'
 
-        roleDict['helpInfo'] = 'Mikasa is an extremely strong Soldier! Thanks to this and an unwavering ~~desire to be a pathetic fucking simp~~ loyal streak, every expedition she is on, she has the ability to protect 1 person on the expo INCLUDING herself to prevent them from being killed!'
+        roleDict['helpInfo'] = '**Credit to Messi (messsiii) for the idea of letting Mikasa guard on expos she\'s not on!**\nMikasa is an extremely strong Soldier! Thanks to this and an unwavering ~~desire to be a pathetic fucking simp~~ loyal streak, she has the ability to protect 1 person on any expo INCLUDING herself to prevent them from being killed! Once she successfully saves somebody, her ability is lost the rest of the game.'
 
     class Keith:
         roleDict = {'roleID' : 'Keith'}
@@ -809,11 +819,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You... May be destined for death. But that\'s okay! Your comrades will remember you and your memory will last with them forever. Because of this, when you die, you will still be able to vote. BUT LISTEN CAREFULLY. If you "Abstain", it will NOT show your name, so will therefore not reveal your role. If you "Accept" or "Reject", it WILL. So use this when there is a gridlocked emergency only!\n\n'
+        roleDict['roleMessage'] = f'You... May be destined for death. But that\'s okay! Your comrades will remember you and your memory will last with them forever. Because of this, when you die, you will still be able to vote. BUT LISTEN CAREFULLY. If you "Abstain", it will NOT show your name, so will therefore not reveal your role. If you "Accept" or "Reject", it WILL. So use this when there is a gridlocked emergency only! In addition, when on expo, you will have an option to Feed The Titans and ensure your death!\n\n'
 
         roleDict['gameRole'] = ':ghost:Phantom:ghost:'
 
-        roleDict['helpInfo'] = 'Marco had a rather quick and undignified death. Despite this, his death stuck with his comrades and his memory and wishes lived on, especially through Jean. Because of this, he can still vote on expeditions after he dies. HOWEVER. If he "Abstains" his name will not appear in the vote results, therefore not blowing his cover. If he uses "Accept" or "Reject", his name will appear, and therefore he will be exposed.'
+        roleDict['helpInfo'] = '**Shoutout to Bob (bob\'s dad) and Luna (satorobin) for giving me the inspiration to add the Suicide Button!**\nMarco had a rather quick and undignified death. Despite this, his death stuck with his comrades and his memory and wishes lived on, especially through Jean. Because of this, he can still vote on expeditions after he dies. HOWEVER. If he "Abstains" his name will not appear in the vote results, therefore not blowing his cover. If he uses "Accept" or "Reject", his name will appear, and therefore he will be exposed. Marco also has a button to kill himself on an expo to ensure his death! When this button is selected, any mikasa guards on him will NOT work, and anybody else trying to kill him will be allowed to kill him, therefore not exposing him as Marco if somebody else tried to kill him first.'
 
     class Marlowe:
         roleDict = {'roleID' : 'Marlowe'}
@@ -868,6 +878,61 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':rocket:Escape Pod:rocket:'
 
         roleDict['helpInfo'] = 'Hannes is... Mostly known for running away from the smiling titan in season 1. But hey, running away is a skill! Once per game, while on an expo, Hannes can choose to `Escape`, which will allow him to leave the expedition. The expedition will still go on as usual, but he will not be in it. The advantage to this is that you can clear yourself of suspicion by showing what role you are, you lower the suspect list for any possible sabotagers, and you can avoid an untimely death!'
+    
+    class Pyxis:
+        roleDict = {'roleID' : 'Pyxis'}
+
+        roleDict['name'] = 'Dot Pyxis'
+
+        roleDict['shortName'] = 'Pyxis'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1225544954755940465
+
+        roleDict['secondaryEmoji'] = str('🪢')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a commander of the Garrison Corps! Thanks to this, you have a lot of influence, and you have the authority to turn in other players for possible crimes. Use `{prefix}trial` to bring forth a list of the players that have been on an expedition and start a trial against one of them during the command phase of the game. After you do this, a vote will be called on their execution.\n\n'
+
+        roleDict['gameRole'] = ':knot:Hangman:knot:'
+
+        roleDict['helpInfo'] = 'Dot Pyxis is the commander of the Garrison corps! As a result, he has a lot of influence in the military\'s disciplinary structure. However, he is not in charge of their judicial system himself. Thanks to his influence, he can put one player who has been on an expedition on trial for a possible execution, but he himself cannot be the final judge. The players will serve as a jury and vote, if the vote passes, the player will be executed.'
+
+    class Samuel:
+        roleDict = {'roleID' : 'Samuel'}
+
+        roleDict['name'] = 'Samuel L. Jackson'
+
+        roleDict['shortName'] = 'Samuel'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1226353088214859788
+
+        roleDict['secondaryEmoji'] = str('🤡')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are... I\'m just gonna be honest, you\'re incompetent. After round 1, you have a one-time special voting ability. If you click this ability, you will accept the expedition if it has a Warrior in it, and reject otherwise. Therefore, you will always make the wrong choice. This also extends to execution votes, where if the player is a warrior you would then actually reject the execution and accept if the player is not a warrior. You make the wrong decision regardless of the context. This can provide you with valuable info! Will you choose to take the gamble?\n\n'
+
+        roleDict['gameRole'] = ':clown:Clown:clown:'
+
+        roleDict['helpInfo'] = 'I\'M TIRED OF THESE MOTHERFUCKING WARRIORS ON THIS MOTHERFUCKING EXP- *ahem*. I apologize for that, that was some weird thing. Anyway. Samuel is... Not necessarily known for his competence. He is most known for dangling off the wall on Sasha\'s hook and immediately dying at the port battle. He has a special ability, after round 1, he can use a special kind of vote where he gets the wrong answer every time. If the expo has a warrior, he accepts, if it\'s completely safe, he rejects. HOWEVER. If he is voting on an execution, the rule is reversed. He only accepts if the person on trial is not a Warrior. The general rule is, this guy ALWAYS makes the wrong decision.'
+    
     
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
@@ -1027,7 +1092,7 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use the scream option to send a message to all of your Warrior comrades! When you use this ability, an alert will be shown in the home channel.\n\n'
+        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use the `{prefix}scream` command to send a message to all of your Warrior comrades upon the next time results are read! When you use this ability, an alert will be shown in the home channel.\n\n'
 
         roleDict['gameRole'] = ':speaking_head:Screaming Titan:speaking_head:'
 
@@ -1193,8 +1258,63 @@ class defaultGameTheme:
 
         roleDict['gameRole'] = ':moneybag:Vote Thief:moneybag:'
 
-        roleDict['helpInfo'] =  f'**Credit to JustAboutEnoughSpace for this role!**\n\nThe Soldiers gave Yelena the ability to run around Paradis. Big Mistake. As it turns out, she is uniquely personally loyal to Zeke. Therefore, has had plenty of time to tamper with the Soldiers\' voting systems. Once per game, she can steal the vote of another player, switching that player\'s vote with the opposite of which they voted'
+        roleDict['helpInfo'] =  f'**Credit to Space (JustAboutEnoughSpace) for this role!**\n\nThe Soldiers gave Yelena the ability to run around Paradis. Big Mistake. As it turns out, she is uniquely personally loyal to Zeke. Therefore, has had plenty of time to tamper with the Soldiers\' voting systems. Once per game, she can steal the vote of another player, switching that player\'s vote with the opposite of which they voted'
 
+    class Lara:
+        roleDict = {'roleID' : 'Lara'}
+
+        roleDict['name'] = 'Lara Tybur'
+
+        roleDict['shortName'] = 'Lara'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1226418959310524517
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the holder of the Warhammer Titan! In order to activate it so you can use it, you need to get on an expedition so that you can use the `Transform` button which will sabotage the expedition and transform you into the Warhammer Titan!'
+
+        roleDict['gameRole'] = ':key:Armory Owner:key:'
+
+        roleDict['helpInfo'] =  f'Lara is the holder of the Warhammer Titan. Pretty much her only role is to get on an expo so that she can become the Warhammer Titan'
+
+
+    class Warhammer:
+        roleDict = {'roleID' : 'Warhammer'}
+
+        roleDict['name'] = 'The Warhammer Titan'
+
+        roleDict['shortName'] = 'Warhammer'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1226421467261177947
+
+        roleDict['secondaryEmoji'] = 1226421467261177947
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability if she is present\n`{prefix}trial` to use Pyxis\' ability if he is present\n`{prefix}flare` to use Erwin\'s ability if he is present\n\n'
+
+        roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
+
+        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once, IF that role is currently in the game already. There are exceptions of Jean, Hange, Mikasa, and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
+    
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
 
@@ -1419,8 +1539,8 @@ class defaultGameTheme:
                     arminDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
                 elif killedPlayer in currentGame.wildcards:
                     arminDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Armin':
                     arminDeathMessages += f'{Mikasa.role.emoji} Mikasa saved **{key.user.name}** from the Blast!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
@@ -1440,8 +1560,8 @@ class defaultGameTheme:
                     leviDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
                 elif killedPlayer in currentGame.wildcards:
                     leviDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Levi':
                     leviDeathMessages += f'**{key.user.name}** was attacked by Levi!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
@@ -1461,8 +1581,8 @@ class defaultGameTheme:
                     petraDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
                 elif killedPlayer in currentGame.wildcards:
                     petraDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Petra':
                     petraDeathMessages += f'**{key.user.name}** was attacked by Petra!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
@@ -1471,19 +1591,23 @@ class defaultGameTheme:
                     petraDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Petra\'s attack!{Reiner.role.secondaryEmoji}\n\n'
         return petraDeathMessages
     
-    def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner):
+    def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner, realSasha=None):
+        if realSasha == None:
+            secEmo = Sasha.role.secondaryEmoji
+        else:
+            secEmo = realSasha.role.secondaryEmoji
         sashaDeathMessages = ''
         for killedPlayer, causeOfDeath in Sasha.killed.items():
             if causeOfDeath == 'Sasha':
-                sashaDeathMessages += f'{Sasha.role.secondaryEmoji}**{killedPlayer.user.name}** was struck by Sasha\'s Arrow!{Sasha.role.secondaryEmoji}\n'
+                sashaDeathMessages += f'{secEmo}**{killedPlayer.user.name}** was struck by Sasha\'s Arrow!{secEmo}\n'
                 if killedPlayer in currentGame.soldiers:
                     sashaDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
                 elif killedPlayer in currentGame.warriors:
                     sashaDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
                 elif killedPlayer in currentGame.wildcards:
                     sashaDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Sasha':
                     sashaDeathMessages += f'{Mikasa.role.emoji}Mikasa deflected Sasha\'s Arrow away from **{key.user.name}**!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
@@ -1491,6 +1615,44 @@ class defaultGameTheme:
                 if value == 'Sasha':
                     sashaDeathMessages += f'{Reiner.role.secondaryEmoji}The Arrow merely bounced off **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
         return sashaDeathMessages
+    
+    def getMarcoDeathMessages(currentGame, currentTheme, Marco):
+        marcoDeathMessages = ''
+        for killedPlayer, causeOfDeath in Marco.killed.items():
+            if causeOfDeath == 'Marco':
+                marcoDeathMessages += f'{Marco.role.secondaryEmoji}**{killedPlayer.user.name}** was was eaten by the Titans!{Marco.role.secondaryEmoji}\n'
+                if killedPlayer in currentGame.soldiers:
+                    marcoDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    marcoDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    marcoDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        return marcoDeathMessages
+    
+    def getPyxisDeathMessages(currentGame, currentTheme, Pyxis, Mikasa, Reiner, realPyxis=None):
+        if realPyxis == None:
+            secEmo = Pyxis.role.secondaryEmoji
+        else:
+            secEmo = realPyxis.role.secondaryEmoji
+        pyxisDeathMessages = ''
+        for killedPlayer, causeOfDeath in Pyxis.killed.items():
+            if causeOfDeath == 'Pyxis':
+                pyxisDeathMessages += f'{secEmo}**{killedPlayer.user.name}** has been condemned by the jury to hang!{secEmo}\n'
+                if killedPlayer in currentGame.soldiers:
+                    pyxisDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    pyxisDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    pyxisDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
+                if value == 'Pyxis':
+                    pyxisDeathMessages += f'{Mikasa.role.emoji}Mikasa has intervened to stop **{key.user.name}** from being hanged!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Pyxis':
+                    pyxisDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}** titanized and escaped hanging, their armor allowing them to survive the soldier\'s attacks!{Reiner.role.secondaryEmoji}\n\n'
+        return pyxisDeathMessages
     
     def getKennyDeathMessages(currentGame, currentTheme, Kenny, Mikasa, Reiner):
         kennyDeathMessages = ''
@@ -1508,8 +1670,8 @@ class defaultGameTheme:
                     elif killedPlayer in currentGame.wildcards:
                         kennyDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
                     currentGame.displayKennyKill(killedPlayer)
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Kenny':
                     kennyDeathMessages += f'{Mikasa.role.emoji}Mikasa has protected **{key.user.name}** from being murdered by Kenny!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
@@ -1523,7 +1685,7 @@ class defaultGameTheme:
         for killedPlayer, causeOfDeath in Willy.killed.items():
             if causeOfDeath == 'Willy':
                 if killedPlayer.role.id == 'Willy':
-                    willyDeathMessages += f'{Willy.role.secondaryEmoji}**{killedPlayer.user.name}** has sacrificed himself!{Willy.role.secondaryEmoji}\n'
+                    willyDeathMessages += f'{Willy.role.secondaryEmoji}**{killedPlayer.user.name}** has sacrificed themselves!{Willy.role.secondaryEmoji}\n'
                 else:
                     willyDeathMessages += f'{Willy.role.secondaryEmoji}**{killedPlayer.user.name}** has been killed by Willy!{Willy.role.secondaryEmoji}\n'
                 if killedPlayer in currentGame.soldiers:
@@ -1532,8 +1694,8 @@ class defaultGameTheme:
                     willyDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
                 elif killedPlayer in currentGame.wildcards:
                     willyDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
-        if type(currentGame.currentExpo.mikasaGuarded) == dict:
-            for key, value in currentGame.currentExpo.mikasaGuarded.items():
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
                 if value == 'Willy':
                     willyDeathMessages += f'{Mikasa.role.emoji}Mikasa has saved **{key.user.name}** from Willy\'s attack!{Mikasa.role.emoji}\n\n'
         if type(currentGame.currentExpo.reinerBlocked) == dict:
