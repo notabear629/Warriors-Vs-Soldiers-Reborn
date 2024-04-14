@@ -26,14 +26,14 @@ class webhookManager:
             if author.startswith('{ALTERNATE}'):
                 foundRole = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, author.split('{ALTERNATE}')[1])
                 if foundRole != None:
-                    if type(foundRole.secondaryEmoji) == str:
+                    if foundRole.secondaryEmoji == None or type(foundRole.secondaryEmoji) == str:
                         authorAvatar = foundRole.secondaryImageURL
                     else:
                         authorAvatar = foundRole.secondaryEmoji.url
             else:
                 foundRole = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, author)
                 if foundRole != None:
-                    if type(foundRole.emoji) == str:
+                    if foundRole.emoji == None or type(foundRole.emoji) == str:
                         authorAvatar = foundRole.imageURL
                     else:
                         authorAvatar = foundRole.emoji.url

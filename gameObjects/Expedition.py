@@ -43,6 +43,7 @@ class Expedition:
         self.marcoActivated = False
         self.laraActivated = False
         self.warhammerActivated = None
+        self.displaySize = None
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -287,9 +288,12 @@ class Expedition:
                 self.accepted.append(self.yelenaStolen)
 
     def ejectPlayer(self, Hannes):
-        self.expeditioned.remove(Hannes)
-        self.passedExpedition.remove(Hannes)
-        self.expeditionMembers.remove(Hannes)
+        if Hannes in self.expeditioned:
+            self.expeditioned.remove(Hannes)
+        if Hannes in self.passedExpedition:
+            self.passedExpedition.remove(Hannes)
+        if Hannes in self.expeditionMembers:
+            self.expeditionMembers.remove(Hannes)
 
     def trialPlayer(self, Pyxis, player):
         if Pyxis.role.id == 'Pyxis':

@@ -239,7 +239,7 @@ class expoProposalFunctions:
             await home.send(f'Time to vote on the {voteType} has run out. The remaining voters that did not vote will be marked as abstaining.')
             for player in currentGame.currentExpo.eligibleVoters:
                 if player not in currentGame.currentExpo.voted:
-                    currentGame.currentExpo.voteExpo(player, 'a')
+                    currentGame.currentExpo.voteExpo(currentGame, player, 'a')
         if currentGame.exposOver == False:
             await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
 
@@ -312,7 +312,7 @@ class expoProposalFunctions:
         if voteResult:
             await home.send(f'The {voteType} Proposal has Passed!')
             if currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated):
-                if currentGame.currentRules.casual == False:
+                if currentGame.currentRules.casual == False and currentGame.currentExpo.pyxisTrial != None:
                     Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
                     Pyxis.stats.trialWin()
                 await expoProposalFunctions.executePyxis(currentGame, currentTheme, home, client, prefix)

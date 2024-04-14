@@ -74,19 +74,8 @@ class discordViewBuilder:
             jeanButton.callback = processExpeditionJean
             returnedView.add_item(jeanButton)
 
-        Samuel = await searchFunctions.roleIDToPlayer(currentGame, 'Samuel')
-        if (player.role.id == 'Samuel' or (player.role.id == 'Warhammer' and Samuel != None)) and player.role.abilityActive and currentGame.currentRound > 1:
-            samuelButton = Button(label = 'Clownery', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
-            async def processSamuelButton(interaction):
-                if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await voteExpoFunction(currentGame, player, client, currentTheme, home, samuelButton.label)
-                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
-                    await interaction.message.edit(embed=embed, view=None)
-            samuelButton.callback = processSamuelButton
-            returnedView.add_item(samuelButton)
-
-        Zachary = await searchFunctions.roleIDToPlayer(currentGame, 'Zachary')
-        if (player.role.id == 'Zachary' or (player.role.id == 'Warhammer' and Zachary != None)) and player.role.abilityActive:
+        
+        if (player.role.id == 'Zachary' or player.role.id == 'Warhammer') and player.role.abilityActive:
             zacharyButton = Button(label = 'Veto', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processZacharyButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -95,6 +84,16 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view=None)
             zacharyButton.callback = processZacharyButton
             returnedView.add_item(zacharyButton)
+
+        if (player.role.id == 'Samuel' or player.role.id == 'Warhammer') and player.role.abilityActive and currentGame.currentRound > 1:
+            samuelButton = Button(label = 'Clownery', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processSamuelButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, samuelButton.label)
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            samuelButton.callback = processSamuelButton
+            returnedView.add_item(samuelButton)
 
         if player.role.id == 'Falco' and player.role.abilityActive:
             falcoButton = Button(label = 'Intercept', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
@@ -167,8 +166,7 @@ class discordViewBuilder:
         if player in currentGame.warriors or (player.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors'):
             returnedView.add_item(sabotageButton)
 
-        Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
-        if (player.role.id == 'Armin' or (player.role.id == 'Warhammer' and Armin != None)) and player.role.abilityActive and currentGame.roundFails < 2:
+        if (player.role.id == 'Armin' or player.role.id == 'Warhammer') and player.role.abilityActive and currentGame.roundFails < 2:
             nukeButton = Button(label = 'Nuke', emoji = currentTheme.emojiNuke, style=discord.ButtonStyle.grey)
             async def processExpeditionNuke(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -178,8 +176,7 @@ class discordViewBuilder:
             nukeButton.callback = processExpeditionNuke
             returnedView.add_item(nukeButton)
 
-        Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
-        if (player.role.id == 'Levi' or (player.role.id == 'Warhammer' and Levi != None)) and player.role.abilityActive:
+        if (player.role.id == 'Levi' or player.role.id == 'Warhammer') and player.role.abilityActive:
             if currentGame.roundFails < 2:
                 leviAttackButton = Button(label = 'Attack', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
                 async def processLeviAttack(interaction):
@@ -198,8 +195,7 @@ class discordViewBuilder:
             leviDefendButton.callback = processLeviDefend
             returnedView.add_item(leviDefendButton)
 
-        Daz = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
-        if (player.role.id == 'Daz' or (player.role.id == 'Warhammer' and Daz != None))and player.role.abilityActive and player in currentGame.currentExpo.rejected:
+        if (player.role.id == 'Daz' or player.role.id == 'Warhammer')and player.role.abilityActive and player in currentGame.currentExpo.rejected:
             dazButton = Button(label = 'Chicken Out', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
             async def processDazButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -209,8 +205,7 @@ class discordViewBuilder:
             dazButton.callback = processDazButton
             returnedView.add_item(dazButton) 
         
-        Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
-        if (player.role.id == 'Petra' or (player.role.id == 'Warhammer' and Petra != None)) and player.role.abilityActive and currentGame.currentExpo.size > 1:
+        if (player.role.id == 'Petra' or player.role.id == 'Warhammer') and player.role.abilityActive and currentGame.currentExpo.size > 1:
             petraSelect = Select(placeholder = f'Choose Player to Watch')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
                 if expeditioner != player:
@@ -243,8 +238,7 @@ class discordViewBuilder:
             hangeSelect.callback = processHangeSelection
             returnedView.add_item(hangeSelect)
 
-        Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
-        if (player.role.id == 'Hannes' or (player.role.id == 'Warhammer' and Hannes != None)) and player.role.abilityActive:
+        if (player.role.id == 'Hannes' or player.role.id == 'Warhammer') and player.role.abilityActive:
             hannesButton = Button(label = 'Escape', emoji = player.role.emoji, style = discord.ButtonStyle.grey)
             async def processHannesButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -254,8 +248,7 @@ class discordViewBuilder:
             hannesButton.callback = processHannesButton
             returnedView.add_item(hannesButton)
 
-        Marco = await searchFunctions.roleIDToPlayer(currentGame, 'Marco')
-        if (player.role.id == 'Marco' or (player.role.id == 'Warhammer' and Marco != None and player.role.abilityActive)):
+        if (player.role.id == 'Marco' or (player.role.id == 'Warhammer' and player.role.abilityActive)):
             marcoButton = Button(label = currentTheme.suicideLabel, emoji = currentTheme.emojiSuicide, style=discord.ButtonStyle.grey)
             async def processMarcoButton(interaction):
                 if await discordViewBuilder.isInteractionIntended(player, interaction):
@@ -593,7 +586,7 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
+    async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole):
         returnedView = View()
 
         themeSelect = Select(placeholder= 'Choose Theme', min_values=1, max_values=1)
@@ -606,9 +599,9 @@ class discordViewBuilder:
 
         async def processThemeSelect(interaction):
             themeName = str(themeSelect.values[0])
-            if themeName != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if themeName != None and currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 if themeName == currentTheme.themeName:
-                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                     embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                     await interaction.message.edit(embed=embed, view=refreshedView)
                     await interaction.response.defer()
@@ -619,7 +612,7 @@ class discordViewBuilder:
                     for role in loadedRoles:
                         role.update(currentTheme, client)
                     embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                     await interaction.message.edit(embed=embed, view=refreshedView)
                     await interaction.response.defer()
 
@@ -638,7 +631,7 @@ class discordViewBuilder:
 
         async def processCaptainSelect(interaction):
             option = str(captainSelect.values[0])
-            if option != None and currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if option != None and currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 if option.startswith('Coordinate'):
                     if 'Enabled' in option:
                         currentLobby.currentRules.toggleCaptains(True, True)
@@ -648,7 +641,7 @@ class discordViewBuilder:
                         currentLobby.currentRules.toggleCaptains(True, False)
                 else:
                     currentLobby.currentRules.toggleCaptains(False, True)
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await interaction.message.edit(embed=embed, view=refreshedView)
                 await interaction.response.defer()
@@ -657,9 +650,9 @@ class discordViewBuilder:
 
         multiKidnapButton = Button(label = f'Toggle Multi-Kidnap', emoji = str('♾️'), style=discord.ButtonStyle.grey)
         async def processMultikidnapButton(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 currentLobby.currentRules.toggleMultikidnap(not currentLobby.currentRules.multikidnap)
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await interaction.message.edit(embed=embed, view=refreshedView)
                 await interaction.response.defer()
@@ -668,9 +661,9 @@ class discordViewBuilder:
 
         rumblingButton = Button(label = f'Toggle {currentTheme.rumblingName}', emoji = str(currentTheme.emojiRumbling), style = discord.ButtonStyle.grey)
         async def processRumblingButton(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 currentLobby.currentRules.toggleRumbling(not currentLobby.currentRules.rumbling)
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await interaction.message.edit(embed=embed, view=refreshedView)
                 await interaction.response.defer()
@@ -679,9 +672,9 @@ class discordViewBuilder:
 
         wildcardsButton = Button(label = f'Toggle Wildcards', emoji = str('🃏'), style=discord.ButtonStyle.grey)
         async def processWildcardsButton(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 currentLobby.currentRules.toggleWildcards()
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await interaction.message.edit(embed=embed, view=refreshedView)
                 await interaction.response.defer()
@@ -690,9 +683,9 @@ class discordViewBuilder:
 
         casualButton = Button(label = 'Toggle Casual', emoji = str('🤙'), style=discord.ButtonStyle.grey)
         async def processCasualButton(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
                 currentLobby.currentRules.toggleCasual(not currentLobby.currentRules.casual)
-                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
                 await interaction.message.edit(embed=embed, view=refreshedView)
                 await interaction.response.defer()
@@ -702,8 +695,8 @@ class discordViewBuilder:
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
-                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers')
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers', adminRole)
                 refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Soldiers', loadedRoles, currentLobby.currentRules)
                 await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
                 await interaction.response.defer()
@@ -713,8 +706,8 @@ class discordViewBuilder:
 
         rulesetButton = Button(label = 'Go to your Saved Rulesets', style= discord.ButtonStyle.grey)
         async def processRulesetButton(interaction):
-            if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
-                refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
+                refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                 refreshedEmbed = await embedBuilder.savedRulesets(currentTheme)
                 await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
                 await interaction.response.defer()
@@ -724,7 +717,7 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team):
+    async def roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team, adminRole):
         returnedView = View()
 
         if team == 'Soldiers':
@@ -747,9 +740,9 @@ class discordViewBuilder:
             enableSelect.add_option(label = role.shortName, emoji=role.emoji)
         async def enableRoles(interaction):
             changedRoles = await discordViewBuilder.getRoleRequest(enableSelect.values, loadedRoles) 
-            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, True)
+            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, True, adminRole)
             refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
-            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team, adminRole)
             await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
             await interaction.response.defer()
         enableSelect.callback = enableRoles
@@ -760,9 +753,9 @@ class discordViewBuilder:
             disableSelect.add_option(label = role.shortName, emoji=role.emoji)
         async def disableRoles(interaction):
             changedRoles = await discordViewBuilder.getRoleRequest(disableSelect.values, loadedRoles) 
-            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, False)
+            await discordViewBuilder.changeRoleRules(currentGame, currentLobby, interaction, changedRoles, False, adminRole)
             refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
-            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team, adminRole)
             await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
             await interaction.response.defer()
         disableSelect.callback = disableRoles
@@ -772,7 +765,7 @@ class discordViewBuilder:
 
         async def processBackButton(interaction):
             embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
             await interaction.message.edit(embed=embed, view=refreshedView)
             await interaction.response.defer()
 
@@ -783,7 +776,7 @@ class discordViewBuilder:
         async def processResetButton(interaction):
             currentLobby.currentRules.clearRoles(team)
             refreshedEmbed = await embedBuilder.roleSelection(currentTheme, team, loadedRoles, currentLobby.currentRules)
-            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team)
+            refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, team, adminRole)
             await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
             await interaction.response.defer()
         resetButton.callback = processResetButton
@@ -793,7 +786,7 @@ class discordViewBuilder:
             warriorButton = Button(label = f'Go to {currentTheme.warriorSingle} Role Options', emoji=currentTheme.emojiWarrior, style=discord.ButtonStyle.grey)
             async def processWarriorButton(interaction):
                 refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Warriors', loadedRoles, currentLobby.currentRules)
-                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Warriors')
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Warriors', adminRole)
                 await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
                 await interaction.response.defer()
             warriorButton.callback = processWarriorButton
@@ -803,7 +796,7 @@ class discordViewBuilder:
             soldierButton = Button(label = f'Go to {currentTheme.soldierSingle} Role Options', emoji=currentTheme.emojiSoldier, style=discord.ButtonStyle.grey)
             async def processSoldierButton(interaction):
                 refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Soldiers', loadedRoles, currentLobby.currentRules)
-                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers')
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Soldiers', adminRole)
                 await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
                 await interaction.response.defer()
             soldierButton.callback = processSoldierButton
@@ -813,7 +806,7 @@ class discordViewBuilder:
             wildcardButton = Button(label = f'Go to {currentTheme.wildcardSingle} Role Options', emoji=currentTheme.emojiWildcard, style=discord.ButtonStyle.grey)
             async def processWildcardButton(interaction):
                 refreshedEmbed = await embedBuilder.roleSelection(currentTheme, 'Wildcards', loadedRoles, currentLobby.currentRules)
-                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Wildcards')
+                refreshedView = await discordViewBuilder.roleOptionsView(currentTheme, loadedRoles, currentLobby, currentGame, prefix, client, 'Wildcards', adminRole)
                 await interaction.message.edit(view=refreshedView, embed=refreshedEmbed)
                 await interaction.response.defer()
             wildcardButton.callback = processWildcardButton
@@ -822,7 +815,7 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles):
+    async def savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole):
 
         returnedView = View()
         player = databaseManager.searchForWvsPlayer(currentLobby.host)
@@ -832,7 +825,7 @@ class discordViewBuilder:
 
         async def processBackButton(interaction):
             embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
             await interaction.message.edit(embed=embed, view=refreshedView)
             await interaction.response.defer()
 
@@ -871,7 +864,7 @@ class discordViewBuilder:
                     ruleset = {'name': name, 'rules':rules}
                     savedRulesets[indexSaved] = ruleset
                     databaseManager.updateRuleset(currentLobby.host.id, savedRulesets)
-                    refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                    refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                     await interaction.message.edit(view = refreshedView)
                     await newInteraction.response.defer()
                     
@@ -886,7 +879,7 @@ class discordViewBuilder:
             else:
                 rules = ruleset['rules']
             currentLobby.currentRules.loadRules(rules)
-            refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+            refreshedView = await discordViewBuilder.savedRulesetView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
             await interaction.message.edit(view = refreshedView)
             await interaction.response.defer()
 
@@ -899,8 +892,8 @@ class discordViewBuilder:
 
 
     
-    async def changeRoleRules(currentGame, currentLobby, interaction, changedRoles, isEnabled):
-        if currentGame.online == False and currentLobby.online and interaction.user == currentLobby.host:
+    async def changeRoleRules(currentGame, currentLobby, interaction, changedRoles, isEnabled, adminRole):
+        if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
             currentLobby.currentRules.changeRoles(changedRoles, isEnabled)
     
     async def getThemeFromName(themeName, client):

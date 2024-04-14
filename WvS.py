@@ -105,7 +105,7 @@ async def reset(ctx):
 @client.command('host')
 async def host(ctx):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
-    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles)
+    await lobbyFunctions.host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles, adminRole)
 
 
 @client.command('join')
@@ -131,11 +131,15 @@ async def lobby(ctx):
 
 @client.command('options')
 async def options(ctx):
-    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles, adminRole)
 
 @client.command('rules')
 async def rules(ctx):
-    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles, adminRole)
+
+@client.command('settings')
+async def settings(ctx):
+    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles, adminRole)
 
 @client.command('color')
 async def color(ctx, *, colorInput=None):

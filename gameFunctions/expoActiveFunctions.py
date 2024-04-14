@@ -234,7 +234,7 @@ class expoActiveFunctions:
     async def getExpeditionResult(currentGame):
         if currentGame.currentExpo.arminActivated or currentGame.currentExpo.warhammerActivated == 'Armin':
             return 'Armin'
-        elif len(currentGame.currentExpo.sabotagedExpedition) > 0 and currentGame.currentExpo.leviDefended == False:
+        elif len(currentGame.currentExpo.sabotagedExpedition) > 0 and (currentGame.currentExpo.leviDefended == False and currentGame.currentExpo.warhammerActivated != 'LeviDefend'):
             return 'n'
         return 'y'
     

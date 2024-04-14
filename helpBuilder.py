@@ -40,6 +40,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'`{prefix}lobby`', value = 'Calling this command will display the current status of the lobby, including its rules and players within it.', inline=True)
         returnedEmbed.add_field(name=f'`{prefix}options`', value = 'If you are the host of a lobby, you can call this command to bring up the menu to change its options and rules. The rules from the immediately previously played game are saved if the bot stood online, so if you wish to play with the same rules multiple games in a row, you will only have to configure this once.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}rules`', value= 'Does the same thing as options, what you use is personal preference.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}settings`', value= 'Does the same thing as options, what you use is personal preference.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}reset`', value= 'This command can be used to close a lobby. If a game is ongoing, the host can use this command to cancel it. If the gag role is enabled on a player after a game during a bug, you may call this command to fix it.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}start`', value = 'This command is used by the host to start the game once the players have joined and the rules and options have been set.', inline=True)
         return returnedEmbed

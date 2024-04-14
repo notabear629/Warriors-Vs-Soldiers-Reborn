@@ -37,7 +37,7 @@ class endGameFunctions:
             return
         currentGame.activateKidnap()
         await home.send(currentTheme.basementMessage)
-        await home.send(await endGameFunctions.getWarriorList(currentGame))
+        await home.send(await endGameFunctions.getWarriorList(currentGame, currentTheme))
         if currentGame.currentRules.multikidnap:
             await home.send(f'Multikidnap is currently active! Each {currentTheme.warriorSingle} should select a candidate to kidnap to continue.')
             timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Multikidnap')
@@ -56,10 +56,13 @@ class endGameFunctions:
             else:
                 await endGameFunctions.processKidnap(currentGame, currentTheme, home)
 
-    async def getWarriorList(currentGame):
-        warriorList = 'The Warriors are:\n'
+    async def getWarriorList(currentGame, currentTheme):
+        warriorList = f'The {currentTheme.warriorPlural} are:\n'
         for warrior in currentGame.warriors:
             warriorList += f'**{warrior.user.name}**\n'
+        if currentGame.niccoloDecoy != None:
+            Niccolo = await searchFunctions.roleIDToPlayer(currentGame, 'Niccolo')
+            warriorList += f'The Decoy planted by **{Niccolo.role.shortName}** was **{currentGame.niccoloDecoy.user.name}**'
         return warriorList
 
     async def kidnapTimeout(currentGame, currentTheme, home):

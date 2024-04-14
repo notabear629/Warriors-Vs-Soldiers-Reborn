@@ -1119,11 +1119,11 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are the "Shut-Your-Jaw" Titan! Use `{prefix}gag` to open the menu to choose to gag a player. When a player is gagged, they are not able to speak and their commander turn gets skipped! However, there is an important exception! A flared Erwin is ungaggable, and you are not allowed to gag players when there is 2 walls down with an active spy.\n\n'
+        roleDict['roleMessage'] = f'You are the "Shut-Your-Jaw" Titan! Use `{prefix}gag` to open the menu to choose to gag a player. When a player is gagged, they are not able to speak and their commander turn gets skipped! However, there is an important exception! A flared Erwin is ungaggable.\n\n'
 
         roleDict['gameRole'] = ':shushing_face:Gag Orderer:shushing_face:'
 
-        roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, you are prohibited from gagging players when 2 walls are broken and the spy is active. Finally, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers. Hitch is not notified about this ability!'
+        roleDict['helpInfo'] =  'Porco, the owner of the "Shut-Your-Jaw" Titan ~~dear god I have fucking lost it please just end my misery~~ can gag a player so they are not able to speak for an entire round. Their turn in the commander order also gets skipped, so this ability can be quite powerful. However, there are important exceptions and wrinkles to understand. First, a flared Erwin is ungaggable, there is nothing you can do to contain him. Next, a gagged player is NOT confirmed good, Porco has the ability to gag a Warrior or even himself to do a little trolling and trick the Soldiers. Hitch is not notified about this ability!'
 
     class Falco:
         roleDict = {'roleID' : 'Falco'}
@@ -1271,7 +1271,7 @@ class defaultGameTheme:
 
         roleDict['rumblingTeam'] = 'allianceFighter'
 
-        roleDict['isTitan'] = False
+        roleDict['isTitan'] = True
 
         roleDict['emoji'] = 1226418959310524517
 
@@ -1299,7 +1299,7 @@ class defaultGameTheme:
 
         roleDict['rumblingTeam'] = 'allianceFighter'
 
-        roleDict['isTitan'] = False
+        roleDict['isTitan'] = True
 
         roleDict['emoji'] = 1226421467261177947
 
@@ -1309,11 +1309,11 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability if she is present\n`{prefix}trial` to use Pyxis\' ability if he is present\n`{prefix}flare` to use Erwin\'s ability if he is present\n\n'
+        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n\n'
 
         roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
 
-        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once, IF that role is currently in the game already. There are exceptions of Jean, Hange, Mikasa, and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
+        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
     
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
@@ -1470,15 +1470,6 @@ class defaultGameTheme:
         yeagerBros = random.sample(yeagerBros, 2)
         historiaInfo += f'**{yeagerBros[0]}**\n**{yeagerBros[1]}**'
         return historiaInfo
-    
-    def getHangeInfo(currentGame, Hange):
-        hangeInfo = 'I have deduced that of all possible remaining scenarios, the following users are Warriors in this percentage of them.\n\n'
-        getProbabilities = Hange.role.getProbabilities(currentGame)
-        for player in currentGame.players:
-            if player.role.id == 'Hange':
-                continue
-            hangeInfo += f'**{player.user.name}** - {getProbabilities[player]}%\n'
-        return hangeInfo
     
     def getHitchInfo(currentGame, Hitch, hitchInfo):
         hitchMessage = ''

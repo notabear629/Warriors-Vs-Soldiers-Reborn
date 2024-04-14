@@ -7,7 +7,7 @@ from discordViewBuilder import discordViewBuilder
 
 
 class lobbyFunctions:
-    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles):
+    async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles, adminRole):
         if home == ctx.channel:
             if currentLobby.online:     
                 if ctx.message.author in currentLobby.users:
@@ -20,7 +20,7 @@ class lobbyFunctions:
             else:
                 if currentGame.online == False:
                     currentLobby.openLobby(ctx.message.author, currentRules)
-                    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles)
+                    await lobbyFunctions.options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles, adminRole)
                     await home.send('Lobby Created.')
                 else:
                     await ctx.message.reply(f'There is already an active game! Please wait for it to finish before trying to host a new one.')
@@ -119,13 +119,13 @@ class lobbyFunctions:
         else:
             await ctx.reply(f'There is no lobby! Use `{prefix}host` from within <#{home.id}> to create one.')
 
-    async def options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles):
+    async def options(ctx, home, currentLobby, currentGame, currentTheme, prefix, noMentions, client, loadedRoles, adminRole):
         if home == ctx.channel:
             if currentLobby.online:
-                if ctx.message.author == currentLobby.host:
+                if ctx.message.author == currentLobby.host or adminRole in ctx.message.author.roles:
                     if currentGame.online == False:
                         embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
-                        view = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles)
+                        view = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
                         await home.send(embed=embed, allowed_mentions= noMentions, view = view)
                     else:
                         await ctx.message.reply('You cannot change options mid-game.')
