@@ -621,10 +621,35 @@ class statBuilder:
 
         numberEmojis = [str('🥇'), str('🥈'), str('🥉'), str('4️⃣'), str('5️⃣'), str('6️⃣'), str('7️⃣'), str('8️⃣'), str('9️⃣'), str('🔟')]
         
-        if statType in titles:
+        if type(statType) == str and statType in titles:
             allPlayers = databaseManager.getSortedPoints(statType)
         else:
-            allPlayers = databaseManager.getSortedWvsStat(statType)
+            if type(statType) == list:
+                playerList = databaseManager.getSortedPoints('LegacyPoints')
+                sorterDict = {}
+                for player in playerList:
+                    if statType[1] == '%':
+                        sorterDict[player['userID']] = await statBuilder.getPercentage(player['stats'], statType[0], statType[2])
+                    elif statType[1] == '/':
+                        sorterDict[player['userID']] = await statBuilder.getDivider(player['stats'], statType[0], statType[2])
+                    else:
+                        sorterDict[player['userID']] = player['stats'][statType[0]] - player['stats'][statType[2]]
+                allPlayers = []
+                while len(sorterDict) > 0:
+                    largestValue = None
+                    for key, value in sorterDict.items():
+                        if largestValue == None:
+                            largestValue = {key: value}
+                            continue
+                        for key2, value2 in largestValue.items():
+                            if value > value2:
+                                largestValue = {key: value}
+                                break
+                    for key,value in largestValue.items():
+                        allPlayers.append(databaseManager.getWvsPlayerByID(key))
+                        del sorterDict[key]
+            else:
+                allPlayers = databaseManager.getSortedWvsStat(statType)
         for player in allPlayers:
             if index == 0:
                 leader = player
@@ -655,22 +680,32 @@ class statBuilder:
                 playerList += f'<@{player['userID']}>\n'
         
         valueList = ''
-        if 'Points' not in statType:
+        if type(statType) == str and 'Points' not in statType:
             for player in gatheredPlayers:
                 if statType in titles:
                     valueList += f'{round(player['calcs'][statType], 1)}\n'
                 else:
                     valueList += f'{player['stats'][statType]}\n'
+        elif type(statType) == list:
+            for player in gatheredPlayers:
+                if statType[1] == '%':
+                    valueList += f'{await statBuilder.getPercentage(player['stats'], statType[0], statType[2])}%\n'
+                elif statType[1] == '/':
+                    valueList += f'{await statBuilder.getDivider(player['stats'], statType[0], statType[2])}\n'
+                else:
+                    valueList += f'{player['stats'][statType[0]] - player['stats'][statType[2]]}\n'
 
         pointList = ''
-        if statType in titles:
+        if type(statType) == str and statType in titles:
             for player in gatheredPlayers:
                 pointList += f'{player['points'][statType]}\n'
 
-        if statType in titles:
+        if type(statType) == str and statType in titles:
             title = titles[statType]
-        else:
+        elif type(statType) == str:
             title = f'{statType} Leaderboard'
+        else:
+            title = f'{statType[0]} {statType[1]} {statType[2]} Leaderboard'
         returnedEmbed = discord.Embed(title = title, color = color)
         returnedEmbed.add_field(name = 'Players', value=playerList, inline=True)
         if 'Points' not in statType:

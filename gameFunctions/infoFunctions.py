@@ -86,19 +86,41 @@ class infoFunctions:
             await ctx.reply(embed=badgesEmbed)
 
     async def leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input):
-        finalInput = None
         if input != None:
+            argSplit = input.split(' ')
+        else:
+            argSplit = []
+        finalInput = None
+        if input != None and len(argSplit) == 1:
             defaultStats = await userInfoManager.getDefaultStatistics()
             for stat, value in defaultStats.items():
                 if stat.lower() == input.lower():
                     finalInput = stat
                     break
-        if finalInput == None:
-            lbView = await statBuilder.leaderboardView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
-            lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
-        else:
+        if input != None and len(argSplit) == 3:
+            specialArgs = ['%', '/', '-']
+            finalInput = [None, None, None]
+            if argSplit[1] not in specialArgs:
+                finalInput = None
+            else:
+                finalInput[1] = argSplit[1]
+                defaultStats = await userInfoManager.getDefaultStatistics()
+                for stat, value in defaultStats.items():
+                    if stat.lower() == argSplit[0].lower():
+                        finalInput[0] = stat
+                    if stat.lower() == argSplit[2].lower():
+                        finalInput[2] = stat
+                    if None not in finalInput:
+                        break
+        if finalInput != None and len(argSplit) == 1:
             lbView = await statBuilder.leaderboardAltView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, finalInput, 1)
             lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, finalInput, 1)
+        elif finalInput != None and len(argSplit) == 3:
+            lbView = await statBuilder.leaderboardAltView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, finalInput, 1)
+            lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, finalInput, 1)
+        else:
+            lbView = await statBuilder.leaderboardView(ctx.message.author, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
+            lbEmbed = await statBuilder.leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', 1)
         await ctx.send(embed=lbEmbed, view=lbView)
 
     async def advantage(ctx, currentGame, currentTheme):

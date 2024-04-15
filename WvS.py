@@ -318,24 +318,33 @@ async def admin(ctx):
 #test command only
 @client.command('debug')
 async def debug(ctx, *, var):
-    if ctx.message.author.name == 'cerberus629': 
-        attrRequests = var.split('.')
-        rootVar = globals()[attrRequests[0]]
-        if len(attrRequests) > 1:
-            newVar = rootVar
-            newRequests = attrRequests.copy()
-            newRequests.remove(newRequests[0])
-            for elem in newRequests:
-                newVar = getattr(newVar, elem)
-            if newVar == None:
-                await ctx.send('None')
-                return
-            await ctx.send(newVar)
+    if ctx.message.author.name == 'cerberus629':
+        dotSeparators = var.split('.')
+        rootVar = None
+        for elem in dotSeparators:
+            if '[' in elem or ']' in elem:
+                leftSplit = elem.split('[')
+                for elem2 in leftSplit:
+                    if elem2 == leftSplit[0]:
+                        dotSplit = elem2.split('.')
+                        rootVar = getattr(rootVar, dotSplit[len(dotSplit)-1])
+                        continue
+                    rightSplit = elem2.split(']')
+                    try:
+                        index = int(rightSplit[0])
+                        rootVar = rootVar[index]
+                    except:
+                        print(rightSplit[0])
+                        rootVar=rootVar[rightSplit[0]]
+            else:
+                if elem == dotSeparators[0]:
+                    rootVar = globals()[elem]
+                else:
+                    rootVar = getattr(rootVar, elem)
+        if rootVar == None:
+            await ctx.reply('None')
         else:
-            if rootVar == None:
-                await ctx.send('None')
-                return
-            await ctx.send(rootVar)
+            await ctx.reply(rootVar)
 
 #TEST COMMAND ONLY
 @client.command('fill')
