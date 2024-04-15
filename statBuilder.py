@@ -453,7 +453,7 @@ class statBuilder:
             returnedEmbed.add_field(name = 'Vote Intercepts', value = db['FalcoUses'], inline=True)
             returnedEmbed.add_field(name = 'Vote Intercept Passes', value = f'{db['FalcoVoteWins']} ({await statBuilder.getPercentage(db, 'FalcoVoteWins', 'FalcoUses')}% of Intercepts)', inline=True)
         elif role.id == 'Reiner':
-            returnedEmbed.add_field(name = 'Armor Saves', value = f'{db['ReinerSaves']} ({await statBuilder.getDivider('ReinerSaves', 'ReinerPlayed')} per Game)')
+            returnedEmbed.add_field(name = 'Armor Saves', value = f'{db['ReinerSaves']} ({await statBuilder.getDivider(db, 'ReinerSaves', 'ReinerPlayed')} per Game)')
         elif role.id == 'Bertholdt':
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Cloaked', value = f'{db['BertholdtCloaks']} ({await statBuilder.getDivider(db, 'BertholdtCloaks', 'BertholdtPlayed')} per Game)', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.expeditionName} Doubles Cloaked', value = f'{db['BertholdtDoubleCloaks']} ({await statBuilder.getDivider(db, 'BertholdtDoubleCloaks', 'BertholdtCloaks')} per Cloak, {await statBuilder.getDivider(db, 'BertholdtDoubleCloaks', 'BertholdtPlayed')} per Game)')

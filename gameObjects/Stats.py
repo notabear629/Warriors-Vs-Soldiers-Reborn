@@ -179,17 +179,6 @@ class Stats:
                     setattr(Levi.stats, 'LeviDefends', 1)
                     if len(expo.sabotagedExpedition) > 0 and result == 'y':
                         setattr(Levi.stats, 'LeviDefendWins', 1)
-            if expo.mikasaGuarded != None:
-                Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
-                guardCount = getattr(Mikasa.stats, 'MikasaGuards')
-                setattr(Mikasa.stats, 'MikasaGuards', guardCount + 1)
-                if type(expo.mikasaGuarded) == dict:
-                    saveCount = getattr(Mikasa.stats, 'MikasaSaved')
-                    setattr(Mikasa.stats, 'MikasaSaved', saveCount + 1)
-                    for key, value in expo.mikasaGuarded.items():
-                        if key in currentGame.soldiers:
-                            saveWins = getattr(Mikasa.stats, 'MikasaSaveWins')
-                            setattr(Mikasa.stats, 'MikasaSaveWins', saveWins + 1)
             if expo.arminActivated:
                 Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
                 setattr(Armin.stats, 'ArminNukes', 1)
@@ -242,7 +231,7 @@ class Stats:
                         if expo.commander == soldier:
                             passCommands = getattr(soldier.stats, 'PassCommanders')
                             setattr(soldier.stats, 'PassCommanders', passCommands + 1)
-            if result == 'n':
+            if result == 'n' or result == 'Armin':
                 for warrior in currentGame.warriors:
                     if warrior == expo.commander or warrior in expo.accepted or warrior in expo.expeditionMembers:
                         breaksResponsible = getattr(warrior.stats, 'BreaksResponsible')
@@ -262,14 +251,15 @@ class Stats:
                         
     @staticmethod
     async def processMVP(currentGame):
-        soldierMVPGrading = {'ArminKills' : -1, 'SashaKills' : -1, 'ArminKillWins' : 2, 'SashaKillWins': 2, 'JeanForces' : -1, 'JeanForceWins' : 2, 'DazChickenWins' : 1, 'LeviKills': 1, 'LeviDefendWins' : 1, 'MikasaSaved' : -1, 'MikasaSaveWins': 2, 'PassCommanders' : 2, 'AcceptedCommand' : -1, 'PassVotes' :2, 'ExposVoted' : -1, 'PassExpeditions' : 1}
+
+        soldierMVPGrading = {'ArminKills': -1, 'ArminKillWins': 2, 'SashaKills': -1, 'SashaKillWins':2, 'PetraKillWins': 1, 'PyxisKills':-1, 'PyxisKillWins':2, 'JeanForces':-1, 'JeanForceWins':2, 'ZacharyVetoes':-1, 'ZacharyVetoWins':2, 'ErwinFlaresFired':-0.5, 'DazChickens':-1, 'DazChickenWins':2, 'LeviAttacks':-0.5, 'LeviKills':1, 'LeviDefends':1, 'MikasaSaved':-1, 'MikasaSaveWins':2, 'HangeWiretapsSoldier':0.5, 'HangeWiretapsWarrior':0.5, 'MarcoSuicides':-1, 'HannesEscapes':-0.5, 'ArminNukes':-1,'PassCommanders' : 2, 'AcceptedCommand' : -1, 'PassVotes' :2, 'ExposVoted' : -1, 'PassExpeditions' : 1}
         for soldier in currentGame.soldiers:
             for key, value in soldierMVPGrading.items():
                 check = getattr(soldier.stats, key)
                 if check != None:
                     score = check * value
                     soldier.addMVPPoints(score)
-        warriorMVPGrading = {'PieckFlipAcceptWins' : 1, 'PieckFlipRejectWins' : 0.5, 'PorcoCommanderSkips' : 0.5, 'FalcoVoteWins' : 1, 'ReinerSaves' : 0.5, 'BertholdtCloaks' : -0.5, 'BertholdtDoubleCloaks' : 1.5, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1, 'GabiFires' : -1, 'GabiFireWins' : 2}
+        warriorMVPGrading = {'GabiFires': -0.5, 'GabiFireWins':1.5, 'AnnieScreams': 0.5, 'PieckFlipAcceptWins': 1, 'PorcoCommanderSkips': 0.5, 'FalcoVoteWins':1, 'ReinerSaves': 0.5, 'BertholdtCloaks': 0.5, 'BertholdtDoubleCloaks':0.5, 'WillyKills':0.5, 'YelenaSteals': 0.5, 'WarhammerAbilities':0.5, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
         for warrior in currentGame.warriors:
             for key, value in warriorMVPGrading.items():
                 check = getattr(warrior.stats, key)
@@ -307,6 +297,10 @@ class Stats:
 
     def mikasaSoldierSave(self):
         setattr(self, 'MikasaSaveWins', 1)
+
+    def reinerSave(self):
+        reinerSaves = getattr(self, 'ReinerSaves')
+        setattr(self, 'ReinerSaves', reinerSaves+1)
 
     def guardPlayer(self):
         mikasaGuards = getattr(self, 'MikasaGuards')

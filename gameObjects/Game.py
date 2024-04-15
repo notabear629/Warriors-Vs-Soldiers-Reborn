@@ -169,12 +169,16 @@ class Game:
         if self.mikasaGuarded == killedPlayer and (killedPlayer.role.id != 'Marco' or self.currentExpo.marcoActivated == False):
             self.updateMikasaTarget(killedPlayer, causeOfDeath)
             Mikasa = await searchFunctions.roleIDToPlayer(self, 'Mikasa')
-            Mikasa.stats.mikasaSave()
-            if killedPlayer in self.soldiers:
-                Mikasa.stats.mikasaSoldierSave()
+            if self.currentRules.casual == False:
+                Mikasa.stats.mikasaSave()
+                if killedPlayer in self.soldiers:
+                    Mikasa.stats.mikasaSoldierSave()
         elif killedPlayer.role.id == 'Reiner':
             self.updateReinerDefense(killedPlayer, causeOfDeath)
             self.exposedReiner = killedPlayer
+            Reiner = await searchFunctions.roleIDToPlayer(self, 'Reiner')
+            if self.currentRules.casual == False:
+                Reiner.stats.reinerSave()
         else:
             if killedPlayer not in self.deadPlayers:
                 if killedPlayer in self.livingPlayers:
