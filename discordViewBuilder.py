@@ -692,6 +692,17 @@ class discordViewBuilder:
         casualButton.callback = processCasualButton
         returnedView.add_item(casualButton)
 
+        intelligentButton = Button(label = 'Toggle Intelli-Roles', emoji = str('🧠'), style = discord.ButtonStyle.grey)
+        async def processIntelligentButton(interaction):
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
+                currentLobby.currentRules.toggleIntelligentRoles()
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+        intelligentButton.callback = processIntelligentButton
+        returnedView.add_item(intelligentButton)
+
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):

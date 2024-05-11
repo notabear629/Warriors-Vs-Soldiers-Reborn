@@ -13,7 +13,10 @@ class embedBuilder:
         returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help` for help and info about the game. Use `{prefix}options` or `{prefix}rules` or `{prefix}settings` as the host to change the game rules.', color = currentTheme.lobbyEmbedColor)
         playerList = ''
         for player in currentLobby.users:
-            playerList += f'**{player.mention}**\n'
+            playerList += f'**{player.mention}**'
+            if player == currentLobby.host:
+                playerList += str(' 👑')
+            playerList += '\n'
         returnedEmbed.add_field(name = 'Players', value = playerList, inline = False)
         returnedEmbed.add_field(name = 'Current Theme', value = f'{currentTheme.emojiTheme}`{currentTheme.themeName}`', inline = False)
         if currentLobby.currentRules.noCoordinate and currentLobby.currentRules.noWarchief:
@@ -36,6 +39,13 @@ class embedBuilder:
             customEmoji = str('🎭')
             customChoice = 'Role Selection Active'
         returnedEmbed.add_field(name = 'Roleset Rules', value = f'{customEmoji}`{customChoice}`', inline=False)
+        if currentLobby.currentRules.intelligentRoles:
+            intelligentEmoji = str('🧠')
+            intelligentChoice = 'Enabled'
+        else:
+            intelligentEmoji = str('❌')
+            intelligentChoice = 'Disabled'
+        returnedEmbed.add_field(name = 'Intelligent Role Selection', value = f'{intelligentEmoji}`{intelligentChoice}`', inline=False)
         if currentLobby.currentRules.multikidnap:
             kidnapEmoji = str('♾️')
             kidnapVal = 'Multi-kidnap'
@@ -64,6 +74,17 @@ class embedBuilder:
             rankedEmoji = currentTheme.emojiRanked
             rankedChoice = 'Ranked'
         returnedEmbed.add_field(name = 'Ranked Status', value = f'{rankedEmoji}`{rankedChoice}`', inline= False)
+        return returnedEmbed
+    
+    async def lobbyPlayerUpdate(currentLobby, currentTheme, prefix):
+        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}lobby` to view the current lobby settings for a more comprehensive view.', color = currentTheme.lobbyEmbedColor)
+        playerList = ''
+        for player in currentLobby.users:
+            playerList += f'**{player.mention}**'
+            if player == currentLobby.host:
+                playerList += str('👑')
+            playerList += '\n'
+        returnedEmbed.add_field(name = 'Players', value = playerList, inline = False)
         return returnedEmbed
     
     async def buildReset(prefix):

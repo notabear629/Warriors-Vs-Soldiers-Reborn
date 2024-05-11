@@ -19,3 +19,6 @@ class Lobby:
 
     def clearUsers(self):
         self.users = [self.host]
+
+    def changeHost(self, newHost):
+        self.host = newHost

@@ -33,9 +33,10 @@ class helpBuilder:
     async def lobbyInfoEmbed(currentTheme, prefix):
         returnedEmbed = discord.Embed(title = 'Creating a Lobby', description = 'This section teaches you the commands used to successfully open a lobby', color = currentTheme.helpEmbedColor)
         returnedEmbed.add_field(name = f'`{prefix}host`', value = 'Simply call this command to host a game! It opens a lobby with you as the host.', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}givehost`', value = f'If you are the host of a lobby, you can use this command to make somebody else in the lobby the host. Usage: `{prefix}givehost @player`', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}join`', value = 'If there is already a lobby, and you are not in the lobby, you may use this command to join it.', inline= True)
         returnedEmbed.add_field(name = f'`{prefix}leave`', value = 'If you are already in a lobby and decide you no longer want to be in it, you may use this command to leave the lobby.', inline=True)
-        returnedEmbed.add_field(name = f'`{prefix}kick`', value = f'If you are the host of a lobby, you can use this command to remove a particular player from the lobby. Usage: `{prefix}kick @player`', inline=True)
+        returnedEmbed.add_field(name = f'`{prefix}kick`', value = f'If you are the host of a lobby, you can use this command to remove a particular player from the lobby. Usage: `{prefix}kick @player`', inline=True) 
         returnedEmbed.add_field(name = f'`{prefix}kickall`', value= f'If you are the host of the lobby, you may simply call this command to remove all players except for you. Kicking all other players as the name implies.', inline=True)
         returnedEmbed.add_field(name = f'`{prefix}lobby`', value = 'Calling this command will display the current status of the lobby, including its rules and players within it.', inline=True)
         returnedEmbed.add_field(name=f'`{prefix}options`', value = 'If you are the host of a lobby, you can call this command to bring up the menu to change its options and rules. The rules from the immediately previously played game are saved if the bot stood online, so if you wish to play with the same rules multiple games in a row, you will only have to configure this once.', inline=True)
@@ -53,6 +54,7 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'{currentTheme.emojiRumbling}`{currentTheme.rumblingName}`', value = 'This section teaches you more about the optional rule to play with new ways to win and find new endings! In the default theme, based off "The Rumbling" in Attack on Titan\'s final season.', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}`{currentTheme.wildcardPlural}`', value = f'This section explains everything to know about the 3rd team the {currentTheme.wildcardPlural}!', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiRanked}`Ranked Status`', value = 'This section explains what setting the game to Ranked or Casual does', inline=True)
+        returnedEmbed.add_field(name = f'🧠`Intelligent Role Selection`', value = 'This section explains intelli-roles and what exactly the setting does.', inline=True)
         returnedEmbed.add_field(name = f'👥`Role Options`', value = 'This section explains how to properly configure the Role Options based on what you want', inline=True)
         returnedEmbed.add_field(name = f'💾`Saved Rulesets`', value= 'This section explains how to quickly save and load particular rulesets', inline=True)
         return returnedEmbed
@@ -101,6 +103,14 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'{currentTheme.emojiCasual}`Casual`', value = 'Selecting this value means that the results of this game will not be tracked. In addition, it will allow for some of the whackier rules to be played.', inline=True)
         return returnedEmbed
     
+    async def intelligentRolesEmbed(currentTheme, loadedRoles):
+        returnedEmbed = discord.Embed(title = 'Intelligent Role Selection', description = 'By default, this setting is enabled. It controls if special rules are used to determine which roles are allowed to be picked or not.', color = currentTheme.helpEmbedColor)
+        Mikasa = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Mikasa')
+        Mikasa = Mikasa.shortName
+        returnedEmbed.add_field(name = f'🧠`Intell-Roles Enabled`', value = f'When this setting is enabled, intell-roles is on. The way this works is that certain roles are considered "Prime Roles", meaning they can always be in the game no matter what. Other roles are considered to have "Dependencies". An example of this is {Mikasa}. {Mikasa} only has value if killing roles are in the game. Therefore, in order for {Mikasa} to appear in the game under this setting, there is a specific requirement that a killing role must also be in the game. This is potentially one example, but there are many. It should be noted that these dependencies are OVERRULED by enabling a role. If you enable a role, it will appear regardless of intelli-role depencies.', inline=True)
+        returnedEmbed.add_field(name = '❌`Intell-Roles Disabled`', value = f'When the setting is disabled, it means that roles will be selected at random without any regard to if they may be useful or not, no role dependencies will be considered during the selection process.', inline=True)
+        return returnedEmbed
+
     async def roleOptionsInfoEmbed(currentTheme):
         returnedEmbed = discord.Embed(title = 'Role Options', description= 'By default, the game will give you a completely random list of roles. Generating specific roles unless there are more players than roles, then which generic roles will be given out, akin to the generic Warrior/Soldier in the original Warriors vs Soldiers game. However, on a per-team basis, you can configure certain roles to be enabled or disabled.', color= currentTheme.helpEmbedColor)
         returnedEmbed.add_field(name = '✅`Role Enabling`', value = 'You can select certain roles to enable in the options menu. By doing this, you will GUARANTEE that a particular role shows up in the pool, and that role WILL appear in your game, unless you enabled more roles than there are players for that particular team. Roles that are not enabled will not be disbarred from being added. If you play with 5 players and you enable a particular role, the soldier roles will always consist of The Coordinate, the role you enabled, and another random role from the list.', inline=True)
@@ -299,7 +309,7 @@ class helpBuilder:
             if navigator == interaction.user:
                 if clickedButton == 'Go Back':
                     mainReturns = ['User Info', 'Starting a Game', 'Game Options and Rules', 'How to Play', 'Role Info', 'Help', 'Stats']
-                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked', 'Wildcards', 'Team Captains']
+                    optionsAndRulesReturns = ['Game Themes', 'Kidnap Rules', 'Rumbling', 'Role Options', 'Saved Rulesets', 'Ranked', 'Wildcards', 'Team Captains', 'Intelligent Roles']
                     howToPlayReturns = ['Game Info', 'Proposal Stage', 'Voting Stage', 'Action Stage', 'Special']
                     statsReturns = ['StatsInfo', 'StatsCommands']
                     if navigatorContext in mainReturns:
@@ -333,6 +343,10 @@ class helpBuilder:
                 elif clickedButton == 'Role Info':
                     newNavigatorContext = 'Role Info'
                     refreshedEmbed = await helpBuilder.roleInfoHelpEmbed(currentTheme)
+
+                elif clickedButton == 'Intelligent Roles':
+                    newNavigatorContext = 'Intelligent Roles'
+                    refreshedEmbed = await helpBuilder.intelligentRolesEmbed(currentTheme, loadedRoles)
 
                 elif clickedButton == 'Saved Rulesets':
                     newNavigatorContext = 'Saved Rulesets'
@@ -507,6 +521,12 @@ class helpBuilder:
                 await navigate(interaction, 'Role Options')
             roleOptionsButton.callback = processRoleOptionsButton
             returnedView.add_item(roleOptionsButton)
+
+            intelligentRolesButton = Button(label = 'Intelli-Roles', style = discord.ButtonStyle.grey, emoji = str('🧠'))
+            async def processIntelligentRolesButton(interaction):
+                await navigate(interaction, 'Intelligent Roles')
+            intelligentRolesButton.callback = processIntelligentRolesButton
+            returnedView.add_item(intelligentRolesButton)
 
             savedRulesetsButton = Button(label = 'Saved Rulesets', style=discord.ButtonStyle.grey, emoji = str('💾'))
             async def processSavedRulesetsButton(interaction):

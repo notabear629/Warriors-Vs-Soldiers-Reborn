@@ -22,4 +22,5 @@ class defaultRules:
     noCoordinate = False
     noWarchief = False
     wildcards = False
+    intelligentRoles = True
 

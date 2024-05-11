@@ -40,6 +40,10 @@ class expoProposalFunctions:
             if 1 in currentGame.passedRounds:
                 dynamicOffset -= 1
             expeditionNumber = 3 + dynamicOffset
+        if currentGame.currentRules.wildcards:
+            specialOffset = len(currentGame.soldiers)-len(currentGame.warriors)-2
+            if specialOffset > 0:
+                expeditionNumber += specialOffset
         woundOffset = 0
         if currentGame.woundedPlayer in currentGame.livingSoldiers and expeditionNumber > (len(currentGame.livingSoldiers) - 1):
             woundOffset = 1
@@ -66,6 +70,10 @@ class expoProposalFunctions:
         else:
             sampleDict = {'low': 3, 'high': 5}
             roundNumbers = [2, 3, sampleDict, sampleDict, sampleDict]
+            if currentGame.currentRules.wildcards:
+                specialOffset = len(currentGame.soldiers)-len(currentGame.warriors)-2
+                if specialOffset > 0:
+                    roundNumbers = [2, 3+specialOffset, sampleDict, sampleDict, sampleDict]
             while len(roundNumbers) > roundsToPredict:
                 roundNumbers.pop(0)
             index = 0
@@ -110,6 +118,11 @@ class expoProposalFunctions:
                     elif roundPredicted == 3:
                         minimumFloor = 3
                         maximumCeiling = 4
+                    if currentGame.currentRules.wildcards:
+                        specialOffset = len(currentGame.soldiers)-len(currentGame.warriors)-2
+                        if specialOffset > 0:
+                            minimumFloor += specialOffset
+                            maximumCeiling += specialOffset
                     if minimumFloor > len(currentGame.livingSoldiers):
                         minimumFloor = len(currentGame.livingSoldiers)
                     if maximumCeiling > len(currentGame.livingSoldiers):

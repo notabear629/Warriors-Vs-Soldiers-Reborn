@@ -48,26 +48,7 @@ class gameStartFunctions:
 
     async def createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges):
         playerCounts = await gameStartFunctions.getPlayerCounts(currentLobby)
-        roleList = []
-
-        roleList += await gameStartFunctions.getSoldierRoles(playerCounts['soldierCount'], currentTheme, client, currentLobby)
-        roleList += await gameStartFunctions.getWarriorRoles(playerCounts['warriorCount'], currentTheme, client, currentLobby)
-        if playerCounts['wildcardCount'] != 0:
-            roleList += await gameStartFunctions.getWildcardRoles(playerCounts['wildcardCount'], currentTheme, client, currentLobby)
-            if len(roleList) < len(currentLobby.users):
-                soldierCount = playerCounts['soldierCount']
-                warriorCount = playerCounts['warriorCount']
-                additionalSoldiers = 0
-                additionalWarriors = 0
-                while len(roleList) < len(currentLobby.users):
-                    if soldierCount + 1 > warriorCount + 2:
-                        warriorCount += 1
-                        additionalWarriors += 1
-                        roleList += await gameStartFunctions.getWarriorRoles(additionalWarriors, currentTheme, client, currentLobby, roleList)
-                    else:
-                        soldierCount += 1
-                        additionalSoldiers += 1
-                        roleList += await gameStartFunctions.getSoldierRoles(additionalSoldiers, currentTheme, client, currentLobby, roleList)
+        roleList = await gameStartFunctions.getRoles(playerCounts['soldierCount'], playerCounts['warriorCount'], playerCounts['wildcardCount'], currentTheme, client, currentLobby)
         roleList = random.sample(roleList, len(roleList))
         players = []
         index = 0
@@ -80,28 +61,13 @@ class gameStartFunctions:
     async def getPlayerCounts(currentLobby):
         playerCount = len(currentLobby.users)
         if currentLobby.currentRules.wildcards:
-            soldierCount = 4
-            warriorCount = 2
-            wildcardCount = 1
-            index = 8
-            wildcardMax = len(Role.wildcardRoles)
-            while index <= len(currentLobby.users):
-                if soldierCount == (warriorCount + wildcardCount):
-                    soldierCount += 1
-                else:
-                    if wildcardCount < wildcardMax:
-                        if warriorCount + wildcardCount + 1 == soldierCount:
-                            warriorCount += 1
-                        else:
-                            wildcardCount += 1
-                    else:
-                        if soldierCount + 1 > warriorCount + 2:
-                            warriorCount += 1
-                        else:
-                            soldierCount += 1
-                index += 1
+            if playerCount % 2 == 0:
+                soldierCount = playerCount/2 + 1
+            else:
+                soldierCount = playerCount/2 + .5
+            wildcardCount = (playerCount-7)//5 + 1
+            warriorCount = playerCount - soldierCount - wildcardCount
         else:
-            
             if playerCount % 2 == 0:
                 soldierCount = playerCount/2 + 1
             else:
@@ -109,6 +75,145 @@ class gameStartFunctions:
             warriorCount = playerCount-soldierCount
             wildcardCount = 0
         return {'playerCount' : playerCount, 'soldierCount' : soldierCount, 'warriorCount' : warriorCount, 'wildcardCount': wildcardCount}
+    
+
+    async def getRoles(soldierCount, warriorCount, wildcardCount, currentTheme, client, currentLobby):
+        roleNames = []
+        soldierRoleNames = []
+        warriorRoleNames = []
+        wildcardRoleNames = []
+        bannedRoles = currentLobby.currentRules.disabledSoldiers + currentLobby.currentRules.disabledWarriors + currentLobby.currentRules.disabledWildcards
+        if currentLobby.currentRules.noCoordinate == False:
+            roleNames.append('Eren')
+            soldierRoleNames.append('Eren')
+            for role in Role.soldierBannedNoEren:
+                if role not in bannedRoles:
+                    bannedRoles.append(role)
+        if currentLobby.currentRules.noWarchief == False:
+            roleNames.append('Zeke')
+            warriorRoleNames.append('Zeke')
+            for role in Role.soldierBannedNoZeke:
+                if role not in bannedRoles:
+                    bannedRoles.append(role)
+
+        if wildcardCount > 0:
+            bannedWildcards = []
+            for role in bannedRoles:
+                if role in Role.wildcardRoles:
+                    bannedWildcards.append(role)
+            while wildcardCount > len(Role.wildcardRoles) - len(bannedWildcards):
+                wildcardCount -= 1
+                if soldierCount - warriorCount - (len(Role.wildcardRoles) - len(bannedWildcards)) >= 2:
+                    warriorCount += 1
+                else:
+                    soldierCount += 1
+        
+        forcedSoldiers = currentLobby.currentRules.enabledSoldiers.copy()
+        while len(soldierRoleNames) < soldierCount and len(forcedSoldiers) > 0:
+            soldierChoice = random.choice(forcedSoldiers)
+            forcedSoldiers.remove(soldierChoice)
+            roleNames.append(soldierChoice)
+            soldierRoleNames.append(soldierChoice)
+
+        forcedWarriors = currentLobby.currentRules.enabledWarriors.copy()
+        while len(warriorRoleNames) < warriorCount and len(forcedWarriors) > 0:
+            warriorChoice = random.choice(forcedWarriors)
+            forcedWarriors.remove(warriorChoice)
+            roleNames.append(warriorChoice)
+            warriorRoleNames.append(warriorChoice)
+
+        forcedWildcards = currentLobby.currentRules.enabledWildcards.copy()
+        while len(wildcardRoleNames) < wildcardCount and len(forcedWildcards) > 0:
+            wildcardChoice = random.choice(forcedWildcards)
+            forcedWildcards.remove(wildcardChoice)
+            roleNames.append(wildcardChoice)
+            wildcardRoleNames.append(wildcardChoice)
+
+        validSoldiers = []
+        validWarriors = []
+        validWildcards = []
+        if currentLobby.currentRules.intelligentRoles:
+            roleRoot = Role.primeRoles.copy()
+        else:
+            roleRoot = Role.allRoles.copy()
+
+        for role in roleRoot:
+            if role in Role.soldierGroupOptional and role not in bannedRoles and role not in soldierRoleNames:
+                validSoldiers.append(role)
+            if role in Role.warriorGroupOptional and role not in bannedRoles and role not in warriorRoleNames:
+                validWarriors.append(role)
+
+        for role in Role.wildcardRoles:
+            if role not in bannedRoles and role not in wildcardRoleNames:
+                validWildcards.append(role)
+        
+        if currentLobby.currentRules.intelligentRoles:
+            updateCall = await gameStartFunctions.updateIntelligentRoles(soldierRoleNames, warriorRoleNames, validSoldiers, validWarriors, soldierCount, warriorCount, bannedRoles)
+            validSoldiers = updateCall[0]
+            validWarriors = updateCall[1]
+
+        while len(soldierRoleNames) < soldierCount:
+            if currentLobby.currentRules.intelligentRoles:
+                updateCall = await gameStartFunctions.updateIntelligentRoles(soldierRoleNames, warriorRoleNames, validSoldiers, validWarriors, soldierCount, warriorCount, bannedRoles)
+                validSoldiers = updateCall[0]
+                validWarriors = updateCall[1]
+            if len(validSoldiers) == 0:
+                soldierRoleNames.append('Soldier')
+                roleNames.append('Soldier')
+            else:
+                soldierChoice = random.choice(validSoldiers)
+                validSoldiers.remove(soldierChoice)
+                soldierRoleNames.append(soldierChoice)
+                roleNames.append(soldierChoice)
+
+        while len(warriorRoleNames) < warriorCount:
+            if len(validWarriors) == 0:
+                warriorRoleNames.append('Warrior')
+                roleNames.append('Warrior')
+            else:
+                warriorChoice = random.choice(validWarriors)
+                validWarriors.remove(warriorChoice)
+                warriorRoleNames.append(warriorChoice)
+                roleNames.append(warriorChoice)
+
+        
+        while len(wildcardRoleNames) < wildcardCount:
+            wildcardChoice = random.choice(validWildcards)
+            validWildcards.remove(wildcardChoice)
+            wildcardRoleNames.append(wildcardChoice)
+            roleNames.append(wildcardChoice)
+
+        returnedRoles = []
+        for roleName in roleNames:
+            roleInfo = getattr(currentTheme, roleName)
+            if type(roleInfo['emoji']) == int:
+                roleInfo['emoji'] = client.get_emoji(roleInfo['emoji'])
+            if type(roleInfo['secondaryEmoji']) == int:
+                roleInfo['secondaryEmoji'] = client.get_emoji(roleInfo['secondaryEmoji'])
+            returnedRoles.append(Role(roleInfo))
+
+        return returnedRoles
+    
+    async def updateIntelligentRoles(soldierRoleNames, warriorRoleNames, validSoldiers, validWarriors, soldierCount, warriorCount, bannedRoles):
+        for role, dependencies in Role.roleDependencies.items():
+            if role in bannedRoles or role in validSoldiers or role in validWarriors or role in soldierRoleNames or role in warriorRoleNames:
+                continue
+            for dependency, condition in dependencies.items():
+                if dependency == 'soldierCount' and soldierCount >= condition and role in Role.soldierGroupOptional:
+                    validSoldiers.append(role)
+                    break
+                if dependency == 'warriorCount' and warriorCount >= condition and role in Role.warriorGroupOptional:
+                    validWarriors.append(role)
+                    break
+                if dependency == 'requiredRoles':
+                    for conditionalRole in condition:
+                        if conditionalRole in soldierRoleNames or conditionalRole in warriorRoleNames:
+                            if role in Role.soldierGroupOptional:
+                                validSoldiers.append(role)
+                            if role in Role.warriorGroupOptional:
+                                validWarriors.append(role)
+                            break
+        return (validSoldiers, validWarriors)
 
     async def getSoldierRoles(soldierCount, currentTheme, client, currentLobby, existingRoles=None):
         if currentLobby.currentRules.noCoordinate or existingRoles != None:

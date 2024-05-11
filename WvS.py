@@ -125,6 +125,10 @@ async def kick(ctx, kicked:discord.Member=None):
 async def kickall(ctx):
     await lobbyFunctions.kickAll(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
 
+@client.command('givehost')
+async def givehost(ctx, newHost:discord.Member=None):
+    await lobbyFunctions.giveHost(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, newHost)
+
 @client.command('lobby')
 async def lobby(ctx):
     await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)

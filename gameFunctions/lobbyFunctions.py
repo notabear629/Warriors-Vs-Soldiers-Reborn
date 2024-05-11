@@ -34,7 +34,7 @@ class lobbyFunctions:
                     if currentGame.online == False:
                         if len(currentLobby.users) < 24:
                             currentLobby.addUser(ctx.message.author)
-                            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                            embed = await embedBuilder.lobbyPlayerUpdate(currentLobby, currentTheme, prefix)
                             await home.send(embed=embed, allowed_mentions= noMentions)
                             await home.send(f'**{ctx.message.author.name}** has joined the Lobby.')
                         else:
@@ -43,6 +43,31 @@ class lobbyFunctions:
                         await ctx.message.reply('You may not join a currently active game! Please wait for the game to finish and a new one to begin.')
             else:
                 await ctx.message.reply(f'There is no active lobby. Why not create one using `{prefix}host`?')
+
+    async def giveHost(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, newHost):
+        if home == ctx.channel:
+            if newHost == None:
+                await ctx.message.reply(f'You didn\'t specify who you want the new host to be. We can\'t have a host-less lobby you no-good anarchist. `{prefix}givehost @guyYouWannaGiveHostTo`.')
+            else:
+                if currentLobby.online:
+                    if ctx.message.author == currentLobby.host:
+                        if newHost != currentLobby.host:
+                            if newHost in currentLobby.users:
+                                if currentGame.online == False:
+                                    currentLobby.changeHost(newHost)
+                                    embed = await embedBuilder.lobbyPlayerUpdate(currentLobby, currentTheme, prefix)
+                                    await home.send(embed=embed, allowed_mentions= noMentions)
+                                    await home.send(f'**{newHost.name}** is now the host of the lobby.')
+                                else:
+                                    await ctx.message.reply('You can\'t change hosts mid-game, fool! Honestly it wouldn\'t change much if you could, but I decided you can\'t. Deal with it.')
+                            else:
+                                await ctx.message.reply(f'You can\'t force someone to host if they aren\'t even in the lobby! You may only give host to {newHost.name} if they joined the lobby.')
+                        else:
+                            await ctx.message.reply('Oh wow! Sure, you\'re now the host! Huge change to the lobby! Good job, that was a wise call!')
+                    else:
+                        await ctx.message.reply(f'You\'re not the host you freaking revolutionary, you can\'t just coup {currentLobby.host.name} on your whim!')
+                else:
+                    await ctx.message.reply(f'There is no lobby. If you\'re gonna be a responsibility abdicating coward at least use `{prefix}host` before crying to {newHost.name} to do the heavy lifting.')
 
     #Test Command Only
     async def forceJoin(ctx, bozos, currentLobby, currentGame, currentTheme, prefix, noMentions, home):
@@ -59,7 +84,7 @@ class lobbyFunctions:
                     if currentLobby.host != ctx.message.author:
                         if currentGame.online == False:
                             currentLobby.removeUser(ctx.message.author)
-                            embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                            embed = await embedBuilder.lobbyPlayerUpdate(currentLobby, currentTheme, prefix)
                             await home.send(embed=embed, allowed_mentions= noMentions)
                             await home.send(f'**{ctx.message.author.name}** has left the Lobby.')
                         else:
@@ -82,7 +107,7 @@ class lobbyFunctions:
                             if kicked in currentLobby.users:
                                 if currentGame.online == False:
                                     currentLobby.removeUser(kicked)
-                                    embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                                    embed = await embedBuilder.lobbyPlayerUpdate(currentLobby, currentTheme, prefix)
                                     await home.send(embed=embed, allowed_mentions= noMentions)
                                     await home.send(f'**{kicked.name}** has been kicked back to where they came from.')
                                 else:
@@ -102,7 +127,7 @@ class lobbyFunctions:
                 if ctx.message.author == currentLobby.host:
                     if currentGame.online == False:
                         currentLobby.clearUsers()
-                        embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                        embed = await embedBuilder.lobbyPlayerUpdate(currentLobby, currentTheme, prefix)
                         await home.send(embed=embed, allowed_mentions= noMentions)
                         await home.send('The lobby has been rumbled.')
                     else:

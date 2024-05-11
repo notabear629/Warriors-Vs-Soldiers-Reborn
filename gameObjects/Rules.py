@@ -76,6 +76,9 @@ class Rules:
         self.noCoordinate = not erenKey
         self.noWarchief = not zekeKey
 
+    def toggleIntelligentRoles(self):
+        self.intelligentRoles = not self.intelligentRoles
+        
     def toggleWildcards(self):
         self.wildcards = not self.wildcards
 

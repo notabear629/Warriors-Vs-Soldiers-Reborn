@@ -76,6 +76,13 @@ class Role:
     #Combine all Roles with getInfo functions to one list
     infoMessageRoles = soldierGroupCoordinate + warriorRoles + soldierGroupInfo
 
+    #Define prime roles for intelligent selection
+    primeRoles = ['Historia', 'Jean', 'Daz', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Petra', 'Pyxis', 'Mike', 'Floch', 'Nile', 'Connie', 'Niccolo', 'Pieck', 'Annie', 'Porco', 'Falco', 'Gabi', 'Yelena', 'Lara', 'Bertholdt', 'Willy']
+
+    #Now define role dependencies for intelligent selection
+    roleDependencies = {'Erwin':{'soldierCount':4}, 'Hannes':{'soldierCount':4}, 'Mikasa':{'requiredRoles':['Armin', 'Sasha', 'Pyxis', 'Willy']}, 'Armin':{'soldierCount':4}, 'Sasha':{'soldierCount':4}, 'Hitch':{'requiredRoles':['Jean', 'Daz', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Mikasa', 'Sasha', 'Petra', 'Pyxis', 'Pieck', 'Annie', 'Falco', 'Gabi', 'Yelena', 'Lara', 'Bertholdt']}, 'Marlowe':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis', 'Willy']}, 'Marco':{'soldierCount':4}, 'Reiner':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis']}, 'Magath':{'requiredRoles':['Niccolo'], 'warriorCount':3}}
+    
+
     def __init__(self, roleInfo):
         self.id = roleInfo['roleID']
         self.name = roleInfo['name']
