@@ -1119,7 +1119,7 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are the "Shut-Your-Jaw" Titan! Use `{prefix}gag` to open the menu to choose to gag a player. When a player is gagged, they are not able to speak and their commander turn gets skipped! However, there is an important exception! A flared Erwin is ungaggable.\n\n'
+        roleDict['roleMessage'] = f'You are the "Shut-Your-Jaw" Titan! Use `{prefix}gag` to open the menu to choose to gag a player. When a player is gagged, they are not able to speak and their commander turn gets skipped! However, there is an important exception! A flared Erwin is ungaggable. In addition, you can use `{prefix}ungag` to remove the gag. This will NOT allow you to gag somebody else or refund your ability in any way.\n\n'
 
         roleDict['gameRole'] = ':shushing_face:Gag Orderer:shushing_face:'
 

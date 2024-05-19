@@ -27,6 +27,7 @@ class gameStartFunctions:
                         if len(currentLobby.users) >= 5:
                             illegalRules = await gameStartFunctions.checkIllegalRules(currentLobby, currentTheme)
                             if illegalRules == '':
+                                currentGame.turnOnline()
                                 await home.send(f'Starting game with **{len(currentLobby.users)}** Players...')
                                 await gameStartFunctions.createGame(currentGame, currentLobby, currentTheme, client, currentRules, loadedRoles, gagRole, loadedBadges)
                                 expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)

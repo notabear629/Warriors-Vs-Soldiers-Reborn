@@ -266,6 +266,10 @@ async def scream(ctx):
 async def gag(ctx):
     await midGameFunctions.gag(ctx, currentGame, currentTheme, prefix, client, gagRole, midGameFunctions.executeGag)
 
+@client.command('ungag')
+async def ungag(ctx):
+    await midGameFunctions.ungag(ctx, currentGame, currentTheme, client)
+
 @commands.max_concurrency(1, per=commands.BucketType.default, wait=True)
 @client.command('check')
 async def check(ctx, *, checkedPlayer:discord.Member):

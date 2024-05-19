@@ -124,7 +124,7 @@ class discordViewBuilder:
             pieckButtonReject.callback = processPieckReject
             returnedView.add_item(pieckButtonReject)
 
-        if player.role.id == 'Yelena' and player.role.abilityActive:
+        if player.role.id == 'Yelena' and player.role.abilityActive and len(currentGame.livingPlayers) > 1:
             yelenaSelect = Select(placeholder = 'Choose Vote to Steal')
             for voter in currentGame.currentExpo.eligibleVoters:
                 if voter != player and ((voter.role.id == 'Marco' and voter in currentGame.deadPlayers) == False):
@@ -205,7 +205,7 @@ class discordViewBuilder:
             dazButton.callback = processDazButton
             returnedView.add_item(dazButton) 
         
-        if (player.role.id == 'Petra' or player.role.id == 'Warhammer') and player.role.abilityActive and currentGame.currentExpo.size > 1:
+        if (player.role.id == 'Petra' or player.role.id == 'Warhammer') and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             petraSelect = Select(placeholder = f'Choose Player to Watch')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
                 if expeditioner != player:
@@ -221,7 +221,7 @@ class discordViewBuilder:
             petraSelect.callback = processPetraSelection
             returnedView.add_item(petraSelect)
 
-        if player.role.id == 'Hange' and player.role.abilityActive:
+        if player.role.id == 'Hange' and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             hangeSelect = Select(placeholder = f'Choose Player to Wiretap')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
                 if expeditioner != player:
@@ -279,7 +279,7 @@ class discordViewBuilder:
             laraButton.callback = processLaraButton
             returnedView.add_item(laraButton)
 
-        if player.role.id == 'Willy' and player.role.abilityActive:
+        if player.role.id == 'Willy' and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             willySelect = Select(placeholder = 'Choose Player to Kamikaze')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
                 if expeditioner != player:
@@ -569,7 +569,7 @@ class discordViewBuilder:
         
         async def processPorcoSelection(interaction):
             if await discordViewBuilder.isInteractionIntended(Porco, interaction):
-                if currentGame.online and interaction.user == Porco.user and Porco.role.abilityActive and Porco in currentGame.livingPlayers:
+                if currentGame.online and interaction.user == Porco.user and Porco.role.abilityActive and Porco in currentGame.livingPlayers and currentGame.exposOver == False:
                     selection = str(porcoTargetSelection.values[0])
                     for player in currentGame.livingPlayers:
                         if player.user.name == selection:

@@ -115,6 +115,9 @@ class Game:
     def turnOffline(self):
         self.online = False
 
+    def turnOnline(self):
+        self.online = True
+
     def setExpedition(self, currentExpo):
         if self.currentExpo != None:
             self.expeditionHistory.append(self.currentExpo)

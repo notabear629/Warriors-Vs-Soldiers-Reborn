@@ -93,6 +93,10 @@ class expoActiveFunctions:
                     rumblingCheck = await expoActiveFunctions.checkRumblingClause(currentGame)
                     if rumblingCheck:
                         await expoActiveFunctions.startRumbling(currentGame, currentTheme, home, client, homeServer, discord)
+                        if currentGame.porcoGagged != None:
+                            for user in currentGame.gagRole.members:
+                                await user.remove_roles(currentGame.gagRole)
+                            currentGame.removeGag()
                         return True
                 Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
                 if Hannes != None and currentGame.currentExpo.hannesActivated == Hannes:

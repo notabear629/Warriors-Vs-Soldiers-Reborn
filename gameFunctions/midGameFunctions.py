@@ -171,9 +171,23 @@ class midGameFunctions:
             Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
             user = databaseManager.searchForUser(Porco.user)
             userChannel = client.get_channel(user['channelID'])
-            if Porco != None and Porco.user == ctx.message.author and Porco.role.abilityActive and ctx.message.channel == userChannel:
+            if Porco != None and Porco.user == ctx.message.author and Porco.role.abilityActive and ctx.message.channel == userChannel and currentGame.exposOver == False:
                 view = await discordViewBuilder.porcoTargetView(currentGame, currentTheme, Porco, gagRole, gagFunction, client)
                 await userChannel.send('Choose who to gag!', view=view)
+                if Porco == currentGame.hangeWiretapped:
+                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+
+    async def ungag(ctx, currentGame, currentTheme, client):
+        if currentGame.online and currentGame.porcoGagged != None:
+            Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
+            user = databaseManager.searchForUser(Porco.user)
+            userChannel = client.get_channel(user['channelID'])
+            if Porco != None and Porco.user == ctx.message.author and ctx.message.channel == userChannel:
+                if currentGame.porcoGagged != None:
+                    for user in currentGame.gagRole.members:
+                        await user.remove_roles(currentGame.gagRole)
+                    currentGame.removeGag()
+                    await ctx.reply('The gag has been removed.')
                 if Porco == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
