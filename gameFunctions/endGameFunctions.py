@@ -184,6 +184,7 @@ class endGameFunctions:
     async def processEndgameStats(currentGame):
         for player in currentGame.players:
             player.stats.processEndgame(player, currentGame)
+        await Stats.processELO(currentGame)
 
     async def notifyBadges(currentGame, home):
         badgeUpdates = await endGameFunctions.checkUserBadges(currentGame)

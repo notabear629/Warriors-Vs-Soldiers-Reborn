@@ -414,9 +414,6 @@ class embedBuilder:
             playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
         if player.role.id == 'Willy':
             playerList += f'{player.role.emoji} Select a player from the Kamikaze selection to kill them and yourselves while sabotaging this {currentTheme.expeditionName}!\n'
-        if player.role.id == 'Lara':
-            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
-            playerList += f'{Warhammer.emoji} Select Transform to Sabotage this {currentTheme.expeditionName} and transform into {Warhammer.name}!\n'
         if player.role.id == 'Kenny':
             playerList += f'{player.role.secondaryEmoji} Select a player to Kill to kill them and pass this {currentTheme.expeditionName}.\n'
 
@@ -443,9 +440,6 @@ class embedBuilder:
             decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
         elif player.role.id == 'Willy' and currentGame.currentExpo.willyBombed != None:
             decisionString = f'You have chosen to Kamikaze {currentGame.currentExpo.willyBombed.user.name}.'
-        elif player.role.id == 'Lara' and currentGame.currentExpo.laraActivated:
-            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
-            decisionString = f'You have chosen to transform into {Warhammer.name}!'
         elif player.role.id == 'Kenny' and currentGame.currentExpo.kennyMurdered != None:
             decisionString = f'You have chosen to Kill {currentGame.currentExpo.kennyMurdered.user.name}.'
         elif player in currentGame.currentExpo.passedExpedition:
@@ -829,9 +823,10 @@ class embedBuilder:
     
     async def marloweMessageEmbed(currentGame, currentTheme):
         desc = 'You have identified the following bodies:\n'
-        for player in currentGame.deadPlayers:
-            desc += f'**{player.user.name}** - {player.role.emoji}`{player.role.name}`{player.role.emoji}\n'
         returnedEmbed = discord.Embed(title = 'Body Investigation Report', description=desc, color = currentTheme.deadColor)
+        for player in currentGame.deadPlayers:
+            for killer, causeOfDeath in player.killedBy.items():
+                returnedEmbed.add_field(name = f'**{player.role.emoji}{player.user.name}{player.role.emoji}**', value = f'Killed By {killer.role.emoji}`{killer.user.name}`{killer.role.emoji}', inline=True)
         returnedEmbed.set_thumbnail(url = currentTheme.deadThumbnail)
         return returnedEmbed
 

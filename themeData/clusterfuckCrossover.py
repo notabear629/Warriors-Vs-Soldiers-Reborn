@@ -197,8 +197,6 @@ class clusterfuckCrossover:
     willyMessage = '***SSSSSS....***'
     pyxisMessage = 'Let us begin... A class trial!'
     marcoMessage = '...'
-    laraMessage = '...'
-    warhammerMessage = 'When I\'m done with you, you won\'t even be able to bark.'
     warhammerApologyMessage = 'Deal with it, vermin.'
 
     #Other role messages
@@ -1259,8 +1257,9 @@ class clusterfuckCrossover:
 
         roleDict['helpInfo'] =  f'**Credit to Space (JustAboutEnoughSpace) for this role!**\n\nAzula always lies! Once per game, she can steal the vote of another player, switching that player\'s vote with the opposite of which they voted'
 
-    class Lara:
-        roleDict = {'roleID' : 'Lara'}
+
+    class Warhammer:
+        roleDict = {'roleID' : 'Warhammer'}
 
         roleDict['name'] = 'Makima'
 
@@ -1274,35 +1273,7 @@ class clusterfuckCrossover:
 
         roleDict['emoji'] = 1228808367573831881
 
-        roleDict['secondaryEmoji'] = None
-
-        roleDict['imageURL'] = None
-        
-        roleDict['secondaryImageURL'] = None
-
-        roleDict['roleMessage'] = f'You are the controller of the Control Devil! In order to activate it so you can use it, you need to get on a mission so that you can use the `Transform` button which will sabotage the mission and transform you into the Control Devil!'
-
-        roleDict['gameRole'] = ':key:Armory Owner:key:'
-
-        roleDict['helpInfo'] =  f'Makima is the controller of the Control Devil. Pretty much her only role is to get on a mission so that she can become the Control Devil'
-
-
-    class Warhammer:
-        roleDict = {'roleID' : 'Warhammer'}
-
-        roleDict['name'] = 'The Control Devil'
-
-        roleDict['shortName'] = 'Control Devil'
-
-        roleDict['team'] = 'Warriors'
-
-        roleDict['rumblingTeam'] = 'allianceFighter'
-
-        roleDict['isTitan'] = True
-
-        roleDict['emoji'] = 1228811083863687199
-
-        roleDict['secondaryEmoji'] = 1228811083863687199
+        roleDict['secondaryEmoji'] = 1228808367573831881
 
         roleDict['imageURL'] = None
         
@@ -1585,7 +1556,7 @@ class clusterfuckCrossover:
         if realSasha == None:
             secEmo = Sasha.role.secondaryEmoji
         else:
-            secEmo = realSasha.role.secondaryEmoji
+            secEmo = realSasha.secondaryEmoji
         sashaDeathMessages = ''
         for killedPlayer, causeOfDeath in Sasha.killed.items():
             if causeOfDeath == 'Sasha':
@@ -1623,7 +1594,7 @@ class clusterfuckCrossover:
         if realPyxis == None:
             secEmo = Pyxis.role.secondaryEmoji
         else:
-            secEmo = realPyxis.role.secondaryEmoji
+            secEmo = realPyxis.secondaryEmoji
         pyxisDeathMessages = ''
         for killedPlayer, causeOfDeath in Pyxis.killed.items():
             if causeOfDeath == 'Pyxis':

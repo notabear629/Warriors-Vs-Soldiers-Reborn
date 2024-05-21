@@ -34,11 +34,9 @@ class statBuilder:
         return per
     
     async def getRoleTW(db, globalDB, wins, plays):
-        if wins.startswith('Keith') or wins.startswith('Lara'):
+        if wins.startswith('Keith'):
             if wins.startswith('Keith'):
                 role = 'Keith'
-            elif wins.startswith('Lara'):
-                role = 'Lara'
             if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                 return 0.0
             elif db[f'{role}FinishedWon'] == globalDB[f'{role}FinishedWon']:
@@ -66,7 +64,7 @@ class statBuilder:
         #initialize t = total
         t = 0
         for role in roles:
-            specialRoles = ['Keith', 'Lara']
+            specialRoles = ['Keith']
             if role in specialRoles:
                 if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                     continue
@@ -106,7 +104,7 @@ class statBuilder:
         roles = Role.allRoles.copy()
         t = 0
         for role in roles:
-            specialRoles = ['Keith', 'Lara']
+            specialRoles = ['Keith']
             if role in specialRoles:
                 if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                     continue
@@ -143,7 +141,7 @@ class statBuilder:
         return round(t*100, 1)
     
     async def getRoleWORP(db, globalDB, role, stackCase=False):
-        specialRoles = ['Keith', 'Lara']
+        specialRoles = ['Keith']
         if role in specialRoles:
             if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                 return 0.0
@@ -240,7 +238,7 @@ class statBuilder:
         if user != 'GLOBAL':
             returnedEmbed.add_field(name = 'Rank', value = f'{playerIndex}/{playerNumber}', inline= True)
             if len(rootDB['titles']) > 0:
-                titles = ['LegacyPoints', 'WORP', 'SoldierWORP', 'WarriorWORP', 'MVPS', 'BadgePoints']
+                titles = ['LegacyPoints', 'WORP', 'MostWins', 'ELO', 'MVPS', 'BadgePoints', 'SoldierWORP', 'WarriorWORP', 'Kills', 'Deaths', 'MostKidnappable', 'BiggestLoser', 'MostKidnapWins', 'SinaSmasher']
                 titleValue = ""
                 for title in titles:
                     if title in rootDB['titles']:
@@ -465,13 +463,6 @@ class statBuilder:
             returnedEmbed.add_field(name = f'{role.shortName} Kills', value = f'{db['WillyKills']} ({await statBuilder.getPercentage(db, 'WillyKills', 'WillyPlayed')}% of Games, {await statBuilder.getPercentage(db, 'WillyKills', 'WillyDeaths')}% of Deaths)', inline=True)
         elif role.id == 'Yelena':
             returnedEmbed.add_field(name = f'{role.shortName} Vote Steals', value = f'{db['YelenaSteals']} ({await statBuilder.getPercentage(db, 'YelenaSteals', 'YelenaPlayed')}% of Games)', inline=True)
-        elif role.id == 'Lara':
-            returnedEmbed.add_field(name = f'Times Transformed', value = f'{db['WarhammerPlayed']} ({await statBuilder.getPercentage(db, 'WarhammerPlayed', 'LaraPlayed')}% of Games Played)', inline=True)
-            returnedEmbed.add_field(name = f'Games Finished as {role.shortName}', value = f'{db['LaraFinishedPlayed']}', inline=True)
-            returnedEmbed.add_field(name = f'Games Won as {role.shortName}', value = f'{db['LaraFinishedWon']} ({await statBuilder.getPercentage(db, 'LaraFinishedWon', 'LaraFinishedPlayed')}% of Non-Summoning Games)', inline=True)
-            returnedEmbed.add_field(name = f'Sabotage wins as {role.shortName}', value = f'{db['LaraFinishedWon'] - db['LaraFinishedKidnapWins']} ({await statBuilder.getAltPercentage(db, (db[f'LaraFinishedPlayed'] - db[f'LaraFinishedKidnaps']), f'LaraFinishedPlayed')})', inline=True)
-            returnedEmbed.add_field(name = f'Kidnap Attempts as {role.shortName}', value = f'{db['LaraFinishedKidnaps']} ({await statBuilder.getPercentage(db, 'LaraFinishedKidnaps', 'LaraFinishedPlayed')}% of Non-Summoning Games)', inline=True)
-            returnedEmbed.add_field(name = f'Coordinates Identified as {role.shortName}', value = f'{db['LaraFinishedKidnapWins']} ({await statBuilder.getPercentage(db, 'LaraFinishedKidnapWins', 'LaraFinishedKidnaps')}% of Non-Summoning Basements)', inline=True)
         elif role.id == 'Warhammer':
             returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} Abilities Used', value = f'{db['WarhammerAbilities']} ({await statBuilder.getPercentage(db, 'WarhammerAbilities', 'WarhammerPlayed')}% of Games Played)')
         if type(role.emoji) == str:
@@ -611,7 +602,9 @@ class statBuilder:
         return returnedEmbed
     
     async def leaderboardEmbed(client, homeServer, loadedBadges, currentTheme, statType, page):
-        titles = {'LegacyPoints': 'Overall Leaderboard', 'WORP' : 'WORP Leaderboard', 'SoldierWORP' : 'Soldier WORP Leaderboard', 'WarriorWORP' : 'Warrior WORP Leaderboard', 'MVPS': 'MVP Leaderboard', 'BadgePoints' : 'Badge Point Leaderboard'}
+        titles = {'LegacyPoints': 'Overall Leaderboard', 'WORP' : 'WORP Leaderboard', 'SoldierWORP' : 'Soldier WORP Leaderboard', 'WarriorWORP' : 'Warrior WORP Leaderboard', 'MVPS': 'MVP Leaderboard', 'BadgePoints' : 'Badge Point Leaderboard', 'ELO' : 'ELO Leaderboard', 'MostWins': 'Total Wins Leaderboard', 'Kills':'Kills Leaderboard', 'Deaths':'Deaths Leaderboard', 'MostKidnappable': 'Kidnapped as Coord Leaderboard', 'BiggestLoser':'Losses Leaderboard', 'MostKidnapWins':'Correct Kidnaps Leaderboard', 'SinaSmasher': 'Sabotage Wins Leaderboard'}
+
+        scoredTitles = ['LegacyPoints', 'WORP', 'MVPS', 'BadgePoints', 'ELO', 'MostWins']
 
         startingIndex = (page * 10) - 10
         finalIndex = startingIndex + 9
@@ -622,7 +615,7 @@ class statBuilder:
         numberEmojis = [str('🥇'), str('🥈'), str('🥉'), str('4️⃣'), str('5️⃣'), str('6️⃣'), str('7️⃣'), str('8️⃣'), str('9️⃣'), str('🔟')]
         
         if type(statType) == str and statType in titles:
-            allPlayers = databaseManager.getSortedPoints(statType)
+            allPlayers = databaseManager.getSortedWvsPlayer(statType)
         else:
             if type(statType) == list:
                 playerList = databaseManager.getSortedPoints('LegacyPoints')
@@ -696,7 +689,7 @@ class statBuilder:
                     valueList += f'{player['stats'][statType[0]] - player['stats'][statType[2]]}\n'
 
         pointList = ''
-        if type(statType) == str and statType in titles:
+        if type(statType) == str and statType in scoredTitles:
             for player in gatheredPlayers:
                 pointList += f'{player['points'][statType]}\n'
 
@@ -725,41 +718,19 @@ class statBuilder:
                 await interaction.message.edit(view = newView, embed=newEmbed)
                 await interaction.response.defer()
 
-        mainButton = Button(label = 'Main LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiLegacyPoints)
-        async def processMainButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'LegacyPoints', page)
-        mainButton.callback = processMainButton
-        returnedView.add_item(mainButton)
-
-        worpButton = Button(label = 'WORP LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiWORP)
-        async def processWorpButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'WORP', page)
-        worpButton.callback = processWorpButton
-        returnedView.add_item(worpButton)
-
-        soldierButton = Button(label = 'Soldier LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiSoldierWORP)
-        async def processSoldierButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'SoldierWORP', page)
-        soldierButton.callback = processSoldierButton
-        returnedView.add_item(soldierButton)
-
-        warriorButton = Button(label = 'Warrior LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiWarriorWORP)
-        async def processWarriorButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'WarriorWORP', page)
-        warriorButton.callback = processWarriorButton
-        returnedView.add_item(warriorButton)
-
-        mvpButton = Button(label = 'MVP LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiMVPS)
-        async def processMvpButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'MVPS', page)
-        mvpButton.callback = processMvpButton
-        returnedView.add_item(mvpButton)
-
-        badgeButton = Button(label = 'Badges LB', style=discord.ButtonStyle.grey, emoji=loadedBadges.emojiBadgePoints)
-        async def processBadgeButton(interaction):
-            await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, 'BadgePoints', page)
-        badgeButton.callback = processBadgeButton
-        returnedView.add_item(badgeButton)
+        nameDict = {'LegacyPoints':'Main', 'WORP':'WORP', 'ELO':'ELO', 'MVPS': 'MVP', 'BadgePoints':'Badges', 'SoldierWORP':'Soldier', 'WarriorWORP':'Warrior', 'Kills':'Kills', 'Deaths':'Deaths', 'MostKidnappable':'Kidnapped', 'BiggestLoser':'Losses', 'MostKidnapWins':'Coord Kidnapped', 'SinaSmasher': 'Sab Wins'}
+        lbSelect = Select(placeholder = 'Change Leaderboard', max_values=1, min_values=1)
+        for key, value in nameDict.items():
+            lbSelect.add_option(label = f'{value} LB', emoji = getattr(loadedBadges, f'emoji{key}'))
+        async def processLBSelection(interaction):
+            if interaction.user == navigator:
+                for key,value in nameDict.items():
+                    if str(lbSelect.values[0]).split(' LB')[0] == value:
+                        newLB = key
+                        break
+                await processChange(interaction, navigator, client, homeServer, loadedBadges, currentTheme, newLB, page)
+        lbSelect.callback = processLBSelection
+        returnedView.add_item(lbSelect)
 
         pageSelection = Select(placeholder= 'Select Page', min_values=1, max_values=1)
         
@@ -837,6 +808,13 @@ class statBuilder:
         returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}Average {currentTheme.soldierPlural} Win Percentage{currentTheme.emojiSoldier}', value = f'{round(soldierCalc*100, 1)}%', inline=False)
         returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}Average {currentTheme.warriorPlural} Win Percentage{currentTheme.emojiWarrior}', value = f'{round(warriorCalc*100, 1)}%', inline=False)
         returnedEmbed.add_field(name = 'Advantage', value = msg, inline=False)
+        return returnedEmbed
+    
+    async def titlesEmbed(currentTheme, loadedBadges):
+        returnedEmbed = discord.Embed(title = 'Possible Titles', color=currentTheme.helpEmbedColor)
+        for key,value in loadedBadges.titleAnnouncements.items():
+            fieldName = f'{getattr(loadedBadges, f'emoji{key}')}{value}'
+            returnedEmbed.add_field(name = fieldName, value=f'Awarded to {loadedBadges.titleConditions[key]}', inline=True)
         return returnedEmbed
 
 

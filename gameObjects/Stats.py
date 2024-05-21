@@ -1,3 +1,5 @@
+from dataFunctions.databaseManager import databaseManager
+
 class Stats:
     def __init__(self, role, defaultStats):
         for key, value in defaultStats.items():
@@ -18,10 +20,6 @@ class Stats:
                 setattr(self, 'KeithWon', 1)
                 if player.role.id == 'Keith':
                     setattr(self, 'KeithFinishedWon', 1)
-            if player.role.id == 'Warhammer':
-                setattr(self, 'LaraWon', 1)
-            if player.role.id == 'Lara':
-                setattr(self, 'LaraFinishedWon', 1)
         if 'kidnap' in currentGame.winCondition:
             setattr(self, f'{player.role.team}Kidnaps', 1)
             setattr(self, f'{player.role.id}Kidnaps', 1)
@@ -29,10 +27,6 @@ class Stats:
                 setattr(self, 'KeithKidnaps', 1)
                 if player.role.id == 'Keith':
                     setattr(self, 'KeithFinishedKidnaps', 1)
-            if player.role.id == 'Warhammer':
-                setattr(self, 'LaraKidnaps', 1)
-            if player.role.id == 'Lara':
-                setattr(self, 'LaraFinishedKidnaps', 1)
             if player in currentGame.winners:
                 setattr(self, f'{player.role.team}KidnapWins', 1)
                 setattr(self, f'{player.role.id}KidnapWins', 1)
@@ -40,16 +34,10 @@ class Stats:
                     setattr(self, 'KeithKidnapWins', 1)
                     if player.role.id == 'Keith':
                         setattr(self, 'KeithFinishedKidnapWins', 1)
-                if player.role.id == 'Lara':
-                    setattr(self, 'LaraFinishedKidnapWins', 1)
-                if player.role.id == 'Warhammer':
-                    setattr(self, 'LaraKidnapWins', 1)
         setattr(self, f'{player.role.team}WallsBroken', currentGame.roundFails)
         setattr(self, f'{player.role.team}Passes', currentGame.roundWins)
         if player.role.id == 'Keith':
             setattr(self, 'KeithFinishedPlayed', 1)
-        if player.role.id == 'Lara':
-            setattr(self, 'LaraFinishedPlayed', 1)
         if player.role.id == 'Warhammer' and player.role.abilityActive == False:
             setattr(self, 'WarhammerAbilities', 1)
         
@@ -276,6 +264,36 @@ class Stats:
         for elem in mvp:
             setattr(elem.stats, 'MVPS', 1)
             setattr(elem.stats, f'{elem.role.team}MVPS', 1)
+
+    @staticmethod
+    async def processELO(currentGame):
+        soldierELO = 0
+        warriorELO = 0
+        totalELO = 0
+        for player in currentGame.players:
+            db = databaseManager.searchForWvsPlayer(player.user)
+            totalELO += db['calcs']['ELO']
+            if player in currentGame.soldiers:
+                soldierELO += db['calcs']['ELO']
+            else:
+                warriorELO += db['calcs']['ELO']
+        if totalELO == 0:
+            totalELO = 1
+        for player in currentGame.players:
+            db = databaseManager.searchForWvsPlayer(player.user)
+            if player in currentGame.soldiers:
+                eloOffset = (1-(soldierELO/totalELO)) * 50
+            else:
+                eloOffset = (1-(warriorELO/totalELO)) * 50
+            if player not in currentGame.winners:
+                eloOffset = eloOffset * -1
+            db['calcs']['ELO'] += eloOffset
+            if db['calcs']['ELO'] < 0:
+                db['calcs']['ELO'] = 0
+            if db['calcs']['ELO'] > 1000:
+                db['calcs']['ELO'] = 1000
+            db['calcs']['ELO'] = int(db['calcs']['ELO'])
+            databaseManager.updateWvsPlayer(db)
     
     def processWiretap(self, currentGame):
         if currentGame.hangeWiretapped in currentGame.soldiers:

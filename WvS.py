@@ -315,6 +315,10 @@ async def lb(ctx, *, input=None):
 async def leaderboard(ctx, *, input=None):
     await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input)
 
+@client.command('titles')
+async def titles(ctx):
+    await infoFunctions.titles(ctx, currentTheme, loadedBadges)
+
 @client.command('advantage')
 async def advantage(ctx):
     await infoFunctions.advantage(ctx, currentGame, currentTheme)

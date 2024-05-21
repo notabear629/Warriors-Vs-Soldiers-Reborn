@@ -268,17 +268,6 @@ class discordViewBuilder:
             bertholdtButton.callback = processBertholdtButton
             returnedView.add_item(bertholdtButton)
 
-        if player.role.id == 'Lara':
-            Warhammer = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Warhammer')
-            laraButton = Button(label = 'Transform', emoji = Warhammer.emoji, style=discord.ButtonStyle.grey)
-            async def processLaraButton(interaction):
-                if await discordViewBuilder.isInteractionIntended(player, interaction):
-                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Lara')
-                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
-                    await interaction.message.edit(embed=embed, view=None)
-            laraButton.callback = processLaraButton
-            returnedView.add_item(laraButton)
-
         if player.role.id == 'Willy' and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             willySelect = Select(placeholder = 'Choose Player to Kamikaze')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
@@ -359,16 +348,16 @@ class discordViewBuilder:
                     pyxisTrialSelection.add_option(label = f'{player.user.name}', emoji = Pyxis.role.emoji)
         async def processPyxisSelection(interaction):
             if await discordViewBuilder.isInteractionIntended(Pyxis, interaction):
-                if currentGame.online and interaction.user == Pyxis.user and Pyxis.role.abilityActive and Pyxis in currentGame.livingPlayers:
+                if currentGame.online and interaction.user == Pyxis.user and Pyxis.role.abilityActive and Pyxis in currentGame.livingPlayers and currentGame.currentExpo.currentlyPicking:
                     selection = str(pyxisTrialSelection.values[0])
-                for player in currentGame.livingPlayers:
-                    if player.user.name == selection:
-                        selectedPlayer = player
-                        break
-                Pyxis.role.disableAbility()
-                currentGame.currentExpo.trialPlayer(Pyxis, selectedPlayer)
-                await interaction.message.edit(content = f'You have chosen to bring **{player.user.name}** to trial.')
-                await interaction.response.defer()
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    Pyxis.role.disableAbility()
+                    currentGame.currentExpo.trialPlayer(Pyxis, selectedPlayer)
+                    await interaction.message.edit(content = f'You have chosen to bring **{player.user.name}** to trial.')
+                    await interaction.response.defer()
         pyxisTrialSelection.callback = processPyxisSelection
         returnedView.add_item(pyxisTrialSelection)
         return returnedView

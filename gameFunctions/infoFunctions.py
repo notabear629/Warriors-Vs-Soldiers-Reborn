@@ -85,6 +85,10 @@ class infoFunctions:
             badgesEmbed = await statBuilder.badgesEmbed(user, currentTheme, loadedBadges)
             await ctx.reply(embed=badgesEmbed)
 
+    async def titles(ctx, currentTheme, loadedBadges):
+        titlesEmbed = await statBuilder.titlesEmbed(currentTheme, loadedBadges)
+        await ctx.reply(embed = titlesEmbed)
+
     async def leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input):
         if input != None:
             argSplit = input.split(' ')

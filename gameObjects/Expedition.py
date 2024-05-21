@@ -41,7 +41,6 @@ class Expedition:
         self.pyxisTrial = None
         self.samuelActivated = False
         self.marcoActivated = False
-        self.laraActivated = False
         self.warhammerActivated = None
         self.displaySize = None
 
@@ -77,7 +76,6 @@ class Expedition:
         self.samuelActivated = False
         self.displaySize = None
         self.marcoActivated = False
-        self.laraActivated = False
         self.warhammerActivated = None
 
     def fillUp(self):
@@ -214,9 +212,6 @@ class Expedition:
         elif actCase == 'Bertholdt':
             self.sabotagedExpedition.append(player)
             self.bertholdtCloaked = True
-        elif actCase == 'Lara':
-            self.sabotagedExpedition.append(player)
-            self.laraActivated = True
         elif type(actCase) == dict and 'Mikasa' in actCase:
             self.passedExpedition.append(player)
             self.mikasaGuarded = actCase['Mikasa']

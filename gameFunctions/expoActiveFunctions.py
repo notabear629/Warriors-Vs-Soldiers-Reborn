@@ -53,8 +53,6 @@ class expoActiveFunctions:
                 expoChoice = 'Daz'
             elif choice == 'Bertholdt' and player.role.id == 'Bertholdt':
                 expoChoice = 'Bertholdt'
-            elif choice == 'Lara' and player.role.id == 'Lara':
-                expoChoice = 'Lara'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
             elif type(choice) == dict and 'Petra' in choice and (player.role.id == 'Petra' or player.role.id == 'Warhammer'):
@@ -112,7 +110,6 @@ class expoActiveFunctions:
                 await expoActiveFunctions.processDeaths(currentGame, currentTheme, home, client)
                 await Stats.processResults(currentGame, result, searchFunctions)
                 await expoActiveFunctions.processKeith(currentGame, currentTheme, result)
-                await expoActiveFunctions.processLara(currentGame, currentTheme)
                 currentGame.updateExpoPlayers()
             return True
         return False
@@ -135,23 +132,6 @@ class expoActiveFunctions:
             Keith.stats.changeRole(Keith.role)
             await webhookManager.sendWebhook(currentGame, currentTheme, currentGame.home, currentTheme.keithMessage, 'Keith', currentGame.client, embed=None)
             await webhookManager.sendWebhook(currentGame, currentTheme, currentGame.home, f'{Keith.role.name} {currentTheme.keithMessage2}', Keith.role.id, currentGame.client, embed=None)
-
-    async def processLara(currentGame, currentTheme):
-        Lara = await searchFunctions.roleIDToPlayer(currentGame, 'Lara')
-        if Lara != None and currentGame.currentExpo.laraActivated:
-            newRoleDict = getattr(currentTheme, 'Warhammer')
-            newRole = Role(newRoleDict)
-            newRole.resolveEmojis(currentGame.client)
-            Lara.changeRole(newRole)
-            message = f'You are on the side of the **{currentTheme.warriorPlural}**.\n\n{currentTheme.warriorDefaultMessage}\n\n{Lara.role.roleMessage}'
-            message += currentTheme.getWarriorInfo(currentGame, Lara)
-            embed = await embedBuilder.buildRoleMessageEmbed(Lara, message, currentTheme.warriorColor, currentTheme.warriorThumbnail)
-            user = databaseManager.searchForUser(Lara.user)
-            userChannel = currentGame.client.get_channel(user['channelID'])
-            await userChannel.send(content = Lara.user.mention, embed=embed)
-            Lara.stats.changeRole(Lara.role)
-            await webhookManager.sendWebhook(currentGame, currentTheme, currentGame.home, currentTheme.laraMessage, 'Lara', currentGame.client)
-            await webhookManager.sendWebhook(currentGame, currentTheme, currentGame.home, currentTheme.warhammerMessage, 'Warhammer', currentGame.client)
     
     async def checkPureTitan(currentGame, currentTheme, client):
         if currentGame.currentRules.wildcards:
@@ -211,7 +191,7 @@ class expoActiveFunctions:
     async def checkFrecklemir(currentGame, currentTheme, result, client):
         if currentGame.currentRules.wildcards:
             Frecklemir = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
-            if Frecklemir != None and Frecklemir in currentGame.currentExpo.expeditionMembers:
+            if Frecklemir != None and Frecklemir in currentGame.currentExpo.expeditionMembers and currentGame.frecklemirTeam == None:
                 if result == 'n' or result == 'Armin':
                     currentGame.setFrecklemirTeam('Warriors')
                     color = currentTheme.warriorColor
@@ -442,7 +422,7 @@ class expoActiveFunctions:
                 await home.send(sashaMessage)
         if deathFlags['WarhammerSasha']:
             Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
-            Sasha = await searchFunctions.roleIDToPlayer(currentGame, 'Sasha')
+            Sasha = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Sasha')
             warhammerMessage = currentTheme.getSashaDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner, Sasha)
             if warhammerMessage != '':
                 await home.send(warhammerMessage)

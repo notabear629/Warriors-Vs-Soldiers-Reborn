@@ -95,7 +95,7 @@ class userInfoManager:
         db['stats'] = await userInfoManager.getDefaultStatistics()
         db['titles'] = []
         db['badges'] = {'GamesWon': 'No Badge Earned', 'SoldiersWon': 'No Badge Earned', 'WarriorsWon': 'No Badge Earned', 'WarriorsKidnapWins': 'No Badge Earned', 'MVPS':'No Badge Earned', 'PassesResponsible':'No Badge Earned', 'BreaksResponsible':'No Badge Earned', 'Rank': 'Noob'}
-        db['calcs'] = {'WORP' : 0, 'SoldierWORP' : 0, 'WarriorWORP': 0, 'MVPS': 0, 'BadgePoints':0}
+        db['calcs'] = {'WORP' : 0, 'SoldierWORP' : 0, 'WarriorWORP': 0, 'MVPS': 0, 'BadgePoints':0, 'Kills':0, 'ELO':500}
         db['points'] = {'LegacyPoints': 0, 'WORP':0, 'SoldierWORP' : 0, 'WarriorWORP': 0, 'MVPS' :0 , 'BadgePoints':0}
         return db
     
@@ -107,7 +107,7 @@ class userInfoManager:
         for role in Role.allLethal:
             roleStats = {f'{role}Kills' : 0, f'{role}KillWins' :0}
             stats.update(roleStats)
-        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ZacharyVetoes':0, 'ZacharyVetoWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'PetraWatches': 0, 'PetraKills': 0, 'MikeSmells': 0, 'FlochDetects': 0, 'HitchDiscovers': 0, 'HangeWiretaps':0, 'HangeWiretapsSoldier':0, 'HangeWiretapsWarrior':0, 'MarcoSuicides':0, 'MarcoDeaths':0, 'MarcoRounds':0, 'MarcoVoted':0, 'NileSightings':0, 'MarloweIdentified':0, 'HannesEscapes':0, 'ConnieAlerts':0, 'ArminNukes': 0, 'SashaFires': 0, 'KeithFinishedPlayed': 0, 'KeithFinishedWon': 0, 'KeithFinishedKidnaps': 0, 'KeithFinishedKidnapWins':0, 'LaraFinishedPlayed':0, 'LaraFinishedWon':0, 'LaraFinishedKidnaps':0, 'LaraFinishedKidnapWins':0, 'PyxisTrials':0, 'PyxisTrialWins':0, 'SamuelClowns':0, 'SamuelClownAccepts':0 ,'GabiFires' : 0,  'GabiFireWins': 0, 'AnnieScreams' : 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0, 'WillyDeaths':0, 'WillyKills':0, 'YelenaSteals':0, 'WarhammerAbilities':0}
+        abilityStats = {'JeanForces':0, 'JeanForceWins':0, 'ZacharyVetoes':0, 'ZacharyVetoWins':0, 'ErwinFlaresFired': 0, 'DazChickens':0, 'DazChickenWins': 0, 'LeviAttacks':0, 'LeviKills':0, 'LeviDefends':0, 'LeviDefendWins':0,  'MikasaGuards': 0, 'MikasaSaved': 0, 'MikasaSaveWins':0, 'PetraWatches': 0, 'PetraKills': 0, 'MikeSmells': 0, 'FlochDetects': 0, 'HitchDiscovers': 0, 'HangeWiretaps':0, 'HangeWiretapsSoldier':0, 'HangeWiretapsWarrior':0, 'MarcoSuicides':0, 'MarcoDeaths':0, 'MarcoRounds':0, 'MarcoVoted':0, 'NileSightings':0, 'MarloweIdentified':0, 'HannesEscapes':0, 'ConnieAlerts':0, 'ArminNukes': 0, 'SashaFires': 0, 'KeithFinishedPlayed': 0, 'KeithFinishedWon': 0, 'KeithFinishedKidnaps': 0, 'KeithFinishedKidnapWins':0, 'PyxisTrials':0, 'PyxisTrialWins':0, 'SamuelClowns':0, 'SamuelClownAccepts':0 ,'GabiFires' : 0,  'GabiFireWins': 0, 'AnnieScreams' : 0, 'PieckFlipAccepts' : 0, 'PieckFlipRejects' : 0, 'PieckFlipAcceptWins': 0, 'PieckFlipRejectWins': 0, 'PorcoGags': 0, 'PorcoCommanderSkips':0, 'FalcoUses' :0, 'FalcoVoteWins':0, 'ReinerSaves': 0, 'BertholdtCloaks': 0, 'BertholdtDoubleCloaks': 0, 'WillyDeaths':0, 'WillyKills':0, 'YelenaSteals':0, 'WarhammerAbilities':0}
         stats.update(abilityStats)
         extraSoldierStats = {'SoldiersWallsBroken': 0, 'SoldiersPasses': 0, 'PassCommanders': 0, 'PassVotes': 0, 'PassAssists': 0, 'PassExpeditions': 0, 'PassesResponsible': 0, 'ExposCommanded': 0, 'AcceptedCommand':0, 'ExposVoted':0, 'SoldiersExpeditionsOn':0}
         stats.update(extraSoldierStats)
@@ -132,10 +132,20 @@ class userInfoManager:
         newDB['calcs']['WarriorWORP'] = await statBuilder.getTeamWORP(db['stats'], globalDB['stats'], 'Warriors', True)
         newDB['calcs']['MVPS'] = db['stats']['MVPS']
         newDB['calcs']['BadgePoints'] = loadedBadges.getTotalBadgeOutput(db)['points']
+        newDB['calcs']['Kills'] = db['stats']['Kills']
+        newDB['calcs']['Deaths'] = db['stats']['Deaths']
+        newDB['calcs']['MostKidnappable'] = db['stats']['ErenKidnaps'] - db['stats']['ErenKidnapWins']
+        newDB['calcs']['BiggestLoser'] = db['stats']['GamesPlayed'] - db['stats']['GamesWon']
+        newDB['calcs']['MostWins'] = db['stats']['GamesWon']
+        newDB['calcs']['MostKidnapWins'] = db['stats']['WarriorsKidnapWins']
+        newDB['calcs']['SinaSmasher'] = db['stats']['WarriorsWon'] - db['stats']['WarriorsKidnapWins']
         return newDB
     
     async def calculateRanks():
-        calcStats = ['WORP', 'SoldierWORP', 'WarriorWORP', 'MVPS', 'BadgePoints']
+        calcStats = ['WORP', 'SoldierWORP', 'WarriorWORP', 'MVPS', 'BadgePoints', 'Kills', 'Deaths', 'MostKidnappable', 'BiggestLoser', 'MostWins', 'ELO', 'MostKidnapWins', 'SinaSmasher']
+        pointlessStats = ['Kills', 'Deaths', 'MostKidnappable', 'BiggestLoser', 'SoldierWORP', 'WarriorWORP', 'MostKidnapWins']
+        possibleNegatives = ['WORP']
+        absolutes = ['MostWins', 'MVPS']
         allUsers = databaseManager.returnAllUsers()
         for user in allUsers:
             player = databaseManager.getWvsPlayerByID(user['userID'])
@@ -152,17 +162,17 @@ class userInfoManager:
                 newDB = player.copy()
                 if index == 0 and player['calcs'][stat] != 0:
                     newDB['titles'].append(stat)
-                if 'WORP' in stat:
+                if stat in possibleNegatives:
                     if scaleValue== 0:
                         newDB['points'][stat] = 0
                     else:
                         newDB['points'][stat] = round((player['calcs'][stat] - minValue)/scaleValue*1000)
-                elif 'MVPS' in stat:
+                elif stat in absolutes:
                     if maxValue == 0:
                         newDB['points'][stat] = 0
                     else:
                         newDB['points'][stat] = round(player['calcs'][stat]/maxValue*1000)
-                else:
+                elif stat not in pointlessStats:
                     newDB['points'][stat] = player['calcs'][stat]
                 databaseManager.updateWvsPlayer(newDB)
                 index += 1
@@ -172,6 +182,8 @@ class userInfoManager:
             newDB = player.copy()
             newDB['points']['LegacyPoints'] = 0
             for stat in calcStats:
+                if stat in pointlessStats:
+                    continue
                 newDB['points']['LegacyPoints'] += player['points'][stat]
             databaseManager.updateWvsPlayer(newDB)
         sortedDB = databaseManager.getSortedLegacy()

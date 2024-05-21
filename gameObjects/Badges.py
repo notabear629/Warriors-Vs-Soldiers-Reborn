@@ -31,9 +31,17 @@ class Badges:
         self.emojiWarriorWORP = str('⚔️')
         self.emojiMVPS = str('🏆')
         self.emojiBadgePoints =  str('💍')
+        self.emojiKills = str('🔪')
+        self.emojiDeaths = str('☠️')
+        self.emojiMostKidnappable = str('😳')
+        self.emojiBiggestLoser = str('🇱')
+        self.emojiMostWins = str('🏅')
+        self.emojiELO = str('🌠')
+        self.emojiMostKidnapWins = str('🎯')
+        self.emojiSinaSmasher = str('💥')
 
-
-        self.titleAnnouncements = {'LegacyPoints': 'GOAT', 'WORP': 'Greatest Winner', 'SoldierWORP' : 'Greatest Soldier', 'WarriorWORP': 'Greatest Warrior', 'MVPS':  'True Most Valuable Player', 'BadgePoints': 'Most Decorated Player'}
+        self.titleAnnouncements = {'LegacyPoints':'GOAT', 'WORP':'Greatest Winner', 'MostWins': 'Most Wins', 'ELO':'ELO Champion', 'MVPS': 'True Most Valuable Player', 'BadgePoints': 'Most Decorated Player', 'SoldierWORP' : 'Greatest Soldier', 'WarriorWORP': 'Greatest Warrior', 'Kills': 'Most Bloodthirsty', 'Deaths': 'The Grim Reaper\'s Favorite', 'MostKidnappable': 'Most Kidnappable', 'BiggestLoser': 'Biggest Loser', 'MostKidnapWins': 'The Kidnapping Marksman', 'SinaSmasher': 'Sina Smasher'}
+        self.titleConditions = {'LegacyPoints': 'Player with most Legacy Points', 'WORP': 'Player with most Total WORP', 'SoldierWORP' : 'Soldier with most WORP', 'WarriorWORP': 'Warrior with most WORP', 'MVPS':  'Player with most MVPs', 'BadgePoints': 'Player with most Badge Points', 'Kills' : 'Player with most Kills', 'Deaths' : 'Player with most Deaths', 'MostKidnappable': 'Coordinate that lost the most Kidnaps', 'BiggestLoser': 'Player with most Losses', 'MostWins': 'Player with most Wins', 'ELO': 'Player with highest ELO Score', 'MostKidnapWins' : 'Warrior with the most successful Kidnaps', 'SinaSmasher': 'Warrior with the most Sabotage Wins'}
 
         self.groupXL = ['PassesResponsible', 'BreaksResponsible']
         self.groupL = ['GamesWon']

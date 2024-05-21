@@ -197,8 +197,6 @@ class defaultGameTheme:
     willyMessage = 'To the enemy forces of Paradis, a declaration of war!'
     pyxisMessage = 'You will stand trial for your crimes.'
     marcoMessage = '...'
-    laraMessage = '...'
-    warhammerMessage = 'Soldiers of Paradis... Any last words?'
     warhammerApologyMessage = 'Comrades... I am sorry.'
 
     #Other role messages
@@ -846,11 +844,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You have special training from the Military Police! As such, when players die, you will be able to perform basic searches of the corpses and identify their roles.\n\n'
+        roleDict['roleMessage'] = f'You have special training from the Military Police! As such, when players die, you will be able to perform basic searches of the corpses and identify their roles in addition to who killed them.\n\n'
 
         roleDict['gameRole'] = ':police_car:Detective:police_car:'
 
-        roleDict['helpInfo'] = 'Marlowe was a member of the Military Police before coming over to the Scouts. Thanks to this, he has some basic crime scene investigatory skills. When players die, he will know their roles.'
+        roleDict['helpInfo'] = 'Marlowe was a member of the Military Police before coming over to the Scouts. Thanks to this, he has some basic crime scene investigatory skills. When players die, he will know their roles and who killed them.'
     
     class Hannes:
         roleDict = {'roleID' : 'Hannes'}
@@ -1260,33 +1258,6 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] =  f'**Credit to Space (JustAboutEnoughSpace) for this role!**\n\nThe Soldiers gave Yelena the ability to run around Paradis. Big Mistake. As it turns out, she is uniquely personally loyal to Zeke. Therefore, has had plenty of time to tamper with the Soldiers\' voting systems. Once per game, she can steal the vote of another player, switching that player\'s vote with the opposite of which they voted'
 
-    class Lara:
-        roleDict = {'roleID' : 'Lara'}
-
-        roleDict['name'] = 'Lara Tybur'
-
-        roleDict['shortName'] = 'Lara'
-
-        roleDict['team'] = 'Warriors'
-
-        roleDict['rumblingTeam'] = 'allianceFighter'
-
-        roleDict['isTitan'] = True
-
-        roleDict['emoji'] = 1226418959310524517
-
-        roleDict['secondaryEmoji'] = None
-
-        roleDict['imageURL'] = None
-        
-        roleDict['secondaryImageURL'] = None
-
-        roleDict['roleMessage'] = f'You are the holder of the Warhammer Titan! In order to activate it so you can use it, you need to get on an expedition so that you can use the `Transform` button which will sabotage the expedition and transform you into the Warhammer Titan!'
-
-        roleDict['gameRole'] = ':key:Armory Owner:key:'
-
-        roleDict['helpInfo'] =  f'Lara is the holder of the Warhammer Titan. Pretty much her only role is to get on an expo so that she can become the Warhammer Titan'
-
 
     class Warhammer:
         roleDict = {'roleID' : 'Warhammer'}
@@ -1586,7 +1557,7 @@ class defaultGameTheme:
         if realSasha == None:
             secEmo = Sasha.role.secondaryEmoji
         else:
-            secEmo = realSasha.role.secondaryEmoji
+            secEmo = realSasha.secondaryEmoji
         sashaDeathMessages = ''
         for killedPlayer, causeOfDeath in Sasha.killed.items():
             if causeOfDeath == 'Sasha':
@@ -1624,7 +1595,7 @@ class defaultGameTheme:
         if realPyxis == None:
             secEmo = Pyxis.role.secondaryEmoji
         else:
-            secEmo = realPyxis.role.secondaryEmoji
+            secEmo = realPyxis.secondaryEmoji
         pyxisDeathMessages = ''
         for killedPlayer, causeOfDeath in Pyxis.killed.items():
             if causeOfDeath == 'Pyxis':

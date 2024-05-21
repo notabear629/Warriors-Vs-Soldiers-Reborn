@@ -219,6 +219,8 @@ class expoProposalFunctions:
                 await home.send(f'{pickedPlayer.name} has been added to the {currentTheme.expeditionTeam}.')
                 if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size and currentGame.currentExpo.filledUp == False:
                     currentGame.currentExpo.fillUp()
+                    if currentGame.currentExpo.pyxisTrial != None and (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) == False:
+                        return
                     await home.send(f'The {currentTheme.expeditionName} is now full. The time to vote on if it should be allowed to pass has come.')
                     await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
 
@@ -354,6 +356,7 @@ class expoProposalFunctions:
                 await home.send(pyxisMessage)
         if type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
             await currentGame.killPlayer(currentGame.currentExpo.warhammerActivated['Pyxis'], Warhammer, 'Pyxis')
+            Pyxis = await searchFunctions.roleIDToRoleFromLoadedRoles(currentGame.loadedRoles, 'Pyxis')
             pyxisMessage = currentTheme.getPyxisDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner, Pyxis)
             if pyxisMessage != '':
                 await home.send(pyxisMessage)
