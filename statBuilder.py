@@ -615,7 +615,10 @@ class statBuilder:
         numberEmojis = [str('🥇'), str('🥈'), str('🥉'), str('4️⃣'), str('5️⃣'), str('6️⃣'), str('7️⃣'), str('8️⃣'), str('9️⃣'), str('🔟')]
         
         if type(statType) == str and statType in titles:
-            allPlayers = databaseManager.getSortedWvsPlayer(statType)
+            if statType == 'LegacyPoints':
+                allPlayers = databaseManager.getSortedLegacy()
+            else:
+                allPlayers = databaseManager.getSortedWvsPlayer(statType)
         else:
             if type(statType) == list:
                 playerList = databaseManager.getSortedPoints('LegacyPoints')
@@ -718,7 +721,7 @@ class statBuilder:
                 await interaction.message.edit(view = newView, embed=newEmbed)
                 await interaction.response.defer()
 
-        nameDict = {'LegacyPoints':'Main', 'WORP':'WORP', 'ELO':'ELO', 'MVPS': 'MVP', 'BadgePoints':'Badges', 'SoldierWORP':'Soldier', 'WarriorWORP':'Warrior', 'Kills':'Kills', 'Deaths':'Deaths', 'MostKidnappable':'Kidnapped', 'BiggestLoser':'Losses', 'MostKidnapWins':'Coord Kidnapped', 'SinaSmasher': 'Sab Wins'}
+        nameDict = {'LegacyPoints':'Main', 'WORP':'WORP', 'MostWins': 'Total Wins', 'ELO':'ELO', 'MVPS': 'MVP', 'BadgePoints':'Badges', 'SoldierWORP':'Soldier', 'WarriorWORP':'Warrior', 'Kills':'Kills', 'Deaths':'Deaths', 'MostKidnappable':'Kidnapped', 'BiggestLoser':'Losses', 'MostKidnapWins':'Coord Kidnapped', 'SinaSmasher': 'Sab Wins'}
         lbSelect = Select(placeholder = 'Change Leaderboard', max_values=1, min_values=1)
         for key, value in nameDict.items():
             lbSelect.add_option(label = f'{value} LB', emoji = getattr(loadedBadges, f'emoji{key}'))
