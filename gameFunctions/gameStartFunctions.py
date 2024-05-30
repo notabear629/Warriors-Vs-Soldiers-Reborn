@@ -87,12 +87,14 @@ class gameStartFunctions:
         if currentLobby.currentRules.noCoordinate == False:
             roleNames.append('Eren')
             soldierRoleNames.append('Eren')
+        else:
             for role in Role.soldierBannedNoEren:
                 if role not in bannedRoles:
                     bannedRoles.append(role)
         if currentLobby.currentRules.noWarchief == False:
             roleNames.append('Zeke')
             warriorRoleNames.append('Zeke')
+        else:
             for role in Role.soldierBannedNoZeke:
                 if role not in bannedRoles:
                     bannedRoles.append(role)

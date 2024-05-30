@@ -10,7 +10,10 @@ from dataFunctions.databaseManager import databaseManager
 class embedBuilder:
 
     async def buildLobby(currentLobby, currentTheme, prefix):
-        returnedEmbed = discord.Embed(title = f'{currentTheme.gameName} Lobby', description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help` for help and info about the game. Use `{prefix}options` or `{prefix}rules` or `{prefix}settings` as the host to change the game rules.', color = currentTheme.lobbyEmbedColor)
+        lobbyName = f'{currentTheme.gameName} Lobby'
+        if currentLobby.host.id == 192780209882136576:
+            lobbyName = 'Current Cafe Patrons'
+        returnedEmbed = discord.Embed(title = lobbyName, description =f'The lobby has: **{len(currentLobby.users)}** players within it.\n\nUse `{prefix}help` for help and info about the game. Use `{prefix}options` or `{prefix}rules` or `{prefix}settings` as the host to change the game rules.', color = currentTheme.lobbyEmbedColor)
         playerList = ''
         for player in currentLobby.users:
             playerList += f'**{player.mention}**'
