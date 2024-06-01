@@ -44,11 +44,16 @@ class databaseManager:
     @staticmethod
     def searchForWvsPlayer(user):
         returnedPlayer = databaseManager.gameDatabase.find_one({"userID":user.id})
+        if returnedPlayer == None:
+            returnedPlayer = databaseManager.gameDatabase.find_one({"altID":user.id})
         return returnedPlayer
     
     @staticmethod
     def getWvsPlayerByID(userID):
-        return databaseManager.gameDatabase.find_one({"userID":userID})
+        returnedPlayer = databaseManager.gameDatabase.find_one({"userID":userID})
+        if returnedPlayer == None:
+            returnedPlayer = databaseManager.gameDatabase.find_one({"altID":userID})
+        return returnedPlayer
     
     @staticmethod
     def addWvsPlayer(userInfo):
@@ -56,7 +61,11 @@ class databaseManager:
 
     @staticmethod
     def updateWvsPlayer(userInfo):
-        databaseManager.gameDatabase.update_one({'userID' : userInfo['userID']}, {'$set' : userInfo})
+        nullCheck = databaseManager.gameDatabase.find_one({"userID":userInfo['userID']})
+        if nullCheck != None:
+            databaseManager.gameDatabase.update_one({'userID' : userInfo['userID']}, {'$set' : userInfo})
+        else:
+            databaseManager.gameDatabase.update_one({'altID' : userInfo['altID']}, {'$set' : userInfo})
 
     @staticmethod
     def getSortedWvsPlayer(calc):
