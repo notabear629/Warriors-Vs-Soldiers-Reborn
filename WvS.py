@@ -205,8 +205,8 @@ async def clear(ctx):
 
 
 @commands.max_concurrency(1, per=commands.BucketType.default, wait=False)
-@client.command('results')
-async def results(ctx):
+@client.command(aliases = ['results', 'result'])
+async def readResults(ctx):
     resultsRead = await expoActiveFunctions.results(ctx, currentGame, currentTheme, home, expoProposalFunctions.getExpeditionPrediction, client, homeServer, discord)
     if resultsRead:
         if currentGame.currentExpo.dazActivated:
@@ -374,6 +374,13 @@ async def fill(ctx, *, arg=None):
             await userInfoManager.userRegistration(ctx, user, homeServer, userCategory, currentTheme, prefix)
             bozoUsers.append(user)
         await lobbyFunctions.forceJoin(ctx, bozoUsers, currentLobby, None, currentTheme, prefix, noMentions, home)
+
+#TEST COMMAND ONLY
+@client.command('forcejoin')
+async def forcejoin(ctx, *, force:discord.Member):
+    if ctx.message.author.name == 'cerberus629':
+        await userInfoManager.userRegistration(ctx, force, homeServer, userCategory, currentTheme, prefix)
+        await lobbyFunctions.forceJoin(ctx, [force], currentLobby, None, currentTheme, prefix, noMentions, home)
 
 
 client.run(BOT_TOKEN)
