@@ -271,7 +271,7 @@ class statBuilder:
         returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} Games Won', value = f'{db['SoldiersWon']} ({await statBuilder.getPercentage(db, 'SoldiersWon', 'SoldiersPlayed')}%)', inline=True)
         if user != 'GLOBAL':
             returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} WORP', value= await statBuilder.getTeamWORP(db, globalDB, 'Soldiers'), inline=True)
-            returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} TW%', value = f'{await statBuilder.getTeamTW(db, globalDB, 'Soldiers')}%', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} TW%', value = f'{await statBuilder.getTeamTW(db, globalDB, 'Soldiers', True)}%', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} MVPs', value = f'{db['SoldiersMVPS']} ({await statBuilder.getPercentage(db, 'SoldiersMVPS', 'SoldiersPlayed')}% of Games, {await statBuilder.getPercentage(db, 'SoldiersMVPS', 'SoldiersWon')}% of Wins)')
         returnedEmbed.add_field(name = f'Made to Kidnap Phase', value = f'{db['SoldiersKidnaps']} ({await statBuilder.getPercentage(db, 'SoldiersKidnaps', 'SoldiersPlayed')}% of Games)', inline= True)
         returnedEmbed.add_field(name = 'Protected Coordinate', value = f'{db['SoldiersKidnapWins']} ({await statBuilder.getPercentage(db, 'SoldiersKidnapWins', 'SoldiersKidnaps')}% of Kidnap Phases)', inline=True)
@@ -398,7 +398,7 @@ class statBuilder:
         returnedEmbed.add_field(name = f'{currentTheme.warriorSingle} Games Won', value = f'{db['WarriorsWon']} ({await statBuilder.getPercentage(db, 'WarriorsWon', 'WarriorsPlayed')}%)', inline=True)
         if user != 'GLOBAL':
             returnedEmbed.add_field(name = f'{currentTheme.warriorSingle} WORP', value= await statBuilder.getTeamWORP(db, globalDB, 'Warriors'), inline=True)
-            returnedEmbed.add_field(name = f'{currentTheme.warriorSingle} TW%', value = f'{await statBuilder.getTeamTW(db, globalDB, 'Warriors')}%', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.warriorSingle} TW%', value = f'{await statBuilder.getTeamTW(db, globalDB, 'Warriors', True)}%', inline=True)
             returnedEmbed.add_field(name = f'{currentTheme.warriorSingle} MVPs', value = f'{db['WarriorsMVPS']} ({await statBuilder.getPercentage(db, 'WarriorsMVPS', 'WarriorsPlayed')}% of Games, {await statBuilder.getPercentage(db, 'WarriorsMVPS', 'WarriorsWon')}% of Wins)')
         sabVal = f'{db['WarriorsPlayed'] - db['WarriorsKidnaps']} ({await statBuilder.getAltPercentage(db, (db['WarriorsPlayed'] - db['WarriorsKidnaps']), 'WarriorsPlayed')}% of Games)'
         returnedEmbed.add_field(name = 'Sabotage Wins', value = sabVal, inline= True)
