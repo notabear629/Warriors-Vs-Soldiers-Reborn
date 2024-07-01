@@ -56,11 +56,16 @@ class statBuilder:
             #Return our TW% function calc
             return round((x ** (math.log(0.5,g))) * 100, 1)
     
-    async def getTeamTW(db, globalDB, team):
+    async def getTeamTW(db, globalDB, team, specialCase=False):
+        playedDB = db['GamesPlayed']
         if team == 'Soldiers':
             roles = Role.soldierRoles.copy()
+            if specialCase:
+                playedDB = db['SoldiersPlayed']
         elif team == 'Warriors':
             roles = Role.warriorRoles.copy()
+            if specialCase:
+                playedDB = db['WarriorsPlayed']
         #initialize t = total
         t = 0
         for role in roles:
@@ -69,7 +74,7 @@ class statBuilder:
                 if globalDB[f'{role}FinishedPlayed'] == 0 or db[f'{role}FinishedWon'] == 0:
                     continue
                 if db[f'{role}FinishedWon'] == db[f'{role}FinishedPlayed']:
-                    t += (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
+                    t += (db[f'{role}FinishedPlayed']/playedDB)
                     continue
                 #let g = average win percentage of given role
                 g = globalDB[f'{role}FinishedWon']/globalDB[f'{role}FinishedPlayed']
@@ -78,14 +83,14 @@ class statBuilder:
                 #let y = the raw tw% calculation
                 y = x ** (math.log(0.5, g))
                 #let z = y times the proportion of the time they played as that role relative to playing as the team
-                z = y * (db[f'{role}FinishedPlayed']/db[f'GamesPlayed'])
+                z = y * (db[f'{role}FinishedPlayed']/playedDB)
                 #increment t by z
                 t += z
             else:
                 if globalDB[f'{role}Played'] == 0 or db[f'{role}Won'] == 0:
                     continue
                 if db[f'{role}Won'] == db[f'{role}Played']:
-                    t += (db[f'{role}Played']/db[f'GamesPlayed'])
+                    t += (db[f'{role}Played']/playedDB)
                     continue
                 #let g = average win percentage of given role
                 g = globalDB[f'{role}Won']/globalDB[f'{role}Played']
@@ -94,7 +99,7 @@ class statBuilder:
                 #let y = the raw tw% calculation
                 y = x ** (math.log(0.5, g))
                 #let z = y times the proportion of the time they played as that role relative to playing as the team
-                z = y * (db[f'{role}Played']/db[f'GamesPlayed'])
+                z = y * (db[f'{role}Played']/playedDB)
                 #increment t by z
                 t += z
         #Convert t to properly rounded percentage and return
