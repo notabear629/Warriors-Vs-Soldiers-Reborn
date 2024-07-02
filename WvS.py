@@ -162,6 +162,10 @@ async def renamechannel(ctx, *, channelName=None):
 
 @client.command('renamerole')
 async def renamerole(ctx, *, roleName=None):
+    bannedRoles = ['warriors vs soldiers ping role', 'warriors vs. soldiers ping role', 'wvs ping role']
+    if roleName != None and roleName.lower() in bannedRoles:
+        await ctx.reply('Fuck you.')
+        return
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeRoleName(ctx, ctx.message.author, homeServer, roleName)
 
