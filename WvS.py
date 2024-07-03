@@ -160,12 +160,17 @@ async def renamechannel(ctx, *, channelName=None):
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeChannelName(ctx, client, ctx.message.author, homeServer, channelName)
 
+
+def getModifiedStr(roleName):
+    return roleName.lower().replace('а', 'a').replace('е', 'e').replace('о', 'o').replace('у', 'y').replace('х', 'x').replace('с', 'c').replace(' ', '').replace('/', '').replace('\\', '').replace('_', '').replace('*', '').replace('#','').replace('_', '').replace('ο', 'o').replace('ν', 'v').replace('ո', 'n').replace('օ', 'o').replace('ց', 'g').replace('​', '').replace('⠀', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace('　', '').replace('\n', '').replace('﻿', '').replace('⁲', '').replace('⁳', '').replace('₏', '').replace('₝', '').replace('₞', '').replace('₟', '').replace('', '').replace(' ', '').replace('舆', '')
+
 @client.command('renamerole')
 async def renamerole(ctx, *, roleName=None):
-    bannedRoles = ['warriorsvssoldierspingrole', 'warriorsvs.soldierspingrole', 'wvspingrole', 'warriorsvssoldierspingroie', 'warriorsvs.soldierspingroie', 'wvspingroie', 'warriorsvssoidierspingrole', 'warriorsvssoidierspingroie', 'warriorsvs.soidierspingrole', 'warriorsvs.soidierspingroie']
-    if roleName != None and roleName.lower().replace('а', 'a').replace('е', 'e').replace('о', 'o').replace('у', 'y').replace('х', 'x').replace('с', 'c').replace(' ', '').replace('/', '').replace('\\', '').replace('_', '').replace('*', '').replace('#','').replace('_', '').replace('ο', 'o').replace('ν', 'v').replace('ո', 'n').replace('օ', 'o').replace('ց', 'g').replace('​', '').replace('⠀', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace(' ', '').replace('　', '').replace('\n', '').replace('﻿', '').replace('⁲', '').replace('⁳', '').replace('₏', '').replace('₝', '').replace('₞', '').replace('₟', '').replace('', '').replace(' ', '').replace('舆', '') in bannedRoles:
-        await ctx.reply('Fuck you.')
-        return
+    bannedSegments = ['pingrole', 'pingroie']
+    for elem in bannedSegments:
+        if roleName != None and getModifiedStr(elem) in roleName:
+            await ctx.reply('Fuck you')
+            return
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeRoleName(ctx, ctx.message.author, homeServer, roleName)
 
