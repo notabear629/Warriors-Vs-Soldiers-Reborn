@@ -168,7 +168,7 @@ def getModifiedStr(roleName):
 async def renamerole(ctx, *, roleName=None):
     bannedSegments = ['pingrole', 'pingroie']
     naughtyUsers = [192780209882136576, 525287902578475008]
-    validChars = '1234567890qwertyuiopasdfghjklzxcvbnm,.!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM@#$_&-+()/\\*"\':;!?~`|•√π÷×§∆£¢€¥^°={}\%©®™✓[]+-*/%'
+    validChars = '1234567890qwertyuiopasdfghjklzxcvbnm,.!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM@#$_&-+()/\\*"\':;!?~`|•√π÷×§∆£¢€¥^°={}%©®™✓[]+-*/%'
     for elem in bannedSegments:
         if roleName != None and elem in getModifiedStr(roleName):
             await ctx.reply('Fuck you.')
