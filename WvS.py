@@ -167,10 +167,17 @@ def getModifiedStr(roleName):
 @client.command('renamerole')
 async def renamerole(ctx, *, roleName=None):
     bannedSegments = ['pingrole', 'pingroie']
+    naughtyUsers = [192780209882136576, 525287902578475008]
+    validChars = '1234567890qwertyuiopasdfghjklzxcvbnm,.!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM@#$_&-+()/\\*"\':;!?~`|•√π÷×§∆£¢€¥^°={}\%©®™✓[]+-*/%'
     for elem in bannedSegments:
-        if roleName != None and getModifiedStr(elem) in roleName:
-            await ctx.reply('Fuck you')
+        if roleName != None and elem in getModifiedStr(roleName):
+            await ctx.reply('Fuck you.')
             return
+    if ctx.message.author.id in naughtyUsers:
+        for char in roleName:
+            if char not in validChars:
+                await ctx.reply('EXTRA Fuck you.')
+                return
     await userInfoManager.userRegistration(ctx, ctx.message.author, homeServer, userCategory, currentTheme, prefix)
     await userInfoManager.changeRoleName(ctx, ctx.message.author, homeServer, roleName)
 
