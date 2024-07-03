@@ -162,7 +162,7 @@ async def renamechannel(ctx, *, channelName=None):
 
 @client.command('renamerole')
 async def renamerole(ctx, *, roleName=None):
-    bannedRoles = ['warriors vs soldiers ping role', 'warriors vs. soldiers ping role', 'wvs ping role', 'warriors vs soldiers ping roie', 'warriors vs. soldiers ping roie', 'wvs ping roie']
+    bannedRoles = ['warriors vs soldiers ping role', 'warriors vs. soldiers ping role', 'wvs ping role', 'warriors vs soldiers ping roie', 'warriors vs. soldiers ping roie', 'wvs ping roie', 'warriors vs soidiers ping role', 'warriors vs soidiers ping roie', 'warriors vs. soidiers ping role', 'warriors vs. soidiers ping roie']
     if roleName != None and roleName.lower().replace('а', 'a').replace('е', 'e').replace('о', 'o').replace('у', 'y').replace('х', 'x').replace('с', 'c') in bannedRoles:
         await ctx.reply('Fuck you.')
         return
