@@ -40,7 +40,7 @@ BOT_WVS_GAG_ROLE_ID requires you to create a specific role. I recommend calling 
 
 ADMIN_ROLE_ID requires you to create another role for your server admins to use. you should ONLY give this role to people you want to administrate the server. You should give this role every permission, except admin. Upon using the ~admin command, the bot will toggle the admin privillege of that role on and off. Therefore acting as a switch for the user channels to be visible or not.
 
-**IT IS IMPORTANT THAT YOU GIVE OWNERSHIP OF THE SERVER TO THE ALT. OWNERS CAN ALWAYS SEE ALL CHANNELS, LEAVING PRIVATE CHANNELS IMPOSSIBLE. THEREFORE, DONT PLAY ON THE OWNER ACCOUNT.**
+**IT IS IMPORTANT THAT YOU GIVE OWNERSHIP OF THE SERVER TO AN ALT ACCOUNT. OWNERS CAN ALWAYS SEE ALL CHANNELS, LEAVING PRIVATE CHANNELS IMPOSSIBLE. THEREFORE, DONT PLAY ON THE OWNER ACCOUNT.**
 
 It is also important to create the role hierarchy a certain way. You need to ensure that the role created for your bot is at the HIGHEST, and ensure it has admin privilleges.
 
@@ -49,6 +49,25 @@ Put [GAGGED] the SECOND highest.
 Put Admin the THIRD highest.
 
 Once all of these are taken care of, you also will need to invite your bot into my emoji servers if you want to use the default emojis.
+
+The bot is ran by running WvS.py as a python script.
+
+# How to modify the game
+
+One of the key features of the bot is that it is fully customizeable in regards to its theming. In order to add a new theme to the game, you should do some basic steps.
+
+First, in the themeData folder, copy defaultGameTheme and create a new file. Name it something else, and change the class name from defaultGameTheme to something else.
+
+You should use this as a basic blueprint to edit the theming of the game to your heart's content. Just be sure that your bot has access to any custom emojis that you specify.
+
+You also need to make sure that the bot can use your theme by editing Theme.py in the gameObjects folder.
+
+You need to add an import statement to match the other imports at the top of the file for your new class,
+
+and the loadedThemes variable needs to have your new class be added into its list.
+
+You can also change the defaultTheme to change which is the one it starts on from within this file.
+
 
 
 
