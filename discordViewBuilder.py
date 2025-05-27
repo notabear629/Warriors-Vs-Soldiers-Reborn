@@ -20,7 +20,6 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
-        #return True
         if player.user == interaction.user:
             return True
         return False
@@ -105,6 +104,16 @@ class discordViewBuilder:
                     await interaction.message.edit(embed=embed, view = None)
             falcoButton.callback = processExpeditionFalco
             returnedView.add_item(falcoButton)
+
+        if player.role.id == 'Magath' and player not in currentGame.currentExpo.expeditionMembers:
+            magathButton = Button(label = 'Final Order', emoji = player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processMagathVote(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await voteExpoFunction(currentGame, player, client, currentTheme, home, 'Final Order')
+                    embed = await embedBuilder.voteDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            magathButton.callback = processMagathVote
+            returnedView.add_item(magathButton)
 
         if player.role.id == 'Pieck' and player.role.abilityActive:
             pieckButtonAccept = Button(label = f'{currentTheme.emojiAcceptExpedition}Flip and Accept', emoji = player.role.secondaryEmoji, style = discord.ButtonStyle.grey)

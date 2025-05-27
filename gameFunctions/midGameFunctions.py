@@ -83,6 +83,9 @@ class midGameFunctions:
                     await userChannel.send('Choose who to target!', view=view)
                     if Warhammer == currentGame.hangeWiretapped:
                         await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                    if Colt != None and Colt in currentGame.livingPlayers:
+                        await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Warhammer)
 
     async def trap(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
@@ -108,6 +111,9 @@ class midGameFunctions:
                     await userChannel.send('Choose who to trap!', view=view)
                     if Warhammer == currentGame.hangeWiretapped:
                         await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                    if Colt != None and Colt in currentGame.livingPlayers:
+                        await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Warhammer)
 
     async def analyze(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
@@ -160,6 +166,9 @@ class midGameFunctions:
                         await userChannel.send('Choose who to send to trial!', view=view)
                         if Warhammer == currentGame.hangeWiretapped:
                             await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                        Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                        if Colt != None and Colt in currentGame.livingPlayers:
+                            await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Warhammer)
                     else:
                         await userChannel.send(f'You may only send living {currentTheme.warriorPlural} that have been on at least one {currentTheme.expeditionName} to trial. None of these players exist, so you may not send anyone to trial.')
 
@@ -197,6 +206,9 @@ class midGameFunctions:
                 await userChannel.send('Choose who to fire upon!', view=view)
                 if Gabi == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                if Colt != None and Colt in currentGame.livingPlayers:
+                    await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Gabi)
 
     async def scream(ctx, currentGame, currentTheme):
         if currentGame.online:
@@ -208,6 +220,9 @@ class midGameFunctions:
                 await userChannel.send('Enter your message!', view=view)
                 if Annie == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                if Colt != None and Colt in currentGame.livingPlayers:
+                    await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Annie)
 
     async def summon(ctx, currentGame, currentTheme):
         if currentGame.online:
@@ -230,6 +245,9 @@ class midGameFunctions:
                 await userChannel.send('Choose who to gag!', view=view)
                 if Porco == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                if Colt != None and Colt in currentGame.livingPlayers:
+                    await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Porco)
 
     async def ungag(ctx, currentGame, currentTheme, client):
         if currentGame.online and currentGame.porcoGagged != None:
@@ -244,6 +262,9 @@ class midGameFunctions:
                     await ctx.reply('The gag has been removed.')
                 if Porco == currentGame.hangeWiretapped:
                     await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                if Colt != None and Colt in currentGame.livingPlayers:
+                    await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Porco)
 
     async def paths(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
@@ -284,3 +305,4 @@ class midGameFunctions:
                     Porco.role.disableAbility()
                     currentGame.porcoGag(gaggedPlayer)
                     Porco.stats.activateGag()
+

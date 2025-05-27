@@ -276,9 +276,9 @@ class embedBuilder:
         titansSmelled = 0
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
-            if (player in currentGame.warriors and (expeditioner in currentGame.warriors or expeditioner==currentGame.niccoloDecoy) and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+            if (player in currentGame.warriors and (expeditioner in currentGame.warriors or expeditioner==currentGame.niccoloDecoy) and player.role.id != 'Colt' and expeditioner.role.id != 'Colt') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
-            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Magath' or expeditioner.role.id == 'Magath')):
+            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Colt' or expeditioner.role.id == 'Colt')):
                 playerList += f'{currentTheme.emojiWarrior}{expeditioner.role.emoji}'
             playerList += '\n'
             if expeditioner.role.isTitan:
@@ -313,6 +313,8 @@ class embedBuilder:
             voteDesc = f'You have chosen to flip and accept this {voteType}.'
         elif player.role.id == 'Falco' and currentGame.currentExpo.falcoActivated and player in currentGame.currentExpo.voted:
             voteDesc = f'You have chosen to intercept the votes on this {voteType}.'
+        elif player.role.id == 'Magath' and currentGame.currentExpo.magathActivated and player in currentGame.currentExpo.voted:
+            voteDesc = f'You have chosen to give your final order.'
         elif player.role.id == 'Yelena' and currentGame.currentExpo.yelenaStolen and player in currentGame.currentExpo.voted:
             voteDesc = f'You have chosen to steal {currentGame.currentExpo.yelenaStolen.user.name}\'s vote.'
         elif player in currentGame.currentExpo.accepted:
@@ -391,9 +393,9 @@ class embedBuilder:
         playerList = f'The current {currentTheme.expeditionTeam}:\n'
         for expeditioner in currentGame.currentExpo.expeditionMembers:
             playerList += f'**{expeditioner.user.name}**'
-            if (player in currentGame.warriors and (expeditioner in currentGame.warriors or expeditioner==currentGame.niccoloDecoy) and player.role.id != 'Magath' and expeditioner.role.id != 'Magath') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
+            if (player in currentGame.warriors and (expeditioner in currentGame.warriors or expeditioner==currentGame.niccoloDecoy) and player.role.id != 'Colt' and expeditioner.role.id != 'Colt') or (player.role.id == 'Eren' and expeditioner in currentGame.warriors and expeditioner.role.id != 'Zeke'):
                 playerList += f'{currentTheme.emojiWarrior}'
-            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Magath' or expeditioner.role.id == 'Magath')):
+            elif (expeditioner in currentGame.warriors and player in currentGame.warriors and (player.role.id == 'Colt' or expeditioner.role.id == 'Colt')):
                 playerList += f'{currentTheme.emojiWarrior}{expeditioner.role.emoji}'
             playerList += '\n'
         playerList += '\n'
@@ -792,15 +794,18 @@ class embedBuilder:
                 soldierList = f'{role.emoji}{role.name}{role.emoji}\n'
         returnedEmbed.add_field(name = f'{currentTheme.emojiSoldier}{currentTheme.soldierPlural}{currentTheme.emojiSoldier}', value = f'{soldierList}', inline=True)
 
-    
-            
         warriorList = ''
         for role in warriorRoles:
-            warriorList += f'{role.emoji}{role.name}{role.emoji}\n'
+            if len(warriorList + f'{role.emoji}{role.name}{role.emoji}\n') <= 1024:
+                warriorList += f'{role.emoji}{role.name}{role.emoji}\n'
+            else:
+                returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=True)
+                warriorList = f'{role.emoji}{role.name}{role.emoji}\n'
+        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=True)
+            
         wildcardList = ''
         for role in wildcardRoles:
             wildcardList += f'{role.emoji}{role.name}{role.emoji}\n'
-        returnedEmbed.add_field(name = f'{currentTheme.emojiWarrior}{currentTheme.warriorPlural}{currentTheme.emojiWarrior}', value = f'{warriorList}', inline=False)
         returnedEmbed.add_field(name = f'{currentTheme.emojiWildcard}{currentTheme.wildcardPlural}{currentTheme.emojiWildcard}', value = f'{wildcardList}', inline=True)
         return returnedEmbed
     
@@ -812,6 +817,10 @@ class embedBuilder:
     
     async def hangeEmbed(currentGame, currentTheme, message):
         returnedEmbed = discord.Embed(title = 'Wiretap Alert!', description=message, color = currentTheme.soldierColor)
+        return returnedEmbed
+    
+    async def coltEmbed(currentGame, currentTheme, message):
+        returnedEmbed = discord.Embed(title = 'Update from the Communications Wire!', description=message, color=currentTheme.warriorColor)
         return returnedEmbed
     
     async def pathsEmbed(currentGame, currentTheme):

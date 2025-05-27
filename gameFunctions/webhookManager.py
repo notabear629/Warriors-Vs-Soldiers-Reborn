@@ -45,6 +45,14 @@ class webhookManager:
         Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
         if Hitch != None:
             hitchInfo = {}
+        if currentGame.currentExpo.magathActivated:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.magathMessage, 'Magath', client)
+            Magath = await searchFunctions.roleIDToPlayer(currentGame, 'Magath')
+            if Magath != None:
+                await currentGame.killPlayer(Magath, Magath, 'Magath')
+                deathMessage = currentTheme.getMagathDeathMessage(currentGame, currentTheme, Magath)
+                if deathMessage != '':
+                    await home.send(deathMessage)
         if currentGame.currentExpo.falcoActivated and Hitch != None:
             Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
             hitchInfo['Falco'] = Falco
@@ -270,6 +278,23 @@ class webhookManager:
                 await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hange.user.mention}', 'Hange', client, embed)
         if currentGame.currentRules.casual == False:
             Hange.stats.processWiretap(currentGame)
+
+    async def processColtWebhook(currentGame, currentTheme, arg, warrior):
+        client = currentGame.client
+        Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+        if Colt in currentGame.livingPlayers:
+            user = databaseManager.searchForUser(Colt.user)
+            userChannel = client.get_channel(user['channelID'])
+            msg = ''
+            if arg in ['Accept', 'Reject', 'Abstain']:
+                msg = f'Your comrade, **{warrior.user.name}** has submitted a vote to {arg}!'
+            elif arg not in ['Pass', 'Sabotage']:
+                msg = f'❗Your comrade **{warrior.role.emoji}{warrior.role.name}{warrior.role.emoji}** has used their special ability❗'
+            if msg != '':
+                embed = await embedBuilder.coltEmbed(currentGame, currentTheme, msg)
+                await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Colt.user.mention}', 'Colt', client, embed)
+            if currentGame.currentRules.casual == False:
+                Colt.stats.processWire()
 
     async def erwinWebhook(currentGame, currentTheme, home, client):
         if currentGame.currentExpo.erwinActivated:

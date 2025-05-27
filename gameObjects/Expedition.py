@@ -27,6 +27,7 @@ class Expedition:
         self.erwinActivated = False
         self.dazActivated = False
         self.falcoActivated = False
+        self.magathActivated = False
         self.mikasaGuarded = None
         self.reinerBlocked = None
         self.kennyMurdered = None
@@ -55,6 +56,7 @@ class Expedition:
         self.zacharyActivated = False
         self.pieckActivated = False
         self.falcoActivated = False
+        self.magathActivated = False
         self.erwinActivated = False
         self.dazActivated = False
         self.sashaActivated = False
@@ -162,6 +164,10 @@ class Expedition:
         elif voteCase == 'Falco':
             self.falcoActivated = True
             player.role.disableAbility()
+        elif voteCase == 'Magath':
+            self.magathActivated = True
+            player.role.disableAbility()
+            self.accepted.append(player)
         elif type(voteCase) == dict and 'Yelena' in voteCase:
             self.abstained.append(player)
             player.role.disableAbility()
@@ -272,6 +278,13 @@ class Expedition:
             self.accepted.append(Falco)
         else:
             self.rejected.append(Falco)
+
+    def processMagath(self, currentGame):
+        for warrior in currentGame.livingWarriors:
+            if warrior in self.rejected:
+                self.rejected.remove(warrior)
+            if warrior not in self.accepted:
+                self.accepted.append(warrior)
 
     def processYelena(self, Yelena):
         if self.yelenaStolen not in self.abstained:

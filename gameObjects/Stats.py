@@ -44,6 +44,8 @@ class Stats:
             setattr(self, 'RicoTraps', 1)
             if currentGame.ricoFired:
                 setattr(self, 'RicoTrapsFired', 1)
+        if player.role.id == 'Marcel':
+            setattr(self, 'MarcelGags', len(currentGame.deadSoldiers))
         
 
     def processKill(self, killer, killed):
@@ -142,6 +144,9 @@ class Stats:
             setattr(Falco.stats, 'FalcoUses', 1)
             if voteResult:
                 setattr(Falco.stats, 'FalcoVoteWins', 1)
+        if expo.magathActivated:
+            Magath = await searchFunctions.roleIDToPlayer(currentGame, 'Magath')
+            setattr(Magath.stats, 'MagathFinalOrders', 1)
         if expo.commander in currentGame.soldiers:
             commandCount = getattr(expo.commander.stats, 'ExposCommanded')
             setattr(expo.commander.stats, 'ExposCommanded', commandCount + 1)
@@ -217,6 +222,9 @@ class Stats:
                 if warrior in expo.expeditionMembers:
                         expoCount = getattr(warrior.stats, 'WarriorsExpeditionsOn')
                         setattr(warrior.stats, 'WarriorsExpeditionsOn', expoCount + 1)
+                        if currentGame.currentExpo.magathActivated:
+                            Magath = await searchFunctions.roleIDToPlayer(currentGame, 'Magath')
+                            setattr(Magath.stats, 'MagathFinalOrderWins', 1)
             if result == 'y':
                 for soldier in currentGame.soldiers:
                     if soldier == expo.commander or soldier in expo.accepted or soldier in expo.expeditionMembers:
@@ -315,6 +323,10 @@ class Stats:
             setattr(self, 'HangeWiretapsSoldier', 1)
         else:
             setattr(self, 'HangeWiretapsWarrior', 1)
+
+    def processWire(self):
+        coltWires = getattr(self, 'ColtWires')
+        setattr(self, 'ColtWires', coltWires+1)
 
     def processBodyID(self, currentGame):
         setattr(self, 'MarloweIdentified', len(currentGame.deadPlayers))

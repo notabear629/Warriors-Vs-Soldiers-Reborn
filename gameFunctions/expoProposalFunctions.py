@@ -277,6 +277,8 @@ class expoProposalFunctions:
                 voteToProcess = 'PieckReject'
             elif vote == 'Intercept' and player.role.id == 'Falco' and player.role.abilityActive:
                 voteToProcess = 'Falco'
+            elif vote == 'Final Order' and player.role.id == 'Magath' and player.role.abilityActive and player not in currentGame.currentExpo.expeditionMembers:
+                voteToProcess = 'Magath'
             elif type(vote) == dict and 'Yelena' in vote and player.role.id == 'Yelena' and player.role.abilityActive:
                 voteToProcess = vote
             else:
@@ -290,6 +292,9 @@ class expoProposalFunctions:
                 await currentGame.sendTemporaryMessage(currentTheme, home)
             if player == currentGame.hangeWiretapped:
                 await webhookManager.processHangeWebhook(currentGame, currentTheme, vote)
+            Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+            if Colt != None and Colt in currentGame.livingPlayers and player in currentGame.warriors and player != Colt:
+                await webhookManager.processColtWebhook(currentGame, currentTheme, vote, player)
 
     async def getVotingResults(currentGame):
         if currentGame.currentExpo.jeanActivated and (currentGame.currentExpo.zacharyActivated or currentGame.currentExpo.warhammerActivated == 'Zachary') == False:
@@ -316,6 +321,8 @@ class expoProposalFunctions:
         if currentGame.currentExpo.falcoActivated:
             Falco = await searchFunctions.roleIDToPlayer(currentGame, 'Falco')
             currentGame.currentExpo.processFalco(Falco)
+        if currentGame.currentExpo.magathActivated:
+            currentGame.currentExpo.processMagath(currentGame)
         if currentGame.currentExpo.yelenaStolen != None:
             Yelena = await searchFunctions.roleIDToPlayer(currentGame, 'Yelena')
             currentGame.currentExpo.processYelena(Yelena)

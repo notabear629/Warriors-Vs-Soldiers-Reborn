@@ -97,8 +97,10 @@ class expoActiveFunctions:
                     if rumblingCheck:
                         await expoActiveFunctions.startRumbling(currentGame, currentTheme, home, client, homeServer, discord)
                         if currentGame.porcoGagged != None:
+                            Marcel = await searchFunctions.roleIDToPlayer(currentGame, 'Marcel')
                             for user in currentGame.gagRole.members:
-                                await user.remove_roles(currentGame.gagRole)
+                                if Marcel == None or (Marcel != None and user not in currentGame.deadSoldiers):
+                                    await user.remove_roles(currentGame.gagRole)
                             currentGame.removeGag()
                         return True
                 Hannes = await searchFunctions.roleIDToPlayer(currentGame, 'Hannes')
@@ -358,6 +360,16 @@ class expoActiveFunctions:
             Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')
             if currentGame.currentRules.casual == False:
                 Mikasa.stats.guardPlayer()
+        await expoActiveFunctions.updateMarcelGag(currentGame.gagRole, currentGame)
+
+    async def updateMarcelGag(gagRole, currentGame):
+        Marcel = await searchFunctions.roleIDToPlayer(currentGame, 'Marcel')
+        if Marcel != None:
+            for player in currentGame.deadPlayers:
+                if player in currentGame.soldiers:
+                    if gagRole not in player.user.roles:
+                        await player.user.add_roles(gagRole)
+                        
 
     async def processDeathMessages(currentGame, currentTheme, home, deathFlags, client):
         Mikasa = await searchFunctions.roleIDToPlayer(currentGame, 'Mikasa')

@@ -483,6 +483,13 @@ class statBuilder:
             returnedEmbed.add_field(name = f'{role.shortName} Vote Steals', value = f'{db['YelenaSteals']} ({await statBuilder.getPercentage(db, 'YelenaSteals', 'YelenaPlayed')}% of Games)', inline=True)
         elif role.id == 'Warhammer':
             returnedEmbed.add_field(name = f'{currentTheme.soldierSingle} Abilities Used', value = f'{db['WarhammerAbilities']} ({await statBuilder.getPercentage(db, 'WarhammerAbilities', 'WarhammerPlayed')}% of Games Played)')
+        elif role.id == 'Colt':
+            returnedEmbed.add_field(name = f'Wire Communications', value = f'{db['ColtWires']} ({await statBuilder.getDivider(db, 'ColtWires', 'ColtPlayed')} per Game)')
+        elif role.id == 'Magath':
+            returnedEmbed.add_field(name = f'Final Orders Given', value = f'{db['MagathFinalOrders']} ({await statBuilder.getPercentage(db, 'MagathFinalOrders', 'MagathPlayed')}% of Games)')
+            returnedEmbed.add_field(name = f'Final Orders Suceeded', value = f'{db['MagathFinalOrderWins']} ({await statBuilder.getPercentage(db, 'MagathFinalOrderWins', 'MagathFinalOrders')}% of Final Orders, {await statBuilder.getPercentage(db, 'MagathFinalOrderWins', 'MagathPlayed')}% of Games)')
+        elif role.id == 'Marcel':
+            returnedEmbed.add_field(name = f'Dead {currentTheme.soldierPlural} Silenced', value = f'{db['MarcelGags']} ({await statBuilder.getDivider(db, 'MarcelGags', 'MarcelPlayed')} per Game)')
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

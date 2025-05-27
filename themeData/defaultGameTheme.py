@@ -199,6 +199,7 @@ class defaultGameTheme:
     marcoMessage = '...'
     warhammerApologyMessage = 'Comrades... I am sorry.'
     ricoMessage = 'You\'ve stepped into my trap!'
+    magathMessage = 'This will be my final order...'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -991,7 +992,7 @@ class defaultGameTheme:
     class Rico:
         roleDict = {'roleID' : 'Rico'}
 
-        roleDict['name'] = 'Rico Bzrenska'
+        roleDict['name'] = 'Rico Brzenska'
 
         roleDict['shortName'] = 'Rico'
 
@@ -1233,6 +1234,33 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] =  'Falco spends a lot of time with mail and the letters thanks to Eren\'s shenanigans. As such, he has learned how to intercept letters and receive notice as what is to come. Thanks to this, he has the 1 time ability to use a special vote when voting for an expedition proposal. What this vote will do, is that it will reject the expedition UNLESS it would pass with your vote! This ability is powerful when used properly, as it allows you the chance to accept one of your teammates, while not blowing your cover if it fails!'
 
+    class Colt:
+        roleDict = {'roleID' : 'Colt'}
+
+        roleDict['name'] = 'Colt Grice'
+
+        roleDict['shortName'] = 'Colt'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1376887889253629962
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = 'You are being trained as the new Warchief in the Warriors corps! As part of your training, you have been extensively given communications links to rapidly communicate with your teammates. Because of this, you will know all of their roles, they will know you, and you will receive frequent updates on their actions, being alerted to all their votes and ability usages!'
+
+        roleDict['gameRole'] = ':military_helmet:Captain:military_helmet:'
+
+        roleDict['helpInfo'] =  'Colt Grice is being trained as a new leader in the Warriors corps! Thanks to being prepared for leadership, he has comm-links and the ability to rapidly communicate with all his teammates, thanks to this ability, he will know all of his teammates roles, his teammates will know he is Colt, and he will receive updates on the actions of his Warrior comrades, getting alerts on their votes and ability usages!'
+
     class Magath:
         roleDict = {'roleID' : 'Magath'}
 
@@ -1248,17 +1276,18 @@ class defaultGameTheme:
 
         roleDict['emoji'] = 1206505938606100521
 
-        roleDict['secondaryEmoji'] = None
+        roleDict['secondaryEmoji'] = str('⚔️')
 
         roleDict['imageURL'] = None
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = 'You are a commander of the Marleyian Miltiary! As such, you have extensive detail on the movements of the other Warriors. You will have knowledge over who has what Warrior roles. In addition to this, the other Warriors will also know you are Magath. Use this advanced knowledge to expertly coordinate attacks against the Soldiers!\n\n'
+        roleDict['roleMessage'] = 'You are the Commander of the Marleyian military! Up your sleeve, you have a terrible card... Your final order. When an expedition you are not in is being proposed, you can sacrifice yourself, dying on the spot, to ensure that every Warrior accepts the expedition.'
 
-        roleDict['gameRole'] = ':military_helmet:Commander:military_helmet:'
+        roleDict['gameRole'] = ':military_medal:Commander:military_medal:'
 
-        roleDict['helpInfo'] =  'Theo Magath is a commander of the Marleyian Military. Thanks to this high rank, he has high knowledge of the troop movements and positioning of the other Warriors. He will know the specific role identity of each of his fellow Warrior comrades. In turn, all of the other Warriors will know his identity. This, in theory, should allow for superb coordination around him!'
+        roleDict['helpInfo'] =  'Theo Magath is the Commander of the Marleyian military, and he has a disgusting card up his sleeve... His final order. When there is an expedition being proposed he is not present in, he can choose to sacrifice himself, dying instantly on the spot, but ensuring that all the Warriors accept the proposal.'
+
 
     class Gabi:
         roleDict = {'roleID' : 'Gabi'}
@@ -1368,7 +1397,35 @@ class defaultGameTheme:
         roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
 
         roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, Freida and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
-    
+
+    class Marcel:
+        roleDict = {'roleID' : 'Marcel'}
+
+        roleDict['name'] = 'Marcel Galliard'
+
+        roleDict['shortName'] = 'Marcel'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1376912725988605952
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the famously long dead baby version of the Shut-Your-Jaw Titan! As such, when a soldier dies, they will be unable to speak, you make the DEAD shut their jaw. You don\'t have to do anything to activate this ability, it is a passively active abiltiy that is always on.\n\n'
+
+        roleDict['gameRole'] = ':zipper_mouth:Ghostbuster:zipper_mouth:'
+
+        roleDict['helpInfo'] =  f'Marcel is a famously long dead baby version of the Shut-Your-Jaw Titan! Fittingly, when a soldier dies with this Warrior in the field, they will be unable to speak, Marcel makes the DEAD shut their jaw.'    
+
+
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
 
@@ -1525,8 +1582,8 @@ class defaultGameTheme:
         warriorList = random.sample(warriorList, len(warriorList))
         for warrior in warriorList:
             if player.user.name != warrior.user.name:
-                if player.role.id != 'Magath':
-                    if warrior.role.id != 'Magath':
+                if player.role.id != 'Colt':
+                    if warrior.role.id != 'Colt':
                         warriorInfo += f'**{warrior.user.name}**'
                     else:
                         warriorInfo += f'**{warrior.role.emoji}{warrior.user.name}{warrior.role.emoji}**'
@@ -1746,6 +1803,9 @@ class defaultGameTheme:
                 if value == 'Willy':
                     willyDeathMessages += f'{Reiner.role.secondaryEmoji}Willy\'s traitorous attack was no match for **{key.user.name}**\'s Armor!{Reiner.role.secondaryEmoji}\n\n'
         return willyDeathMessages
+    
+    def getMagathDeathMessage(currentGame, currentTheme, Magath):
+        return f'{Magath.role.emoji}**{Magath.user.name}** has sacrificed themselves to give their Final Order!{Magath.role.emoji}\nThey were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
     
     def getGabiWoundMessage(currentGame, currentTheme, Gabi):
         gabiWoundMessage = f'{Gabi.role.secondaryEmoji}Gabi has shot **{currentGame.woundedPlayer.user.name}**! They have been evacuated to the Field Hospital and will not be able to attend the next expedition!{Gabi.role.secondaryEmoji}\n\n'

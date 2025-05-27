@@ -30,6 +30,10 @@ class endGameFunctions:
         await endGameFunctions.processEndgame(currentGame, currentTheme, home)
 
     async def reachBasement(currentGame, currentTheme, home):
+
+        for player in currentGame.gagRole.members:
+            await player.remove_roles(currentGame.gagRole)
+
         if currentGame.currentRules.noCoordinate:
             await endGameFunctions.noCoordinateWin(currentGame, currentTheme, home)
             return
