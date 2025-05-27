@@ -14,43 +14,45 @@ class Rules:
             else:
                 setattr(self, key, value)
 
-    def changeRoles(self, roles, enabled):
+    def changeRoles(self, roles, enabledArg):
+
         if roles[0] in Role.soldierGroupOptional:
-            primaryGroup = self.disabledSoldiers
-            secondaryGroup = self.enabledSoldiers
-            primaryAttribute = 'disabledSoldiers'
-            secondaryAttribute = 'enabledSoldiers'
-            if enabled:
-                primaryGroup = self.enabledSoldiers
-                secondaryGroup = self.disabledSoldiers
-                primaryAttribute = 'enabledSoldiers'
-                secondaryAttribute = 'disabledSoldiers'
+            team = 'Soldiers'
         elif roles[0] in Role.warriorGroupOptional:
-            primaryGroup = self.disabledWarriors
-            secondaryGroup = self.enabledWarriors
-            primaryAttribute = 'disabledWarriors'
-            secondaryAttribute = 'enabledWarriors'
-            if enabled:
-                primaryGroup = self.enabledWarriors
-                secondaryGroup = self.disabledWarriors
-                primaryAttribute = 'enabledWarriors'
-                secondaryAttribute = 'disabledWarriors'
-        elif roles[0] in Role.wildcardRoles:
-            primaryGroup = self.disabledWildcards
-            secondaryGroup = self.enabledWildcards
-            primaryAttribute = 'disabledWildcards'
-            secondaryAttribute = 'enabledWildcards'
-            if enabled:
-                primaryGroup = self.enabledWildcards
-                secondaryGroup = self.disabledWildcards
-                primaryAttribute = 'enabledWildcards'
-                secondaryAttribute = 'disabledWildcards'
-        for role in roles:
-            if role in secondaryGroup:
-                secondaryGroup.remove(role)
-        primaryGroup = roles
-        setattr(self, primaryAttribute, primaryGroup)
-        setattr(self, secondaryAttribute, secondaryGroup)
+            team = 'Warriors'
+        else:
+            team = 'Wildcards'
+
+
+        enableCopy = getattr(self, f'enabled{team}').copy()
+        disableCopy = getattr(self, f'disabled{team}').copy()
+
+        if enabledArg == 'Enable':
+            for role in roles:
+                if role not in enableCopy:
+                    enableCopy.append(role)
+                if role in disableCopy:
+                    disableCopy.remove(role)
+
+        elif enabledArg == 'Neutral':   
+            for role in roles:
+                if role in enableCopy:
+                    enableCopy.remove(role)
+                if role in disableCopy:
+                    disableCopy.remove(role)
+
+        else:
+            for role in roles:
+                if role in enableCopy:
+                    enableCopy.remove(role)
+                if role not in disableCopy:
+                    disableCopy.append(role)
+
+        
+        setattr(self, f'enabled{team}', enableCopy)
+        setattr(self, f'disabled{team}', disableCopy)
+            
+
 
     def clearRoles(self, team):
         if team == 'Soldiers':

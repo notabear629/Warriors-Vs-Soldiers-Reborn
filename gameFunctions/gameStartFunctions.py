@@ -189,6 +189,7 @@ class gameStartFunctions:
         returnedRoles = []
         for roleName in roleNames:
             roleInfo = getattr(currentTheme, roleName)
+            
             if type(roleInfo['emoji']) == int:
                 roleInfo['emoji'] = client.get_emoji(roleInfo['emoji'])
             if type(roleInfo['secondaryEmoji']) == int:

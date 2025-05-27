@@ -25,13 +25,11 @@ class endGameFunctions:
             
 
     async def breakAllWalls(currentGame, currentTheme, home):
-        await currentGame.applyFrecklemirTeam()
         await home.send(currentTheme.wallBreakMessage)
         currentGame.setWinCondition('wallBreaks')
         await endGameFunctions.processEndgame(currentGame, currentTheme, home)
 
     async def reachBasement(currentGame, currentTheme, home):
-        await currentGame.applyFrecklemirTeam()
         if currentGame.currentRules.noCoordinate:
             await endGameFunctions.noCoordinateWin(currentGame, currentTheme, home)
             return

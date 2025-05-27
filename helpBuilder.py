@@ -577,9 +577,15 @@ class helpBuilder:
                 elif role.team == 'Wildcards':
                     wildcardRoles.append(role)
 
-            soldierSelection = Select(placeholder= f'Get Info about a {currentTheme.soldierSingle} Role', min_values=1, max_values=1)
+            soldierSelection = Select(placeholder= f'Get Info about a {currentTheme.soldierSingle} Role (Page 1 of 2)', min_values=1, max_values=1)
+            soldierSelection2 = Select(placeholder= f'Get Info about a {currentTheme.soldierSingle} Role (Page 2 of 2)', min_values=1, max_values=1)
+            x = 0
             for role in soldierRoles:
-                soldierSelection.add_option(label = role.shortName, emoji=role.emoji)
+                if x < 25:
+                    soldierSelection.add_option(label = role.shortName, emoji=role.emoji)
+                else:
+                    soldierSelection2.add_option(label = role.shortName, emoji=role.emoji)
+                x += 1
             warriorSelection = Select(placeholder= f'Get Info about a {currentTheme.warriorSingle} Role', min_values=1, max_values=1)
             for role in warriorRoles:
                 warriorSelection.add_option(label = role.shortName, emoji = role.emoji)
@@ -588,6 +594,11 @@ class helpBuilder:
                 wildcardSelection.add_option(label = role.shortName, emoji = role.emoji)
             async def processSoldierSelection(interaction):
                 selectedRoleShortName = soldierSelection.values[0]
+                for role in soldierRoles:
+                    if role.shortName == selectedRoleShortName:
+                        await navigate(interaction, 'Selected Role Info', role)
+            async def processSoldierSelection2(interaction):
+                selectedRoleShortName = soldierSelection2.values[0]
                 for role in soldierRoles:
                     if role.shortName == selectedRoleShortName:
                         await navigate(interaction, 'Selected Role Info', role)
@@ -602,9 +613,11 @@ class helpBuilder:
                     if role.shortName == selectedRoleShortName:
                         await navigate(interaction, 'Selected Role Info', role)
             soldierSelection.callback = processSoldierSelection
+            soldierSelection2.callback = processSoldierSelection2
             warriorSelection.callback = processWarriorSelection
             wildcardSelection.callback = processWildcardSelection
             returnedView.add_item(soldierSelection)
+            returnedView.add_item(soldierSelection2)
             returnedView.add_item(warriorSelection)
             returnedView.add_item(wildcardSelection)
 

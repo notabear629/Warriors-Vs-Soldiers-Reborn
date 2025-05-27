@@ -84,6 +84,48 @@ class midGameFunctions:
                     if Warhammer == currentGame.hangeWiretapped:
                         await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
+    async def trap(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Rico = await searchFunctions.roleIDToPlayer(currentGame, 'Rico')
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Rico != None:
+                user = databaseManager.searchForUser(Rico.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Rico.user == ctx.message.author and ctx.message.channel == userChannel and not currentGame.ricoFired:
+                    if not Rico.role.abilityActive:
+                        view = await discordViewBuilder.ricoTargetView(currentGame, currentTheme, Rico)
+                        await userChannel.send('Choose who to trap!', view=view)
+                        if Rico == currentGame.hangeWiretapped:
+                            await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    else:
+                        await ctx.reply('You have not yet set a trap!')
+
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Warhammer.user == ctx.message.author and Warhammer.role.abilityActive and ctx.message.channel == userChannel:
+                    view = await discordViewBuilder.ricoTargetView(currentGame, currentTheme, Warhammer)
+                    await userChannel.send('Choose who to trap!', view=view)
+                    if Warhammer == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+
+    async def analyze(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Moblit = await searchFunctions.roleIDToPlayer(currentGame, 'Moblit')
+            if Moblit != None:
+                user = databaseManager.searchForUser(Moblit.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Moblit.user == ctx.message.author and ctx.message.channel == userChannel:
+                    if Moblit.role.abilityActive:
+                        view = await discordViewBuilder.moblitAnalyzeView(currentGame, currentTheme, Moblit)
+                        embed = await embedBuilder.moblitSetEmbed(currentGame, currentTheme)
+                        await userChannel.send(view=view, embed=embed)
+                    else:
+                        embed = await embedBuilder.moblitResultsEmbed(currentGame)
+                        await userChannel.send(embed=embed)
+                    if Moblit == currentGame.hangeWiretapped:
+                            await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+
     async def trial(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
             Pyxis = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
@@ -120,6 +162,18 @@ class midGameFunctions:
                             await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
                     else:
                         await userChannel.send(f'You may only send living {currentTheme.warriorPlural} that have been on at least one {currentTheme.expeditionName} to trial. None of these players exist, so you may not send anyone to trial.')
+
+    async def vow(ctx, currentGame, currentTheme, prefix, client):
+        if currentGame.online:
+            Frieda = await searchFunctions.roleIDToPlayer(currentGame, 'Frieda')
+            if Frieda != None:
+                user = databaseManager.searchForUser(Frieda.user)
+                userChannel = client.get_channel(user['channelID'])
+                if Frieda.user == ctx.message.author and Frieda.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking:
+                    view = await discordViewBuilder.friedaVowView(currentGame, currentTheme, Frieda)
+                    await userChannel.send('Choose who to enforce a vow on!', view=view)
+                    if Frieda == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
 
     async def guard(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:

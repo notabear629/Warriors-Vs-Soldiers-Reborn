@@ -197,7 +197,7 @@ class statBuilder:
             return round(worp, 1)
 
 
-    async def profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, embedType):
+    async def profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, embedType, page=1):
         if user == 'GLOBAL':
             rootDB = databaseManager.getGlobal()
             thumbnail = currentTheme.globalThumbnail
@@ -214,7 +214,7 @@ class statBuilder:
         elif embedType == 'Warrior Overview':
             return await statBuilder.warriorOverviewEmbed(currentTheme, user, name, thumbnail, rootDB, globalDB)
         elif embedType == 'Soldier Roles':
-            return await statBuilder.soldierRolesEmbed(currentTheme, user, name, thumbnail, rootDB, globalDB, loadedRoles)
+            return await statBuilder.soldierRolesEmbed(currentTheme, user, name, thumbnail, rootDB, globalDB, loadedRoles, page)
         elif embedType == 'Warrior Roles':
             return await statBuilder.warriorRolesEmbed(currentTheme, user, name, thumbnail, rootDB, globalDB, loadedRoles)
         elif type(embedType) == dict:
@@ -290,16 +290,19 @@ class statBuilder:
         returnedEmbed.set_footer(icon_url=thumbnail, text = f'{name} Stats')
         return returnedEmbed
     
-    async def soldierRolesEmbed(currentTheme, user, name, thumbnail, rootDB, rootGlobalDB, loadedRoles):
+    async def soldierRolesEmbed(currentTheme, user, name, thumbnail, rootDB, rootGlobalDB, loadedRoles, page):
         db = rootDB['stats']
         globalDB = rootGlobalDB['stats']
-        returnedEmbed = discord.Embed(title = f'{currentTheme.soldierSingle} Role Overview', color = currentTheme.soldierColor)
+        returnedEmbed = discord.Embed(title = f'{currentTheme.soldierSingle} Role Overview (Page {page} of 2)', color = currentTheme.soldierColor)
+        x = 0
         for role in loadedRoles:
             if role.team == 'Soldiers':
-                value = f'Played: {db[f'{role.id}Played']}'
-                value += f'\nWon: {db[f'{role.id}Won']} ({await statBuilder.getPercentage(db, f'{role.id}Won', f'{role.id}Played')}%, {await statBuilder.getRoleTW(db, globalDB, f'{role.id}Won', f'{role.id}Played')}TW%)'
-                value += f'\nBasements: {db[f'{role.id}Kidnaps']} ({await statBuilder.getPercentage(db, f'{role.id}Kidnaps', f'{role.id}Played')}% Games)'
-                returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value = value, inline = True)
+                x += 1
+                if (page == 1 and x < 26 or page == 2 and x > 25):
+                    value = f'Played: {db[f'{role.id}Played']}'
+                    value += f'\nWon: {db[f'{role.id}Won']} ({await statBuilder.getPercentage(db, f'{role.id}Won', f'{role.id}Played')}%, {await statBuilder.getRoleTW(db, globalDB, f'{role.id}Won', f'{role.id}Played')}TW%)'
+                    value += f'\nBasements: {db[f'{role.id}Kidnaps']} ({await statBuilder.getPercentage(db, f'{role.id}Kidnaps', f'{role.id}Played')}% Games)'
+                    returnedEmbed.add_field(name = f'{role.emoji}{role.shortName}{role.emoji}', value = value, inline = True)
         returnedEmbed.set_thumbnail(url = currentTheme.soldierThumbnail)
         returnedEmbed.set_footer(icon_url=thumbnail, text = f'{name} Stats')
         return returnedEmbed
@@ -342,6 +345,10 @@ class statBuilder:
         elif role.id == 'Petra':
             returnedEmbed.add_field(name = 'Players Watched', value = db['PetraWatches'], inline=True)
             returnedEmbed.add_field(name = 'Players Killed', value = f'{db['PetraKills']} ({await statBuilder.getPercentage(db, 'PetraKills', 'PetraWatches')}% of Watches)', inline=True)
+        elif role.id == 'Rico':
+            returnedEmbed.add_field(name = 'Traps Set', value=f'{db['RicoTraps']} ({await statBuilder.getPercentage(db, 'RicoTraps', 'RicoPlayed')}% of Games)', inline= True)
+            returnedEmbed.add_field(name = 'Traps Activated', value = f'{db['RicoTrapsFired']} ({await statBuilder.getPercentage(db, 'RicoTrapsFired', 'RicoTraps')}% of Traps, {await statBuilder.getPercentage(db, 'RicoTrapsFired', 'RicoPlayed')}% of Games)')
+            returnedEmbed.add_field(name = 'Trap Kills', value = f'{db['RicoKills']} ({await statBuilder.getPercentage(db, 'RicoKills', 'RicoTrapsFired')}% of Traps Fired, {await statBuilder.getPercentage(db, 'RicoKills', 'RicoTraps')}% of Traps, {await statBuilder.getPercentage(db, 'RicoKills', 'RicoPlayed')}% of Games)')
         elif role.id == 'Mikasa':
             returnedEmbed.add_field(name = 'Players Guarded', value = db['MikasaGuards'], inline=True)
             returnedEmbed.add_field(name = 'Players Saved', value = f'{db['MikasaSaved']} ({await statBuilder.getPercentage(db, 'MikasaSaved', 'MikasaGuards')}% of Guards)', inline=True)
@@ -380,9 +387,15 @@ class statBuilder:
             returnedEmbed.add_field(name = f'Trials Won', value = f'{db['PyxisTrialWins']} ({await statBuilder.getPercentage(db, 'PyxisTrialWins', 'PyxisTrials')}% of Games)', inline=True)
             returnedEmbed.add_field(name = f'Trial Kills', value = f'{db['PyxisKills']} ({await statBuilder.getPercentage(db, 'PyxisKills', 'PyxisTrials')}% of Trials, {await statBuilder.getPercentage(db, 'PyxisKills', 'PyxisTrialWins')}% of Trial Wins)', inline=True)
             returnedEmbed.add_field(name = f'Trial Kill Wins', value = f'{db['PyxisKillWins']} ({await statBuilder.getPercentage(db, 'PyxisKillWins', 'PyxisKills')}% of Kills)', inline=True)
+        elif role.id == 'Moblit':
+            returnedEmbed.add_field(name = f'Players Analyzed', value = f'{db['MoblitAnalyzes']} ({await statBuilder.getPercentage(db, 'MoblitAnalyzes', 'MoblitPlayed')}% of Games)')
+            returnedEmbed.add_field(name = f'Successful Analyses', value = f'{db['MoblitAnalyzeWins']} ({await statBuilder.getPercentage(db, 'MoblitAnalyzeWins', 'MoblitAnalyzes')}% of Analyses)')
         elif role.id == 'Samuel':
             returnedEmbed.add_field(name = f'Clowneries', value = f'{db['SamuelClowns']} ({await statBuilder.getPercentage(db, 'SamuelClowns', 'SamuelPlayed')}% of Games)', inline=True)
             returnedEmbed.add_field(name = f'Accepted Clowneries', value = f'{db['SamuelClownAccepts']} ({await statBuilder.getPercentage(db, 'SamuelClownAccepts', 'SamuelClowns')}% of Clowneries)', inline=True)
+        elif role.id == 'Frieda':
+            returnedEmbed.add_field(name = f'Players Vowed', value = f'{db['FriedaVows']} ({await statBuilder.getPercentage(db, 'FriedaVows', 'FriedaPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'Warriors Vowed', value= f'{db['FriedaWarriorVows']} ({await statBuilder.getPercentage(db, 'FriedaWarriorVows', 'FriedaVows')}% of Vows)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -478,7 +491,7 @@ class statBuilder:
         return returnedEmbed
 
     
-    async def profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges):
+    async def profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, page=0):
         returnedView = View()
 
         soldierRoles = []
@@ -493,7 +506,8 @@ class statBuilder:
         async def processMainButton(interaction):
             if interaction.user == navigator:
                 embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Main')
-                await interaction.message.edit(embed=embed)
+                view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                await interaction.message.edit(embed=embed, view=view)
                 await interaction.response.defer()
         mainButton.callback = processMainButton
         returnedView.add_item(mainButton)
@@ -502,7 +516,8 @@ class statBuilder:
         async def processSoldierOverviewButton(interaction):
             if interaction.user == navigator:
                 embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Soldier Overview')
-                await interaction.message.edit(embed=embed)
+                view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                await interaction.message.edit(embed=embed, view=view)
                 await interaction.response.defer()
         soldierOverviewButton.callback = processSoldierOverviewButton
         returnedView.add_item(soldierOverviewButton)
@@ -510,16 +525,39 @@ class statBuilder:
         soldierRoleButton = Button(label = f'{currentTheme.soldierSingle} Role Overview', style=discord.ButtonStyle.grey, emoji = str('🎭'))
         async def processSoldierRoleButton(interaction):
             if interaction.user == navigator:
-                embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Soldier Roles')
-                await interaction.message.edit(embed=embed)
+                embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Soldier Roles', 1)
+                view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 1)
+                await interaction.message.edit(embed=embed, view=view)
                 await interaction.response.defer()
         soldierRoleButton.callback = processSoldierRoleButton
         returnedView.add_item(soldierRoleButton)
 
+        if page != 0:
+            pageSelect = Select(placeholder= f'Selected Page ({page}/2)', min_values=1, max_values=1)
+            for i in range(1, 3):
+                pageSelect.add_option(label = f'Page {i}')
+            async def processPageSelect(interaction):
+                if interaction.user == navigator:
+                    newPage = int(pageSelect.values[0].split(' ')[1])
+                    embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Soldier Roles', newPage)
+                    view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, newPage)
+                    await interaction.message.edit(embed=embed, view=view)
+                    await interaction.response.defer()
+            pageSelect.callback = processPageSelect
+            returnedView.add_item(pageSelect)
 
-        soldierSelect = Select(placeholder= f'Specific {currentTheme.soldierSingle} Role', min_values=1, max_values=1)
+
+
+
+        soldierSelect = Select(placeholder= f'Specific {currentTheme.soldierSingle} Role (1/2)', min_values=1, max_values=1)
+        soldierSelect2 = Select(placeholder= f'Specific {currentTheme.soldierSingle} Role (2/2)', min_values=1, max_values=1)
+        x = 0
         for role in soldierRoles:
-            soldierSelect.add_option(label = role.shortName, emoji=role.emoji)
+            if x < 25:
+                soldierSelect.add_option(label = role.shortName, emoji=role.emoji)
+            else:
+                soldierSelect2.add_option(label = role.shortName, emoji=role.emoji)
+            x += 1
         async def processSoldierSelect(interaction):
             if interaction.user == navigator: 
                 if interaction.user == navigator:
@@ -529,16 +567,33 @@ class statBuilder:
                             chosenRole = role
                             break
                     embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, {'Soldier Role': chosenRole})
-                    await interaction.message.edit(embed=embed)
+                    view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                    await interaction.message.edit(embed=embed, view=view)
+                    await interaction.response.defer()
+        async def processSoldierSelect2(interaction):
+            if interaction.user == navigator: 
+                if interaction.user == navigator:
+                    selection = soldierSelect2.values[0]
+                    for role in soldierRoles:
+                        if role.shortName == selection:
+                            chosenRole = role
+                            break
+                    embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, {'Soldier Role': chosenRole})
+                    view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                    await interaction.message.edit(embed=embed, view=view)
                     await interaction.response.defer()
         soldierSelect.callback = processSoldierSelect
-        returnedView.add_item(soldierSelect) 
+        soldierSelect2.callback = processSoldierSelect2
+        returnedView.add_item(soldierSelect)
+        returnedView.add_item(soldierSelect2)
+
 
         warriorOverviewButton = Button(label = f'{currentTheme.warriorSingle} Overview', style=discord.ButtonStyle.grey, emoji = currentTheme.emojiWarrior)
         async def processWarriorOverviewButton(interaction):
             if interaction.user == navigator:
                 embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Warrior Overview')
-                await interaction.message.edit(embed=embed)
+                view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                await interaction.message.edit(embed=embed, view=view)
                 await interaction.response.defer()
         warriorOverviewButton.callback = processWarriorOverviewButton
         returnedView.add_item(warriorOverviewButton)
@@ -547,7 +602,8 @@ class statBuilder:
         async def processWarriorRoleButton(interaction):
             if interaction.user == navigator:
                 embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Warrior Roles')
-                await interaction.message.edit(embed=embed)
+                view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                await interaction.message.edit(embed=embed, view=view)
                 await interaction.response.defer()
         warriorRoleButton.callback = processWarriorRoleButton
         returnedView.add_item(warriorRoleButton)
@@ -565,7 +621,8 @@ class statBuilder:
                             chosenRole = role
                             break
                     embed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, {'Warrior Role' : chosenRole})
-                    await interaction.message.edit(embed=embed)
+                    view = await statBuilder.profileView(navigator, user, currentTheme, loadedRoles, color, loadedBadges, 0)
+                    await interaction.message.edit(embed=embed, view=view)
                     await interaction.response.defer()
         warriorSelect.callback = processWarriorSelect
         returnedView.add_item(warriorSelect)

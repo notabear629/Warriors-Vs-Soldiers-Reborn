@@ -207,7 +207,7 @@ async def roles(ctx):
 async def players(ctx):
     await midGameFunctions.players(ctx, currentLobby, currentGame, currentTheme, noMentions, home, prefix)
 
-@client.command('pick')
+@client.command(aliases = ['pickle', 'dick'])
 async def pick(ctx, *, pickedUser:discord.Member):
     await expoProposalFunctions.pick(ctx, currentGame, pickedUser, home, prefix, currentTheme, client, noMentions)
 
@@ -258,9 +258,21 @@ async def retreat(ctx):
 async def target(ctx):
     await midGameFunctions.target(ctx, currentGame, currentTheme, prefix, client)
 
+@client.command('trap')
+async def trap(ctx):
+    await midGameFunctions.trap(ctx, currentGame, currentTheme, prefix, client)
+
+@client.command('analyze')
+async def analyze(ctx):
+    await midGameFunctions.analyze(ctx, currentGame, currentTheme, prefix, client)
+
 @client.command('trial')
 async def trial(ctx):
     await midGameFunctions.trial(ctx, currentGame, currentTheme, prefix, client)
+
+@client.command('vow')
+async def vow(ctx):
+    await midGameFunctions.vow(ctx, currentGame, currentTheme, prefix, client)
 
 @client.command('guard')
 async def guard(ctx):
@@ -311,12 +323,8 @@ async def help(ctx):
 async def info(ctx, *, input=None):
     await infoFunctions.info(ctx, currentTheme, loadedRoles, prefix, input)
 
-@client.command('profile')
-async def profile(ctx, *, input=None):
-    await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, homeServer, loadedBadges, input)
-
-@client.command('stats')
-async def stats(ctx, *, input=None):
+@client.command(aliases = ['profile', 'stats', 'stat', 'me'])
+async def getProfile(ctx, *, input=None):
     await infoFunctions.profile(ctx, currentTheme, client, loadedRoles, homeServer, loadedBadges, input)
 
 @client.command('badges')
@@ -347,32 +355,7 @@ async def admin(ctx):
 @client.command('debug')
 async def debug(ctx, *, var):
     if ctx.message.author.name == 'cerberus629':
-        dotSeparators = var.split('.')
-        rootVar = None
-        for elem in dotSeparators:
-            if '[' in elem or ']' in elem:
-                leftSplit = elem.split('[')
-                for elem2 in leftSplit:
-                    if elem2 == leftSplit[0]:
-                        dotSplit = elem2.split('.')
-                        rootVar = getattr(rootVar, dotSplit[len(dotSplit)-1])
-                        continue
-                    rightSplit = elem2.split(']')
-                    try:
-                        index = int(rightSplit[0])
-                        rootVar = rootVar[index]
-                    except:
-                        print(rightSplit[0])
-                        rootVar=rootVar[rightSplit[0]]
-            else:
-                if elem == dotSeparators[0]:
-                    rootVar = globals()[elem]
-                else:
-                    rootVar = getattr(rootVar, elem)
-        if rootVar == None:
-            await ctx.reply('None')
-        else:
-            await ctx.reply(rootVar)
+        await ctx.reply(eval(var))
 
 #TEST COMMAND ONLY
 @client.command('fill')

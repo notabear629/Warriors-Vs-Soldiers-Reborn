@@ -198,6 +198,7 @@ class defaultGameTheme:
     pyxisMessage = 'You will stand trial for your crimes.'
     marcoMessage = '...'
     warhammerApologyMessage = 'Comrades... I am sorry.'
+    ricoMessage = 'You\'ve stepped into my trap!'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -306,6 +307,7 @@ class defaultGameTheme:
         #helpInfo is the message that will be summoned when you do a ~help or ~info (may or may not be implemented yet) for a particular role
         #Highly recommend changing this entirely to match your role and your lore reasoning for why your themed character fits the role
         roleDict['helpInfo'] = f'Eren is the Coordinate and the team captain of the Soldiers. This role is a mandatory role and appears in every game. Eren has the ability to see every Warrior in the game, with the exception of Zeke the Warchief! However, he must do his best to not reveal himself to the other players, even if the Walls are secured, the Warriors will have the opportunity to kidnap who they think the Coordinate is, and if they get it right the Soldiers will lose!'
+
 
     #PLEASE PLEASE FOLLOW ALL INSTRUCTIONS PRESENT FOR THE EREN ROLE FOR THE FUTURE ROLES!
 
@@ -932,6 +934,87 @@ class defaultGameTheme:
         roleDict['helpInfo'] = 'I\'M TIRED OF THESE MOTHERFUCKING WARRIORS ON THIS MOTHERFUCKING EXP- *ahem*. I apologize for that, that was some weird thing. Anyway. Samuel is... Not necessarily known for his competence. He is most known for dangling off the wall on Sasha\'s hook and immediately dying at the port battle. He has a special ability, after round 1, he can use a special kind of vote where he gets the wrong answer every time. If the expo has a warrior, he accepts, if it\'s completely safe, he rejects. HOWEVER. If he is voting on an execution, the rule is reversed. He only accepts if the person on trial is not a Warrior. The general rule is, this guy ALWAYS makes the wrong decision.'
     
     
+    class Moblit:
+        roleDict = {'roleID' : 'Moblit'}
+
+        roleDict['name'] = 'Moblit Berner'
+
+        roleDict['shortName'] = 'Moblit'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1376442089184821248
+
+        roleDict['secondaryEmoji'] = str('🔍')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are Hange\'s personal assistant and messenger, alongside being a member of the Engineering corps! As such, you have extensive records and documentations regarding essentially everything, in fact, you have so much of it that you can really only use your time to investigate one thing through the course of the game. Use `{prefix}analyze` to open up a menu, and you can analyze all your records to check to see if a player is a particular role or not!\n\n'
+
+        roleDict['gameRole'] = ':dividers:Bureaucrat:dividers:'
+
+        roleDict['helpInfo'] = 'Moblit is Hange\'s personal assistant, personal messenger, and a valuable member of the Engineering corps. As such, he has access to... Way too much freaking documentation, man. Bureaucracy is ~~the absolute fucking bane of my existence, the fuck is a jira~~ useful for creating a paper trail of just about everything. As such, once per game, he will be able to check to see if 1 player\'s role, is any particular role he chooses, with the exception that he CANNOT check to see if their identity is Eren.'
+
+    class Frieda:
+        roleDict = {'roleID' : 'Frieda'}
+
+        roleDict['name'] = 'Frieda Reiss'
+
+        roleDict['shortName'] = 'Frieda'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1376750362375229631
+
+        roleDict['secondaryEmoji'] = str('✋')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You also are a Founding Titan!... But for some reason, aren\'t out to get kidnapped. Whatever, point being, once per game, you can use `{prefix}vow` BEFORE an expedition has been picked to select a player to vow, it will announce to the lobby that the player is vowed for that round, and they will not be able to pass the expedition if they are a Warrior, ensuring their honesty!\n\n'
+
+        roleDict['gameRole'] = ':raised_hand:Vow Maker:raised_hand:'
+
+        roleDict['helpInfo'] = 'Frieda is a founding Titan!... And... Well, her being kidnapped doesn\'t matter because... It just doesn\'t okay?! Thanks to her powers, however, she has the ability once per game to use the power of the founder to force a player to take a vow, this vow will be announced to the lobby and for the duration of that round, they will be UNABLE to pass an expedition as a Warrior, being forced into using sabotage or a special ability only, ensuring they are being outright and forthcoming with their honesty!' 
+    
+    class Rico:
+        roleDict = {'roleID' : 'Rico'}
+
+        roleDict['name'] = 'Rico Bzrenska'
+
+        roleDict['shortName'] = 'Rico'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1376759011025752174
+
+        roleDict['secondaryEmoji'] = str('🪤')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a member of the defensive Garrison corps! As such, you have expertise in building defenses. While on an expedition, you can use your expertise in building defenses to sneakily set a trap. From there, once you have set a trap, you can use `{prefix}trap` to target someone, such that your trap will spring on them, killing them if they try to break the wall! A bit like a mixture between Sasha and Petra. Your trap WILL be used regardless of if they were killed or not, so be sure to only have an active trap target when you want it to be used!\n\n'
+
+        roleDict['gameRole'] = ':mouse_trap:Trapper:mouse_trap:'
+
+        roleDict['helpInfo'] = f'Rico is a member of the Garrison Corps! As such, she has learned how to build defenses. When she is on an expedition, she can choose to use her expertise in constructing defenses to set a trap. Once this trap has been engaged, she can use `{prefix}trap` akin to Sasha\'s target mechanism to choose who to spring the trap on the next time they participate in an expedition! This trap will spring regardless, but it will only kill the target if they try to break the wall, like with Petra\'s ability.' 
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -1280,11 +1363,11 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n\n'
+        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, Frieda and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n`{prefix}trap` to use Rico\'s ability (No Trap-setting necessary!)\n\n'
 
         roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
 
-        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
+        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, Freida and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
     
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}
@@ -1340,32 +1423,6 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = f'Kenny Ackermann is a serial killer. He does not care if the walls break or not, he wins through one glorious way. Murder. When he gets on an expo, he has the ability to kill another player on the expo. If he can kill at least 2 people in a match, he wins.'
 
-    class Frecklemir:
-        roleDict = {'roleID' : 'Frecklemir'}
-
-        roleDict['name'] = 'Ymir Freckles'
-
-        roleDict['shortName'] = 'Frecklemir'
-
-        roleDict['team'] = 'Wildcards'
-
-        roleDict['rumblingTeam'] = 'allianceFighter'
-
-        roleDict['isTitan'] = True
-
-        roleDict['emoji'] = 1218288982572400700
-
-        roleDict['secondaryEmoji'] = None
-
-        roleDict['imageURL'] = None
-
-        roleDict['secondaryImageURL'] = None
-
-        roleDict['roleMessage'] = f'You have not yet decided what team you want to be a part of! In order to pick a team, you need to get into an expedition. If the expedition you are on passes, you will join the Soldiers. If it breaks, you will join the Warriors. You cannot win unless you are on a team, so do your best to pick a side!\n\n'
-
-        roleDict['gameRole'] = ':snake:Disloyal Fighter:snake:'
-
-        roleDict['helpInfo'] = f'Ymir does not know if she wants to fight on the side of the Soldiers or Warriors. As such, she begins on neither team. The first time she gets on an expedition, she will join a team that depends on how the expedition went. If the expo passes, then she joins the Soldiers. If it breaks, she joins the Warriors.'
 
     class PureTitan:
         roleDict = {'roleID' : 'PureTitan'}
@@ -1490,6 +1547,9 @@ class defaultGameTheme:
     def getErwinMessage(Erwin):
         return f'I, {Erwin.user.mention}, am activating a signal flare!'
     
+    def getFriedaMessage(currentGame):
+        return f'{currentGame.friedaVowedPlayer.user.mention}, your true colors will be revealed.'
+    
     def getArminDeathMessages(currentGame, currentTheme, Armin, Mikasa, Reiner):
         arminDeathMessages = ''
         for killedPlayer, causeOfDeath in Armin.killed.items():
@@ -1552,6 +1612,27 @@ class defaultGameTheme:
                 if value == 'Petra':
                     petraDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Petra\'s attack!{Reiner.role.secondaryEmoji}\n\n'
         return petraDeathMessages
+    
+    def getRicoDeathMessages(currentGame, currentTheme, Rico, Mikasa, Reiner):
+        ricoDeathMessages = ''
+        for killedPlayer, causeOfDeath in Rico.killed.items():
+            if causeOfDeath == 'Rico':
+                ricoDeathMessages += f'**{killedPlayer.user.name}** was caught by Rico\'s trap!\n'
+                if killedPlayer in currentGame.soldiers:
+                    ricoDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    ricoDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    ricoDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
+                if value == 'Rico':
+                    ricoDeathMessages += f'**{key.user.name}** was caught in Rico\'s trap!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Rico':
+                    ricoDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Rico\'s trap!{Reiner.role.secondaryEmoji}\n\n'
+        return ricoDeathMessages
     
     def getSashaDeathMessages(currentGame, currentTheme, Sasha, Mikasa, Reiner, realSasha=None):
         if realSasha == None:

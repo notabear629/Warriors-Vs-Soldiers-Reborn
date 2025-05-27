@@ -51,6 +51,8 @@ class expoActiveFunctions:
                 expoChoice = 'LeviDefend'
             elif choice == 'Daz' and (player.role.id == 'Daz' or player.role.id == 'Warhammer') and player.role.abilityActive:
                 expoChoice = 'Daz'
+            elif choice == 'Rico' and player.role.id == 'Rico' and player.role.abilityActive:
+                expoChoice = 'Rico'
             elif choice == 'Bertholdt' and player.role.id == 'Bertholdt':
                 expoChoice = 'Bertholdt'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
@@ -67,10 +69,13 @@ class expoActiveFunctions:
                 expoChoice = choice
             elif type(choice) == dict and 'Kenny' in choice and player.role.id == 'Kenny':
                 expoChoice = choice
-            elif choice == 'Sabotage' and (player in currentGame.warriors or (player.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors')):
+            elif choice == 'Sabotage' and player in currentGame.warriors:
                 expoChoice = 'n'
             else:
-                expoChoice = 'y'
+                if player in currentGame.warriors and player == currentGame.friedaVowedPlayer:
+                    expoChoice = 'n'
+                else:
+                    expoChoice = 'y'
             currentGame.currentExpo.actExpo(player, expoChoice)
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
@@ -103,7 +108,6 @@ class expoActiveFunctions:
                 if Warhammer != None and currentGame.currentExpo.warhammerActivated == 'Hannes':
                     currentGame.currentExpo.ejectPlayer(Warhammer)
                 result = await expoActiveFunctions.getExpeditionResult(currentGame)
-                await expoActiveFunctions.checkFrecklemir(currentGame, currentTheme, result, client)
                 await expoActiveFunctions.checkPureTitan(currentGame, currentTheme, client)
                 await expoActiveFunctions.processResults(currentGame, currentTheme, result, home, expoPredictFunction)
                 await webhookManager.processResultsWebhooks(currentGame, currentTheme, home, client)
@@ -187,33 +191,7 @@ class expoActiveFunctions:
                 user = databaseManager.searchForUser(eatenPlayer.user)
                 userChannel = client.get_channel(user['channelID'])
                 await userChannel.send(embed=embed, content=eatenPlayer.user.mention)
-            
-    async def checkFrecklemir(currentGame, currentTheme, result, client):
-        if currentGame.currentRules.wildcards:
-            Frecklemir = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
-            if Frecklemir != None and Frecklemir in currentGame.currentExpo.expeditionMembers and currentGame.frecklemirTeam == None:
-                if result == 'n' or result == 'Armin':
-                    currentGame.setFrecklemirTeam('Warriors')
-                    color = currentTheme.warriorColor
-                    thumbnail = currentTheme.warriorThumbnail
-                    message = f'You have decided to join the **{currentTheme.warriorPlural}**.\n\n{currentTheme.warriorDefaultMessage}'
-                else:
-                    currentGame.setFrecklemirTeam('Soldiers')
-                    color = currentTheme.soldierColor
-                    thumbnail = currentTheme.soldierThumbnail
-                    message = f'You have decided to join the **{currentTheme.soldierPlural}**.\n\n{currentTheme.soldierDefaultMessage}'
-                embed = await embedBuilder.buildRoleMessageEmbed(Frecklemir, message, color, thumbnail)
-                user = databaseManager.searchForUser(Frecklemir.user)
-                userChannel = client.get_channel(user['channelID'])
-                await userChannel.send(embed=embed, content = Frecklemir.user.mention)
-                Eren = await searchFunctions.roleIDToPlayer(currentGame, 'Eren')
-                if Eren != None:
-                    user = databaseManager.searchForUser(Eren.user)
-                    erenChannel = client.get_channel(user['channelID'])
-                    embed = await embedBuilder.erenFrecklemirEmbed(currentGame, currentTheme)
-                    await webhookManager.erenFrecklemirWebhook(currentGame, currentTheme, erenChannel, Eren.user.mention, embed, client)
 
-            
 
     async def getExpeditionResult(currentGame):
         if currentGame.currentExpo.arminActivated or currentGame.currentExpo.warhammerActivated == 'Armin':
@@ -239,7 +217,7 @@ class expoActiveFunctions:
             await home.send(failMessage)
 
     async def processDeaths(currentGame, currentTheme, home, client):
-        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Marco': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Willy':False, 'WarhammerArmin':False, 'WarhammerLevi':False, 'WarhammerPetra':False, 'WarhammerMarco':False, 'WarhammerSasha':False}
+        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Marco': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Rico':False, 'Willy':False, 'WarhammerArmin':False, 'WarhammerLevi':False, 'WarhammerPetra':False, 'WarhammerMarco':False, 'WarhammerSasha':False, 'WarhammerRico':False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             if Armin != None:
@@ -274,6 +252,19 @@ class expoActiveFunctions:
                 for player in currentGame.currentExpo.expeditionMembers:
                     if player not in currentGame.deadPlayers and player.role.id == 'PureTitan':
                         await currentGame.killPlayer(player, Warhammer, 'Levi')
+        if currentGame.ricoTargeted != None and currentGame.ricoFired and not currentGame.ricoTrapped:
+            currentGame.ricoTrap()
+            Rico = await searchFunctions.roleIDToPlayer(currentGame, 'Rico')
+            if Rico != None and currentGame.ricoTargeted in currentGame.currentExpo.sabotagedExpedition:
+                if currentGame.ricoTargeted not in currentGame.deadPlayers:
+                    await currentGame.killPlayer(currentGame.ricoTargeted, Rico, 'Rico')
+                    deathFlags['Rico'] = True
+        if type(currentGame.warhammerAbility) == dict and 'Rico' in currentGame.warhammerAbility:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Warhammer != None and currentGame.warhammerAbility['Rico'] in currentGame.currentExpo.sabotagedExpedition and Warhammer.role.abilityActive:
+                if currentGame.warhammerAbility['Rico'] not in currentGame.deadPlayers:
+                    await currentGame.killPlayer(currentGame.warhammerAbility['Rico'], Warhammer, 'Rico')
+                    deathFlags['WarhammerRico'] = True
         if currentGame.currentExpo.petraWatched != None:
             Petra = await searchFunctions.roleIDToPlayer(currentGame, 'Petra')
             if Petra != None and currentGame.currentExpo.petraWatched in currentGame.currentExpo.sabotagedExpedition:
@@ -393,6 +384,16 @@ class expoActiveFunctions:
         if deathFlags['WarhammerLevi']:
             Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
             warhammerMessage = currentTheme.getLeviDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner)
+            if warhammerMessage != '':
+                await home.send(warhammerMessage)
+        if deathFlags['Rico']:
+            Rico = await searchFunctions.roleIDToPlayer(currentGame, 'Rico')
+            ricoMessage = currentTheme.getRicoDeathMessages(currentGame, currentTheme, Rico, Mikasa, Reiner)
+            if ricoMessage != '':
+                await home.send(ricoMessage)
+        if deathFlags['WarhammerRico']:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            warhammerMessage = currentTheme.getRicoDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner)
             if warhammerMessage != '':
                 await home.send(warhammerMessage)
         if deathFlags['Petra']:

@@ -56,7 +56,7 @@ class infoFunctions:
             foundInput = 'GLOBAL'
         if foundInput == 'GLOBAL':
             profileEmbed = await statBuilder.profileEmbed(currentTheme, 'GLOBAL', loadedRoles, currentTheme.helpEmbedColor, loadedBadges,'Main')
-            profileView = await statBuilder.profileView(ctx.message.author, 'GLOBAL', currentTheme, loadedRoles, currentTheme.helpEmbedColor, loadedBadges)
+            profileView = await statBuilder.profileView(ctx.message.author, 'GLOBAL', currentTheme, loadedRoles, currentTheme.helpEmbedColor, loadedBadges, 0)
         else:
             user = client.get_user(foundInput['userID'])
             role = homeServer.get_role(foundInput['roleID'])
@@ -65,7 +65,7 @@ class infoFunctions:
             else:
                 color = role.color
             profileEmbed = await statBuilder.profileEmbed(currentTheme, user, loadedRoles, color, loadedBadges, 'Main')
-            profileView = await statBuilder.profileView(ctx.message.author, user, currentTheme, loadedRoles, color, loadedBadges)
+            profileView = await statBuilder.profileView(ctx.message.author, user, currentTheme, loadedRoles, color, loadedBadges, 0)
         await ctx.reply(embed=profileEmbed, view=profileView)
 
     async def badges(ctx, currentTheme, client, loadedBadges, input=None):

@@ -1,4 +1,6 @@
 .env
+dev.env
+snapshot.env
 venv/
 .bashrc
 runGame.bat

@@ -77,7 +77,6 @@ class Game:
         self.MVP = None
         self.badges = loadedBadges
         self.kennyDisplayedKills = []
-        self.frecklemirTeam = None
         self.ymirGuiding = None
         self.ymirRevival = None
         self.blessedPlayer = None
@@ -90,6 +89,12 @@ class Game:
         self.mikasaGuarded = None
         self.annieMessage = None
         self.warhammerAbility = None
+        self.moblitPlayer = None
+        self.moblitRole = None
+        self.friedaVowedPlayer = None
+        self.ricoTargeted = None
+        self.ricoFired = False
+        self.ricoTrapped = False
 
         for player in players:
             self.livingPlayers.append(player)
@@ -143,6 +148,9 @@ class Game:
         lastCommander = oldCommanderOrder[len(oldCommanderOrder)-1]
         oldCommanderOrder.remove(lastCommander)
         self.commanderOrder = [lastCommander] + oldCommanderOrder
+
+    def friedaVow(self, vowedPlayer):
+        self.friedaVowedPlayer = vowedPlayer
 
     async def sendTemporaryMessage(self, currentTheme, home):
         embed = await embedBuilder.temporaryMessage(self, currentTheme)
@@ -216,6 +224,24 @@ class Game:
         if Sasha.role.id == 'Warhammer':
             self.warhammerAbility = {'Sasha':target}
 
+    def ricoTarget(self, Rico, target):
+        if Rico.role.id == 'Rico':
+            self.ricoTargeted = target
+        if Rico.role.id == 'Warhammer':
+            self.warhammerAbility = {'Rico':target}
+
+    def ricoFire(self):
+        self.ricoFired = True
+
+    def ricoTrap(self):
+        self.ricoTrapped = True
+
+    def setMoblitPlayer(self, target):
+        self.moblitPlayer = target
+
+    def setMoblitRole(self, role):
+        self.moblitRole = role
+
     def gabiFire(self, Gabi, target):
         self.gabiTargeted = target
 
@@ -230,6 +256,7 @@ class Game:
         
     def advanceRound(self):
         self.currentRound += 1
+        self.friedaVowedPlayer = None
 
     def activateKidnap(self):
         self.currentlyKidnapping = True
@@ -385,33 +412,6 @@ class Game:
 
     def attackPlayer(self, player):
         self.attackedPlayer = player
-
-    def setFrecklemirTeam(self, team):
-        self.frecklemirTeam = team
-
-    async def applyFrecklemirTeam(self):
-        Frecklemir = await searchFunctions.roleIDToPlayer(self, 'Frecklemir')
-        if Frecklemir != None:
-            if self.frecklemirTeam == 'Soldiers':
-                if Frecklemir in self.wildcards:
-                    self.wildcards.remove(Frecklemir)
-                    self.soldiers.append(Frecklemir)
-                if Frecklemir in self.deadWildcards:
-                    self.deadWildcards.remove(Frecklemir)
-                    self.deadSoldiers.append(Frecklemir)
-                if Frecklemir in self.livingWildcards:
-                    self.livingWildcards.remove(Frecklemir)
-                    self.livingSoldiers.append(Frecklemir)
-            elif self.frecklemirTeam == 'Warriors':
-                if Frecklemir in self.wildcards:
-                    self.wildcards.remove(Frecklemir)
-                    self.warriors.append(Frecklemir)
-                if Frecklemir in self.deadWildcards:
-                    self.deadWildcards.remove(Frecklemir)
-                    self.deadWarriors.append(Frecklemir)
-                if Frecklemir in self.livingWildcards:
-                    self.livingWildcards.remove(Frecklemir)
-                    self.livingWarriors.append(Frecklemir)
     
     def eatPlayer(self, PureTitan, eatenPlayer, currentTheme, client):
         pureRole = PureTitan.role.copy(currentTheme, client)

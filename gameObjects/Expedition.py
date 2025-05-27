@@ -131,7 +131,7 @@ class Expedition:
                 self.warhammerActivated = 'Samuel'
             isWarriorInExpo = False
             for expeditioner in self.expeditionMembers:
-                if expeditioner in currentGame.warriors or (expeditioner.role.id == 'Frecklemir' and currentGame.frecklemirTeam == 'Warriors'):
+                if expeditioner in currentGame.warriors:
                     isWarriorInExpo = True
                     break
             if self.pyxisTrial != None:
@@ -208,6 +208,9 @@ class Expedition:
                 self.dazActivated = True
             else:
                 self.warhammerActivated = 'Daz'
+            player.role.disableAbility()
+        elif actCase == 'Rico':
+            self.passedExpedition.append(player)
             player.role.disableAbility()
         elif actCase == 'Bertholdt':
             self.sabotagedExpedition.append(player)
