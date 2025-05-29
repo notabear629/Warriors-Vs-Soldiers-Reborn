@@ -807,6 +807,82 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
+    async def ankaDemoteView(currentGame, Anka, ankaFunction):
+        returnedView = View()
+
+        ankaDemoteSelection = Select(placeholder='Choose who to demote!', min_values=1, max_values=1)
+        for player in currentGame.commanderOrder:
+            ankaDemoteSelection.add_option(label = f'{player.user.name}', emoji=Anka.role.secondaryEmoji)
+        
+        async def processAnkaSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(Anka, interaction):
+                if currentGame.online and interaction.user == Anka.user and Anka.role.abilityActive and Anka in currentGame.livingPlayers and currentGame.currentExpo.currentlyPicking:
+                    selection = str(ankaDemoteSelection.values[0])
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    if Anka.role.id in ['Anka', 'Warhammer']:
+                        await ankaFunction(currentGame, Anka, selectedPlayer)
+                    await interaction.message.edit(content = f'You have chosen to demote: {player.user.name}', view=None)
+                    await interaction.response.defer()
+        
+        ankaDemoteSelection.callback = processAnkaSelection
+        returnedView.add_item(ankaDemoteSelection)
+
+
+        return returnedView
+    
+    @staticmethod
+    async def minaSmokeView(currentGame, Mina, minaFunction):
+        returnedView = View()
+        canReturn = False
+
+        if (Mina.role.id == 'Mina' and not currentGame.greenFired) or (Mina.role.id == 'Warhammer' and Mina.role.abilityActive):
+            canReturn = True
+            greenSmokeButton = Button(label = 'Green Smoke', emoji=Mina.role.secondaryEmoji, style=discord.ButtonStyle.green)
+            async def processGreenButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(Mina, interaction):
+                    if currentGame.online and Mina in currentGame.livingPlayers:
+                        await minaFunction(currentGame, Mina, 'Green')
+                        newView = await discordViewBuilder.minaSmokeView(currentGame, Mina, minaFunction)
+                        await interaction.message.edit(content = 'You have chosen to fire Green Smoke.', view=newView)
+                        await interaction.response.defer()
+            greenSmokeButton.callback = processGreenButton
+            returnedView.add_item(greenSmokeButton)
+
+        if (Mina.role.id == 'Mina' and not currentGame.redFired) or (Mina.role.id == 'Warhammer' and Mina.role.abilityActive):
+            canReturn = True
+            redSmokeButton = Button(label = 'Red Smoke', emoji=Mina.role.secondaryEmoji, style=discord.ButtonStyle.red)
+            async def processRedButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(Mina, interaction):
+                    if currentGame.online and Mina in currentGame.livingPlayers:
+                        await minaFunction(currentGame, Mina, 'Red')
+                        newView = await discordViewBuilder.minaSmokeView(currentGame, Mina, minaFunction)
+                        await interaction.message.edit(content = 'You have chosen to fire Red Smoke.', view=newView)
+                        await interaction.response.defer()
+            redSmokeButton.callback = processRedButton
+            returnedView.add_item(redSmokeButton)
+
+        if (Mina.role.id == 'Mina' and not currentGame.blackFired) or (Mina.role.id == 'Warhammer' and Mina.role.abilityActive):
+            canReturn = True
+            blackSmokeButton = Button(label = 'Black Smoke', emoji=Mina.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processBlackButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(Mina, interaction):
+                    if currentGame.online and Mina in currentGame.livingPlayers:
+                        await minaFunction(currentGame, Mina, 'Black')
+                        newView = await discordViewBuilder.minaSmokeView(currentGame, Mina, minaFunction)
+                        await interaction.message.edit(content = 'You have chosen to fire Black Smoke.', view=newView)
+                        await interaction.response.defer()
+            blackSmokeButton.callback = processBlackButton
+            returnedView.add_item(blackSmokeButton)
+
+        if canReturn:
+            return returnedView
+        else:
+            return None
+    
+    @staticmethod
     async def basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole):
         returnedView = View()
 

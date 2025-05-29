@@ -202,6 +202,10 @@ class defaultGameTheme:
     magathMessage = 'This will be my final order...'
     onyankoponMessage = 'Hold on, I\'m flying you in!'
     frecklemirMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
+    ankaMessage = 'You\'ve been demoted!'
+    greenFiredMessage = 'https://i.imgur.com/QsobXCg.gif'
+    redFiredMessage = 'https://i.imgur.com/dU8Qxne.gif'
+    blackFiredMessage = 'https://i.imgur.com/D6aqnNM.gif'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -1072,6 +1076,60 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = f'Ymir is the holder of the Jaw Titan! As such, an unlimited number of times per games, while on the expedition, she will have the ability to maul and kill one of the expedition members with the power of her titan.' 
 
+    class Anka:
+        roleDict = {'roleID' : 'Anka'}
+
+        roleDict['name'] = 'Anka Rheinberger'
+
+        roleDict['shortName'] = 'Anka'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1377618964833763494
+
+        roleDict['secondaryEmoji'] = str('⚖️')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are the assistant to Dot Pyxis, one of the highest authorities in Paradis! As such, you have the authority to hand out orders for demotion. Once per game, you can IRREVERSIBLY remove a player from the commander order permanently by utilizing `{prefix}demote` and choosing who to demote, during the Expedition picking phase of the game.\n\n'
+
+        roleDict['gameRole'] = ':scales:Court Martialer:scales:'
+
+        roleDict['helpInfo'] = f'Anka is the personal assistant of Dot Pyxis. As such, she has the authority to carry out and deliver orders in his stead. Once per game, she can use `{prefix}demote` during the Expedition picking phase of the game to permanently and irreversibly remove a player from the commander order.'
+
+    class Mina:
+        roleDict = {'roleID' : 'Mina'}
+
+        roleDict['name'] = 'Mina Carolina'
+
+        roleDict['shortName'] = 'Mina'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1377640328521187408
+
+        roleDict['secondaryEmoji'] = 1377640840549241002
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a new cadet to the Paradisian Military! As such, you have little to offer in regards to actual tactical skill. The best you can offer, is using `{prefix}smoke` to fire Signal Flares of various smoke colors to try to signal to your team certain ideas based on the color! You get 1 cannister of each color of smoke: Green, Red, and Black.\n\n'
+
+        roleDict['gameRole'] = ':fireworks:Smoke Signaler:fireworks:'
+
+        roleDict['helpInfo'] = f'Mina is a new cadet to the Paradisian Military! As such... She can\'t really do anything besides fire her signal flare gun. But she CAN do that! She has three colors of smoke cannisters, Green, Red, and Black, with one cannister of each variant. She can use `{prefix}smoke` to fire the various signals to make signals for her team!'
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -1448,11 +1506,11 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, Frieda and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n`{prefix}trap` to use Rico\'s ability (No Trap-setting necessary!)\n\n'
+        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, Frieda and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n`{prefix}trap` to use Rico\'s ability (No Trap-setting necessary!)\n`{prefix}demote` to use Anka\'s ability\n\n'
 
         roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
 
-        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, Freida and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
+        roleDict['helpInfo'] =  f'A War Machine, a Monster, the God of War itself. The Warhammmer has the ability to use it\'s hardening to conjure up whatever weapons it wants. This player has the chance to use any single soldier\'s special ability, vote, or expo act once. There are exceptions of Jean, Hange, Mikasa, Freida, Onyankopon, Moblit, and Keith. Any killing soldier abilities it uses can only kill Warriors. Hange and Hitch will be alerted as to their true nature if their ability usage would notify them.'    
 
     class Marcel:
         roleDict = {'roleID' : 'Marcel'}

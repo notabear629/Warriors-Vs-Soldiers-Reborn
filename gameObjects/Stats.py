@@ -48,6 +48,22 @@ class Stats:
             setattr(self, 'MarcelGags', len(currentGame.deadSoldiers))
         if player.role.id == 'Onyankopon' and player.role.abilityActive == False:
             setattr(self, 'OnyankoponPilots', 1)
+        if player.role.id == 'Anka' and player.role.abilityActive == False:
+            setattr(self, 'AnkaDemotions', 1)
+            if currentGame.demotedPlayer in currentGame.warriors:
+                setattr(self, 'AnkaDemoteWins', 1)
+        if player.role.id == 'Mina':
+            minaSmokes = 0
+            if currentGame.greenFired:
+                setattr(self, 'MinaGreenSmokes', 1)
+                minaSmokes += 1
+            if currentGame.redFired:
+                setattr(self, 'MinaRedSmokes', 1)
+                minaSmokes += 1
+            if currentGame.blackFired:
+                setattr(self, 'MinaBlackSmokes', 1)
+                minaSmokes += 1
+            setattr(self, 'MinaSmokes', minaSmokes)
         
 
     def processKill(self, killer, killed):

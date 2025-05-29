@@ -184,13 +184,15 @@ class expoProposalFunctions:
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
                 currentGame.currentExpo.prepareExpoForFakePyxis()
-                Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Pyxis')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.porcoGagged == currentGame.currentExpo.commander:
                 await home.send(f'The {currentTheme.commanderName} is under a gag order and will be skipped!')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
                 Porco = await searchFunctions.roleIDToPlayer(currentGame, 'Porco')
                 Porco.stats.gagSkip()
+            elif currentGame.currentExpo.commander not in currentGame.commanderOrder:
+                await home.send(f'The {currentTheme.commanderName} has been demoted and is no longer eligble to pick their {currentTheme.expeditionTeam}!')
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             else:
                 return
 

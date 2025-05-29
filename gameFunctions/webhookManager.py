@@ -395,6 +395,14 @@ class webhookManager:
     async def reinerWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.reinerMessage, '{ALTERNATE}Reiner', client)
 
+    async def ankaWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.ankaMessage, 'Anka', client)
+
+    async def minaWebhook(currentGame, Color):
+        msg = getattr(currentGame.currentTheme, f'{Color.lower()}FiredMessage')
+        await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, currentGame.home, msg, 'Mina', currentGame.client)
+        await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, currentGame.home, f'Firing {Color.title()} smoke!', 'Mina', currentGame.client)
+
     async def onyankoponWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.onyankoponMessage, 'Onyankopon', client)
 

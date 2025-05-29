@@ -348,6 +348,9 @@ class statBuilder:
         elif role.id == 'Petra':
             returnedEmbed.add_field(name = 'Players Watched', value = db['PetraWatches'], inline=True)
             returnedEmbed.add_field(name = 'Players Killed', value = f'{db['PetraKills']} ({await statBuilder.getPercentage(db, 'PetraKills', 'PetraWatches')}% of Watches)', inline=True)
+        elif role.id == 'Anka':
+            returnedEmbed.add_field(name = 'Players Demoted', value = f'{db['AnkaDemotions']} ({await statBuilder.getPercentage(db, 'AnkaDemotions', 'AnkaPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.warriorPlural} Demoted', value = f'{db['AnkaDemoteWins']} ({await statBuilder.getPercentage(db, 'AnkaDemoteWins', 'AnkaDemotions')}% of Demotions, {await statBuilder.getPercentage(db, 'AnkaDemoteWins', 'AnkaPlayed')}% of Games)', inline=True)
         elif role.id == 'Rico':
             returnedEmbed.add_field(name = 'Traps Set', value=f'{db['RicoTraps']} ({await statBuilder.getPercentage(db, 'RicoTraps', 'RicoPlayed')}% of Games)', inline= True)
             returnedEmbed.add_field(name = 'Traps Activated', value = f'{db['RicoTrapsFired']} ({await statBuilder.getPercentage(db, 'RicoTrapsFired', 'RicoTraps')}% of Traps, {await statBuilder.getPercentage(db, 'RicoTrapsFired', 'RicoPlayed')}% of Games)')
@@ -401,6 +404,11 @@ class statBuilder:
             returnedEmbed.add_field(name = f'Warriors Vowed', value= f'{db['FriedaWarriorVows']} ({await statBuilder.getPercentage(db, 'FriedaWarriorVows', 'FriedaVows')}% of Vows)', inline=True)
         elif role.id == 'Onyankopon':
             returnedEmbed.add_field(name = f'Players Flown In', value = f'{db['OnyankoponPilots']} ({await statBuilder.getPercentage(db, 'OnyankoponPilots', 'OnyankoponPlayed')}% of Games)', inline=True)
+        elif role.id == 'Mina':
+            returnedEmbed.add_field(name = f'Smokes Fired', value = f'{db['MinaSmokes']} ({await statBuilder.getDivider(db, 'MinaSmokes', 'MinaPlayed')} per Game)', inline=True)
+            returnedEmbed.add_field(name = f'Green Smokes Fired', value = f'{db['MinaGreenSmokes']} ({await statBuilder.getPercentage(db, 'MinaGreenSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaGreenSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
+            returnedEmbed.add_field(name = f'Red Smokes Fired', value = f'{db['MinaRedSmokes']} ({await statBuilder.getPercentage(db, 'MinaRedSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaRedSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
+            returnedEmbed.add_field(name = f'Black Smokes Fired', value = f'{db['MinaBlackSmokes']} ({await statBuilder.getPercentage(db, 'MinaBlackSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaBlackSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

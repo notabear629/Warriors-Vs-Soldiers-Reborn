@@ -233,7 +233,7 @@ class helpBuilder:
         returnedEmbed = discord.Embed(title = f'Role Information', description = f'This is the landing page for role information. To learn more about a role, choose a role from the selections below.', color=currentTheme.helpEmbedColor)
         return returnedEmbed
     
-    async def specificRoleInfoEmbed(currentTheme, selectedRole):
+    async def specificRoleInfoEmbed(currentTheme, selectedRole, loadedRoles):
         if selectedRole.team == 'Soldiers':
             embedColor = currentTheme.soldierColor
             roleTeam = currentTheme.soldierPlural
@@ -258,6 +258,33 @@ class helpBuilder:
         returnedEmbed.add_field(name = 'Role ID', value = f'`{selectedRole.id}`', inline= True)
         returnedEmbed.add_field(name = f'{currentTheme.rumblingName} Team', value=f'`{rumblingTeam}`', inline=True)
         returnedEmbed.add_field(name = f'Fights during {currentTheme.rumblingName}?', value = f'`{rumblingFighter}`', inline=True)
+        
+
+        dependency = ''
+        condition = ''
+        if selectedRole.id not in Role.roleDependencies:
+            dependency += 'None, can always appear.'
+            condition = 'None'
+        else:
+            dependencies = Role.roleDependencies[selectedRole.id]
+            if 'soldierCount' in dependencies:
+                dependency += f'Minimum {currentTheme.soldierPlural} Count\n'
+                condition = f'{dependencies['soldierCount']}'
+            if 'warriorCount' in dependencies:
+                dependency += f'Minimum {currentTheme.warriorPlural} Count\n'
+                condition = f'{dependencies['soldierCount']}'
+            if 'requiredRoles' in dependencies:
+                dependency += f'At Least One Role Must Be Present\n'
+                for role in loadedRoles:
+                    if role.id in dependencies['requiredRoles']:
+                        condition += f'{role.shortName}, '
+                if len(condition) > 1:
+                    condition = condition[:-2]
+                
+        returnedEmbed.add_field(name = f'Intelli-Roles Dependencies', value = f'`{dependency}`', inline=True)
+        returnedEmbed.add_field(name = f'Intelli-Roles Condition', value = f'`{condition}`', inline=True)
+
+
         returnedEmbed.add_field(name = f'Description', value = f'{selectedRole.helpInfo}', inline=False)
         if type(selectedRole.emoji) == str:
             thumbnailURL = selectedRole.imageURL
@@ -354,7 +381,7 @@ class helpBuilder:
 
                 elif clickedButton == 'Selected Role Info':
                     newNavigatorContext = 'Role Info'
-                    refreshedEmbed = await helpBuilder.specificRoleInfoEmbed(currentTheme, selectedRole)
+                    refreshedEmbed = await helpBuilder.specificRoleInfoEmbed(currentTheme, selectedRole, loadedRoles)
 
                 elif clickedButton == 'Game Themes':
                     newNavigatorContext = 'Game Themes'

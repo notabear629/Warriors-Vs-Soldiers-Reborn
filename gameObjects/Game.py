@@ -96,6 +96,10 @@ class Game:
         self.ricoTargeted = None
         self.ricoFired = False
         self.ricoTrapped = False
+        self.demotedPlayer = None
+        self.greenFired = False
+        self.redFired = False
+        self.blackFired = False
 
         for player in players:
             self.livingPlayers.append(player)
@@ -140,7 +144,8 @@ class Game:
 
     def erwinCommander(self, Erwin):
         oldCommanderOrder = self.commanderOrder.copy()
-        oldCommanderOrder.remove(Erwin)
+        if Erwin in oldCommanderOrder:
+            oldCommanderOrder.remove(Erwin)
         self.commanderOrder = [Erwin] + oldCommanderOrder
         self.currentExpo.changeCommander(Erwin)
 
@@ -215,6 +220,21 @@ class Game:
 
     def guardPlayer(self, guard):
         self.mikasaGuarded = guard
+
+    def executeAnka(self, Anka, player):
+        if player in self.commanderOrder:
+            self.commanderOrder.remove(player)
+        Anka.role.disableAbility()
+        if Anka.role.id == 'Anka':
+            self.demotedPlayer = player
+
+    def fireColor(self, color):
+        if color.lower() == 'green':
+            self.greenFired = True
+        elif color.lower() == 'red':
+            self.redFired = True
+        elif color.lower() == 'black':
+            self.blackFired = True
 
     def updateReinerDefense(self,Reiner, causeOfDeath):
         self.currentExpo.reinerBlocked = {Reiner: causeOfDeath}

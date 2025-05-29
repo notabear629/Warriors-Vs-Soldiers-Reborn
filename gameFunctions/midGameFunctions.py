@@ -266,6 +266,86 @@ class midGameFunctions:
                 if Colt != None and Colt in currentGame.livingPlayers:
                     await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Porco)
 
+    async def smoke(ctx, currentGame):
+        if currentGame.online:
+            Mina = await searchFunctions.roleIDToPlayer(currentGame, 'Mina')
+            if Mina != None:
+                user = databaseManager.searchForUser(Mina.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                if Mina.user == ctx.message.author and ctx.message.channel == userChannel and Mina not in currentGame.deadPlayers:
+                    if not currentGame.greenFired or not currentGame.redFired or not currentGame.blackFired:
+                        view = await discordViewBuilder.minaSmokeView(currentGame, Mina, midGameFunctions.executeSmoke)
+                        await userChannel.send('Choose which color smoke to fire!', view=view)
+                        if Mina == currentGame.hangeWiretapped:
+                            await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+                    else:
+                        await userChannel.send('You are out of smoke cannisters!')
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                if Warhammer.user == ctx.message.author and ctx.message.channel == userChannel and Warhammer not in currentGame.deadPlayers and Warhammer.role.abilityActive:
+                    view = await discordViewBuilder.minaSmokeView(currentGame, Warhammer, midGameFunctions.executeSmoke)
+                    await userChannel.send('Choose which color smoke to fire!', view=view)
+                    if Warhammer == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+
+    async def executeSmoke(currentGame, Mina, color):
+        if currentGame.online:
+            if Mina not in currentGame.deadPlayers:
+                if Mina.role.id == 'Mina':
+                    colorAvailable = not getattr(currentGame, f'{color.lower()}Fired')
+                    if colorAvailable:
+                        currentGame.fireColor(color)
+                    await webhookManager.minaWebhook(currentGame, color)
+                if Mina.role.id == 'Warhammer':
+                    if Mina.role.abilityActive:
+                        Mina.role.disableAbility()
+                        await webhookManager.minaWebhook(currentGame, color)
+
+    
+    async def demote(ctx, currentGame):
+        if currentGame.online:
+            Anka = await searchFunctions.roleIDToPlayer(currentGame, 'Anka')
+            if Anka != None:
+                user = databaseManager.searchForUser(Anka.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                if Anka != None and Anka.user == ctx.message.author and Anka.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking and Anka not in currentGame.deadPlayers:
+                    view = await discordViewBuilder.ankaDemoteView(currentGame, Anka, midGameFunctions.executeDemote)
+                    await userChannel.send('Choose who to demote!', view=view)
+                    if Anka == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Warhammer != None:
+                user = databaseManager.searchForUser(Warhammer.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                if Warhammer != None and Warhammer.user == ctx.message.author and Warhammer.role.abilityActive and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking and Warhammer not in currentGame.deadPlayers:
+                    view = await discordViewBuilder.ankaDemoteView(currentGame, Warhammer, midGameFunctions.executeDemote)
+                    await userChannel.send('Choose who to demote!', view=view)
+                    if Warhammer == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+
+    async def executeDemote(currentGame, Anka, player):
+        if currentGame.online:
+            if currentGame.currentExpo.currentlyPicking and Anka.role.abilityActive and player in currentGame.commanderOrder:
+                currentGame.executeAnka(Anka, player)
+                await webhookManager.ankaWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client)
+                Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+                if Hitch != None:
+                    hitchInfo = {}
+                    if Anka.role.id == 'Anka':
+                        hitchInfo['Anka'] = Anka
+                    if Anka.role.id == 'Warhammer':
+                        hitchInfo['Warhammer'] = Anka
+                if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
+                    user = databaseManager.searchForUser(Hitch.user)
+                    userChannel = currentGame.client.get_channel(user['channelID'])
+                    hitchMessage = currentGame.currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+                    embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
+                    await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client)
+                    await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, '', 'Hitch', currentGame.client, embed)
+
+
     async def paths(ctx, currentGame, currentTheme, prefix, client):
         if currentGame.online:
             Ymir = await searchFunctions.roleIDToPlayer(currentGame, 'Ymir')

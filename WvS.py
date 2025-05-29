@@ -298,6 +298,14 @@ async def gag(ctx):
 async def ungag(ctx):
     await midGameFunctions.ungag(ctx, currentGame, currentTheme, client)
 
+@client.command('demote')
+async def demote(ctx):
+    await midGameFunctions.demote(ctx, currentGame)
+
+@client.command('smoke')
+async def smoke(ctx):
+    await midGameFunctions.smoke(ctx, currentGame)
+
 @commands.max_concurrency(1, per=commands.BucketType.default, wait=True)
 @client.command('check')
 async def check(ctx, *, checkedPlayer:discord.Member):

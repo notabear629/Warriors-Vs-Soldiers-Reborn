@@ -29,7 +29,7 @@ class infoFunctions:
         if input != None:
             foundRole = await searchFunctions.stringToRole(loadedRoles, input)
         if foundRole != None:
-            infoEmbed = await helpBuilder.specificRoleInfoEmbed(currentTheme, foundRole)
+            infoEmbed = await helpBuilder.specificRoleInfoEmbed(currentTheme, foundRole, loadedRoles)
         else:
             infoEmbed = await helpBuilder.roleInfoHelpEmbed(currentTheme)
         infoView = await helpBuilder.mainNavigatorView('Role Info', ctx.message.author, currentTheme, prefix, loadedRoles)
