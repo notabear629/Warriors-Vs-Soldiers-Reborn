@@ -16,7 +16,8 @@ class Game:
         self.home = home
 
 
-    def start(self, lobby, players, currentRules, loadedRoles, gagRole, loadedBadges):
+    def start(self, lobby, players, currentRules, loadedRoles, gagRole, loadedBadges, currentTheme):
+        self.currentTheme = currentTheme
         self.online = True
         self.lobby = lobby
         self.players = players

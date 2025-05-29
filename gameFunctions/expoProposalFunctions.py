@@ -372,8 +372,13 @@ class expoProposalFunctions:
     async def advanceRound(currentGame, currentTheme, home, noMentions, prefix, client):
         currentGame.advanceRound()
         if currentGame.porcoGagged != None:
+            Marcel = await searchFunctions.roleIDToPlayer(currentGame, 'Marcel')
             for user in currentGame.gagRole.members:
-                await user.remove_roles(currentGame.gagRole)
+                if Marcel == None:
+                    await user.remove_roles(currentGame.gagRole)
+                else:
+                    if user not in currentGame.deadSoldiers:
+                        await user.remove_roles(currentGame.gagRole)
             currentGame.removeGag()
         expoSize = await expoProposalFunctions.getExpeditionSize(currentGame)
         expo = Expedition(currentGame.currentExpo.commander, expoSize, currentGame.players)

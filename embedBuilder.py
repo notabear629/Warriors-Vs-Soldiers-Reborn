@@ -412,6 +412,8 @@ class embedBuilder:
             playerList += f'{player.role.secondaryEmoji} Select Chicken Out to cancel this {currentTheme.expeditionName} and go back to the picking phase.\n'
         if (player.role.id == 'Petra' or player.role.id == 'Warhammer') and player.role.abilityActive:
             playerList += f'{player.role.emoji} Select a player from the "Choose Player to Watch" to keep watch over that player.\n'
+        if (player.role.id == 'Frecklemir') or (player.role.id == 'Warhammer' and player.role.abilityActive):
+            playerList += f'{player.role.secondaryEmoji} Select a player from the "Choose Player to Maul" to maul and kill that player.\n'
         if (player.role.id == 'Rico') and player.role.abilityActive:
             playerList += f'{player.role.secondaryEmoji} Set a Trap for later\n'
         if player.role.id == 'Hange' and player.role.abilityActive:
@@ -440,6 +442,11 @@ class embedBuilder:
                 decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while watching **{currentGame.currentExpo.petraWatched.user.name}**.'
             else:
                 decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while watching **{currentGame.currentExpo.warhammerActivated['Petra'].user.name}**.'
+        elif (player.role.id == 'Frecklemir' and currentGame.currentExpo.frecklemirMauled != None) or (player.role.id == 'Warhammer' and type(currentGame.currentExpo.warhammerActivated) == dict and 'Frecklemir' in currentGame.currentExpo.warhammerActivated):
+            if player.role.id == 'Frecklemir':
+                decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while mauling **{currentGame.currentExpo.frecklemirMauled.user.name}**.'
+            else:
+                decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while mauling **{currentGame.currentExpo.warhammerActivated['Frecklemir'].user.name}**.'
         elif player.role.id == 'Hange' and currentGame.currentExpo.hangeActivated:
             decisionString = f'You have chosen to pass the {currentTheme.expeditionName} while wiretapping **{currentGame.hangeWiretapped.user.name}**.'
         elif (player.role.id == 'Hannes' and currentGame.currentExpo.hannesActivated != None) or (player.role.id == 'Warhammer' and currentGame.currentExpo.warhammerActivated == 'Hannes'):

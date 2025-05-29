@@ -44,6 +44,9 @@ class Expedition:
         self.marcoActivated = False
         self.warhammerActivated = None
         self.displaySize = None
+        self.playerFlown = None
+        self.flownIn = False
+        self.frecklemirMauled = None
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -79,6 +82,9 @@ class Expedition:
         self.displaySize = None
         self.marcoActivated = False
         self.warhammerActivated = None
+        self.playerFlown = None
+        self.flownIn = False
+        self.frecklemirMauled = None
 
     def fillUp(self):
         self.filledUp = True
@@ -232,6 +238,14 @@ class Expedition:
                 self.warhammerActivated = {'Petra':actCase['Petra']}
             player.role.disableAbility()
             self.usedExpoAbilities.append(player)
+        elif type(actCase) == dict and 'Frecklemir' in actCase:
+            self.passedExpedition.append(player)
+            if player.role.id == 'Frecklemir':
+                self.frecklemirMauled = actCase['Frecklemir']
+            if player.role.id == 'Warhammer':
+                self.warhammerActivated = {'Frecklemir':actCase['Frecklemir']}
+                player.role.disableAbility()
+                self.usedExpoAbilities.append(player)
         elif type(actCase) == dict and 'Hange' in actCase:
             self.passedExpedition.append(player)
             self.hangeActivated = True
@@ -263,6 +277,8 @@ class Expedition:
             self.passedExpedition.append(player)
         elif actCase == 'n':
             self.sabotagedExpedition.append(player)
+        if player.role.id == 'Onyankopon' and self.playerFlown is None:
+            self.playerFlown = False
         if len(self.expeditioned) == len(self.expeditionMembers):
             self.currentlyExpeditioning = False
             self.resultsAvailable = True
@@ -305,6 +321,19 @@ class Expedition:
             self.passedExpedition.remove(Hannes)
         if Hannes in self.expeditionMembers:
             self.expeditionMembers.remove(Hannes)
+
+    def flyIn(self, player):
+        if player not in self.expeditionMembers:
+            self.expeditionMembers.append(player)
+            self.currentlyExpeditioning = True
+            self.flownIn = True
+
+    def fly(self, Onyankopon, player):
+        self.playerFlown = player
+        Onyankopon.role.disableAbility()
+
+    def noFly(self):
+        self.playerFlown = False
 
     def trialPlayer(self, Pyxis, player):
         if Pyxis.role.id == 'Pyxis':

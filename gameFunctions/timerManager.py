@@ -2,18 +2,34 @@ import asyncio
 import discord
 from discord.ext import commands
 
+from gameFunctions.searchFunctions import searchFunctions
+
 class timerManager:
-    async def setTimer(currentGame, home, currentTheme, context):
+    async def setTimer(currentGame, home, currentTheme, context, funcs=[]):
         timerVariables = await timerManager.getContext(currentGame, currentTheme, context)
         timerValue = timerVariables['timerValue']
         breakoutCondition = timerVariables['breakoutCondition']
         timerMessage = timerVariables['timerMessage']
         timeout = True
-        for i in range(timerValue):
+        args = []
+        Onyankopon = await searchFunctions.roleIDToPlayer(currentGame, 'Onyankopon')
+        if Onyankopon != None and Onyankopon.role.abilityActive:
+            args.append(True)
+        else:
+            args.append(False)
+        i = 0
+        while i < timerValue:
             if currentGame.online == False:
                 return 
-            if await breakoutCondition(currentGame):
+            check = await breakoutCondition(currentGame, args)
+            if check == True:
                 timeout = False
+            elif check == 'Plane':
+                if currentGame.currentExpo.playerFlown is not None and currentGame.currentExpo.playerFlown != False and not currentGame.currentExpo.flownIn:
+                    await funcs[0](currentGame)
+                    i = 0
+                else:
+                    timeout = False
             if not timeout:
                 break
             if (timerValue-i) == 600:
@@ -27,6 +43,7 @@ class timerManager:
             if (timerValue-i) == 30:
                 await home.send(f'{currentTheme.timeoutCoreStart}**30 seconds**{currentTheme.timeoutCoreEnd}{timerMessage}')
             await asyncio.sleep(1)
+            i += 1
         return timeout
 
     async def getContext(currentGame, currentTheme, context):
@@ -65,32 +82,36 @@ class timerManager:
         
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition, 'timerMessage' : timerMessage}
     
-    async def pickWillBreakOut(currentGame):
+    async def pickWillBreakOut(currentGame, args=[]):
         if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or currentGame.currentExpo.warhammerActivated == 'Erwin' or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) or currentGame.exposOver:
             return True
         return False
     
-    async def voteWillBreakOut(currentGame):
+    async def voteWillBreakOut(currentGame, args=[]):
         if len(currentGame.currentExpo.eligibleVoters) == len(currentGame.currentExpo.voted) or currentGame.exposOver:
             return True
         return False
     
-    async def expoWillBreakOut(currentGame):
-        if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers) or currentGame.exposOver:
-            return True
+    async def expoWillBreakOut(currentGame, args=[False]):
+        if args[0]:
+            if currentGame.currentExpo.playerFlown is not None:
+                return 'Plane'
+        else:
+            if len(currentGame.currentExpo.expeditioned) == len(currentGame.currentExpo.expeditionMembers) or currentGame.exposOver:
+                return True
         return False
     
-    async def kidnapWillBreakOut(currentGame):
+    async def kidnapWillBreakOut(currentGame, args=[]):
         if currentGame.kidnappedPlayer != None:
             return True
         return False
     
-    async def multiKidnapWillBreakout(currentGame):
+    async def multiKidnapWillBreakout(currentGame, args=[]):
         if len(currentGame.multikidnapRecord) == len(currentGame.warriors):
             return True
         return False
     
-    async def rumblingFightWillBreakout(currentGame):
+    async def rumblingFightWillBreakout(currentGame, args=[]):
         if currentGame.attackedPlayer != None:
             return True
         return False

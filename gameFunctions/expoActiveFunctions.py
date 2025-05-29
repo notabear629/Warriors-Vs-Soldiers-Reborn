@@ -26,7 +26,13 @@ class expoActiveFunctions:
             embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
             view = await discordViewBuilder.expeditionChoiceView(currentGame, currentTheme, player, client, home, expoActiveFunctions.chooseExpo)
             await userChannel.send(f'{player.user.mention}',view=view, embed=embed)
-        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Expo')
+        Onyankpon = await searchFunctions.roleIDToPlayer(currentGame, 'Onyankopon')
+        if Onyankpon != None and Onyankpon.role.abilityActive:
+            user = databaseManager.searchForUser(Onyankpon.user)
+            userChannel = client.get_channel(user['channelID'])
+            view = await discordViewBuilder.onyankoponPilotView(currentGame, Onyankpon)
+            await userChannel.send(f'{Onyankpon.user.mention}, Would you like to fly someone in?', view=view)
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Expo', [expoActiveFunctions.onyankoponFly])
         if timeout == None:
             return
         elif timeout and currentGame.exposOver == False:
@@ -58,6 +64,8 @@ class expoActiveFunctions:
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
             elif type(choice) == dict and 'Petra' in choice and (player.role.id == 'Petra' or player.role.id == 'Warhammer'):
+                expoChoice = choice
+            elif type(choice) == dict and 'Frecklemir' in choice and (player.role.id == 'Frecklemir' or player.role.id == 'Warhammer'):
                 expoChoice = choice
             elif type(choice) == dict and 'Hange' in choice and player.role.id == 'Hange':
                 expoChoice = choice
@@ -219,7 +227,7 @@ class expoActiveFunctions:
             await home.send(failMessage)
 
     async def processDeaths(currentGame, currentTheme, home, client):
-        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Marco': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Rico':False, 'Willy':False, 'WarhammerArmin':False, 'WarhammerLevi':False, 'WarhammerPetra':False, 'WarhammerMarco':False, 'WarhammerSasha':False, 'WarhammerRico':False}
+        deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Marco': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Rico':False, 'Frecklemir':False, 'Willy':False, 'WarhammerArmin':False, 'WarhammerLevi':False, 'WarhammerPetra':False, 'WarhammerMarco':False, 'WarhammerSasha':False, 'WarhammerRico':False, 'WarhammerFrecklemir':False}
         if currentGame.currentExpo.arminActivated:
             Armin = await searchFunctions.roleIDToPlayer(currentGame, 'Armin')
             if Armin != None:
@@ -275,7 +283,7 @@ class expoActiveFunctions:
                     deathFlags['Petra'] = True
         if type(currentGame.currentExpo.warhammerActivated) == dict and 'Petra' in currentGame.currentExpo.warhammerActivated:
             Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
-            if Warhammer != None and currentGame.currentExpo.warhammerActivated['Petra'] in currentGame.currentExpo.sabotagedExpedition:
+            if Warhammer != None and currentGame.currentExpo.warhammerActivated['Petra'] in currentGame.currentExpo.sabotagedExpedition and currentGame.currentExpo.warhammerActivated['Petra'] not in currentGame.deadPlayers:
                 await currentGame.killPlayer(currentGame.currentExpo.warhammerActivated['Petra'], Warhammer, 'Petra')
                 deathFlags['WarhammerPetra'] = True
         if currentGame.currentExpo.kennyMurdered != None and currentGame.currentExpo.kennyMurdered in currentGame.currentExpo.expeditionMembers:
@@ -283,6 +291,18 @@ class expoActiveFunctions:
             if Kenny != None:
                 await currentGame.killPlayer(currentGame.currentExpo.kennyMurdered, Kenny, 'Kenny')
                 deathFlags['Kenny'] = True
+        if currentGame.currentExpo.frecklemirMauled != None:
+            Frecklemir = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
+            if Frecklemir != None and currentGame.currentExpo.frecklemirMauled in currentGame.currentExpo.expeditionMembers:
+                if currentGame.currentExpo.frecklemirMauled not in currentGame.deadPlayers:
+                    await currentGame.killPlayer(currentGame.currentExpo.frecklemirMauled, Frecklemir, 'Frecklemir')
+                    deathFlags['Frecklemir'] = True
+        if type(currentGame.currentExpo.warhammerActivated) == dict and 'Frecklemir' in currentGame.currentExpo.warhammerActivated:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            if Warhammer != None and currentGame.currentExpo.warhammerActivated['Frecklemir'] in currentGame.currentExpo.expeditionMembers and currentGame.currentExpo.warhammerActivated['Frecklemir'] in currentGame.warriors:
+                if currentGame.currentExpo.warhammerActivated['Frecklemir'] not in currentGame.deadPlayers:
+                    await currentGame.killPlayer(currentGame.currentExpo.warhammerActivated['Frecklemir'], Warhammer, 'Frecklemir')
+                    deathFlags['WarhammerFrecklemir'] = True
         if currentGame.currentExpo.willyBombed != None:
             Willy = await searchFunctions.roleIDToPlayer(currentGame, 'Willy')
             if Willy != None:
@@ -369,6 +389,29 @@ class expoActiveFunctions:
                 if player in currentGame.soldiers:
                     if gagRole not in player.user.roles:
                         await player.user.add_roles(gagRole)
+
+    async def onyankoponFly(currentGame):
+        Onyankopon = await searchFunctions.roleIDToPlayer(currentGame, 'Onyankopon')
+        await webhookManager.onyankoponWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client)
+        msg = currentGame.currentTheme.getPlaneMessage(currentGame, Onyankopon, currentGame.currentExpo.playerFlown)
+        await currentGame.home.send(msg)
+        currentGame.currentExpo.flyIn(currentGame.currentExpo.playerFlown)
+        player = currentGame.currentExpo.playerFlown
+        user = databaseManager.searchForUser(player.user)
+        userChannel = currentGame.client.get_channel(user['channelID'])
+        embed = await embedBuilder.expeditionDM(currentGame, player, currentGame.currentTheme)
+        view = await discordViewBuilder.expeditionChoiceView(currentGame, currentGame.currentTheme, player, currentGame.client, currentGame.home, expoActiveFunctions.chooseExpo)
+        await userChannel.send(f'{player.user.mention}',view=view, embed=embed)
+        Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+        if Hitch != None:
+            hitchInfo = {'Onyankopon':Onyankopon}
+            user = databaseManager.searchForUser(Hitch.user)
+            userChannel = currentGame.client.get_channel(user['channelID'])
+            hitchMessage = currentGame.currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+            embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
+            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client)
+            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, '', 'Hitch', currentGame.client, embed)
+
                         
 
     async def processDeathMessages(currentGame, currentTheme, home, deathFlags, client):
@@ -423,6 +466,16 @@ class expoActiveFunctions:
             kennyMessage = currentTheme.getKennyDeathMessages(currentGame, currentTheme, Kenny, Mikasa, Reiner)
             if kennyMessage != '':
                 await home.send(kennyMessage)
+        if deathFlags['Frecklemir']:
+            Frecklemir = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
+            frecklemirMessage = currentTheme.getFrecklemirDeathMessages(currentGame, currentTheme, Frecklemir, Mikasa, Reiner)
+            if frecklemirMessage != '':
+                await home.send(frecklemirMessage)
+        if deathFlags['WarhammerFrecklemir']:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            warhammerMessage = currentTheme.getFrecklemirDeathMessages(currentGame, currentTheme, Warhammer, Mikasa, Reiner)
+            if warhammerMessage != '':
+                await home.send(warhammerMessage)
         if deathFlags['Willy']:
             Willy = await searchFunctions.roleIDToPlayer(currentGame, 'Willy')
             willyMessage = currentTheme.getWillyDeathMessages(currentGame, currentTheme, Willy, Mikasa, Reiner)

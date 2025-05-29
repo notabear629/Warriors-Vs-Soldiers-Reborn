@@ -14,13 +14,13 @@ class Role:
     soldierGroupInfo = ['Historia']
 
     #A group of all optional Soldiers with one-time special abilities
-    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith', 'Zachary', 'Hange', 'Hannes', 'Samuel', 'Frieda']
+    soldierGroupAbility = ['Jean', 'Erwin', 'Daz', 'Keith', 'Zachary', 'Hange', 'Hannes', 'Samuel', 'Frieda', 'Onyankopon']
 
     #Group of all optional soldiers that are Defender class
     soldierGroupDefender = ['Levi', 'Mikasa']
 
     #A group of all Lethal Soldiers
-    soldierGroupLethal = ['Armin', 'Sasha', 'Petra', 'Pyxis', 'Rico']
+    soldierGroupLethal = ['Armin', 'Sasha', 'Petra', 'Pyxis', 'Rico', 'Frecklemir']
 
     #A group of all Analytical Soldiers
     soldierGroupAnalyst = ['Mike', 'Hitch', 'Floch', 'Nile', 'Connie', 'Marlowe', 'Moblit']
@@ -74,10 +74,10 @@ class Role:
     infoMessageRoles = soldierGroupCoordinate + warriorRoles + soldierGroupInfo
 
     #Define prime roles for intelligent selection
-    primeRoles = ['Historia', 'Jean', 'Daz', 'Moblit', 'Frieda', 'Rico', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Petra', 'Pyxis', 'Mike', 'Floch', 'Nile', 'Connie', 'Niccolo', 'Annie', 'Porco', 'Falco', 'Gabi', 'Yelena', 'Warhammer', 'Bertholdt', 'Willy', 'Magath', 'Colt']
+    primeRoles = ['Historia', 'Jean', 'Daz', 'Moblit', 'Frieda', 'Rico', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Petra', 'Pyxis', 'Mike', 'Floch', 'Nile', 'Connie', 'Niccolo', 'Annie', 'Porco', 'Falco', 'Gabi', 'Yelena', 'Warhammer', 'Bertholdt', 'Willy', 'Magath', 'Colt', 'Frecklemir']
 
     #Now define role dependencies for intelligent selection
-    roleDependencies = {'Erwin':{'soldierCount':4}, 'Hannes':{'soldierCount':4}, 'Mikasa':{'requiredRoles':['Armin', 'Sasha', 'Pyxis', 'Willy']}, 'Armin':{'soldierCount':4}, 'Sasha':{'soldierCount':4}, 'Hitch':{'requiredRoles':['Jean', 'Daz', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Mikasa', 'Sasha', 'Petra', 'Pyxis', 'Pieck', 'Annie', 'Falco', 'Gabi', 'Yelena', 'Warhammer', 'Bertholdt', 'Frieda', 'Rico']}, 'Marlowe':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis', 'Willy', 'Rico']}, 'Marco':{'soldierCount':4}, 'Reiner':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis', 'Rico']}, 'Colt':{'requiredRoles':['Niccolo'], 'warriorCount':3}, 'Pieck':{'requiredRoles':['Zachary', 'Erwin', 'Daz']}, 'Marcel':{'requiredRoles':['Armin', 'Sasha', 'Pyxis', 'Willy']}}
+    roleDependencies = {'Erwin':{'soldierCount':4}, 'Hannes':{'soldierCount':4}, 'Mikasa':{'requiredRoles':['Armin', 'Sasha', 'Pyxis', 'Willy', 'Frecklemir']}, 'Onyankopon':{'requiredRoles':['Levi', 'Armin', 'Petra', 'Daz', 'Frecklemir']}, 'Armin':{'soldierCount':4}, 'Sasha':{'soldierCount':4}, 'Hitch':{'requiredRoles':['Jean', 'Daz', 'Keith', 'Zachary', 'Hange', 'Samuel', 'Levi', 'Mikasa', 'Sasha', 'Petra', 'Pyxis', 'Pieck', 'Annie', 'Falco', 'Gabi', 'Yelena', 'Warhammer', 'Bertholdt', 'Frieda', 'Rico', 'Frecklemir', 'Onyankopon']}, 'Marlowe':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis', 'Willy', 'Rico', 'Frecklemir']}, 'Marco':{'soldierCount':4}, 'Reiner':{'requiredRoles':['Levi', 'Armin', 'Sasha', 'Petra', 'Pyxis', 'Rico', 'Frecklemir']}, 'Pieck':{'requiredRoles':['Zachary', 'Erwin', 'Daz']}, 'Marcel':{'requiredRoles':['Armin', 'Sasha', 'Pyxis', 'Willy', 'Frecklemir']}}
     
 
     def __init__(self, roleInfo):

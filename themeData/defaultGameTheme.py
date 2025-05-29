@@ -200,6 +200,8 @@ class defaultGameTheme:
     warhammerApologyMessage = 'Comrades... I am sorry.'
     ricoMessage = 'You\'ve stepped into my trap!'
     magathMessage = 'This will be my final order...'
+    onyankoponMessage = 'Hold on, I\'m flying you in!'
+    frecklemirMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -1016,6 +1018,60 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = f'Rico is a member of the Garrison Corps! As such, she has learned how to build defenses. When she is on an expedition, she can choose to use her expertise in constructing defenses to set a trap. Once this trap has been engaged, she can use `{prefix}trap` akin to Sasha\'s target mechanism to choose who to spring the trap on the next time they participate in an expedition! This trap will spring regardless, but it will only kill the target if they try to break the wall, like with Petra\'s ability.' 
     
+    class Onyankopon:
+        roleDict = {'roleID' : 'Onyankopon'}
+
+        roleDict['name'] = 'Onyankopon'
+
+        roleDict['shortName'] = 'Onyankopon'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'allianceFighter'
+
+        roleDict['isTitan'] = False
+
+        roleDict['emoji'] = 1377337095319977994
+
+        roleDict['secondaryEmoji'] = str('🛩️')
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a talented pilot! As such, when an expedition is ongoing, regardless if you are in it or not, you will have the choice to airdrop another player into the expedition! Use this to your tactical advantage by shipping in a strong defender (or a tactical nuke) when the situation seems dire! **IF YOU WANT TO FLY SOMEBODY INTO AN EXPO THAT YOU ARE ALREADY IN, MAKE SURE THAT YOU CHOOSE TO FLY BEFORE YOU CHOOSE WHAT TO DO ON THE EXPEDITION!**\n\n'
+
+        roleDict['gameRole'] = ':airplane_small:Pilot:airplane_small:'
+
+        roleDict['helpInfo'] = f'Onyankopon is a talented pilot. As such, when an expedition is ongoing, regardless if he is present or not, once per game, he will be able to elect to fly-in another player inside of the expedition, forcing them on! If he is smart, he could possibly save a wall by airdropping Levi, send in a nuke with Armin, or even drop in a Warrior to an already existing nuke!' 
+
+    class Frecklemir:
+        roleDict = {'roleID' : 'Frecklemir'}
+
+        roleDict['name'] = 'Ymir Freckles'
+
+        roleDict['shortName'] = 'Frecklemir'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1218288982572400700
+
+        roleDict['secondaryEmoji'] = 1377427508496044072
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a holder of the Jaw Titan! As such, you can be viscious and brutal. An unlimited number of times per game, on the expedition, you will have the ability to maul and kill one of the other expedition members.\n\n'
+
+        roleDict['gameRole'] = ':drop_of_blood:Mauler:drop_of_blood:'
+
+        roleDict['helpInfo'] = f'Ymir is the holder of the Jaw Titan! As such, an unlimited number of times per games, while on the expedition, she will have the ability to maul and kill one of the expedition members with the power of her titan.' 
+
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -1670,6 +1726,28 @@ class defaultGameTheme:
                     petraDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Petra\'s attack!{Reiner.role.secondaryEmoji}\n\n'
         return petraDeathMessages
     
+    def getFrecklemirDeathMessages(currentGame, currentTheme, Frecklemir, Mikasa, Reiner):
+        frecklemirDeathMessages = ''
+        for killedPlayer, causeOfDeath in Frecklemir.killed.items():
+            frecklemirDeathMessages = ''
+            if causeOfDeath == 'Frecklemir':
+                frecklemirDeathMessages += f'**{killedPlayer.user.name}** was mauled by Ymir!\n'
+                if killedPlayer in currentGame.soldiers:
+                    frecklemirDeathMessages += f'They were a {currentTheme.emojiSoldier}**{currentTheme.soldierSingle}**{currentTheme.emojiSoldier}!\n\n'
+                elif killedPlayer in currentGame.warriors:
+                    frecklemirDeathMessages += f'They were a {currentTheme.emojiWarrior}**{currentTheme.warriorSingle}**{currentTheme.emojiWarrior}!\n\n'
+                elif killedPlayer in currentGame.wildcards:
+                    frecklemirDeathMessages += f'They were a {currentTheme.emojiWildcard}**{currentTheme.wildcardSingle}**{currentTheme.emojiWildcard}!\n\n'
+        if type(currentGame.mikasaGuarded) == dict:
+            for key, value in currentGame.mikasaGuarded.items():
+                if value == 'Frecklemir':
+                    frecklemirDeathMessages += f'**{key.user.name}** was the target of a mauling by Ymir!\n{Mikasa.role.emoji}But was protected by Mikasa!{Mikasa.role.emoji}\n\n'
+        if type(currentGame.currentExpo.reinerBlocked) == dict:
+            for key, value in currentGame.currentExpo.reinerBlocked.items():
+                if value == 'Frecklemir':
+                    frecklemirDeathMessages += f'{Reiner.role.secondaryEmoji}**{key.user.name}**\'s Armor protected them from Ymir\'s mauling!{Reiner.role.secondaryEmoji}\n\n'
+        return frecklemirDeathMessages
+    
     def getRicoDeathMessages(currentGame, currentTheme, Rico, Mikasa, Reiner):
         ricoDeathMessages = ''
         for killedPlayer, causeOfDeath in Rico.killed.items():
@@ -1810,6 +1888,9 @@ class defaultGameTheme:
     def getGabiWoundMessage(currentGame, currentTheme, Gabi):
         gabiWoundMessage = f'{Gabi.role.secondaryEmoji}Gabi has shot **{currentGame.woundedPlayer.user.name}**! They have been evacuated to the Field Hospital and will not be able to attend the next expedition!{Gabi.role.secondaryEmoji}\n\n'
         return gabiWoundMessage
+    
+    def getPlaneMessage(currentGame, Onyankopon, player):
+        return f'{Onyankopon.role.secondaryEmoji}**{player.user.name}** has been flown into the Expedition!{Onyankopon.role.secondaryEmoji}\n\n'
     
     def getHealMessage(player):
         healMessage = f'{player.user.mention} has healed and returned to the fight!'

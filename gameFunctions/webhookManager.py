@@ -200,6 +200,18 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, kennyMsg, 'Kenny', client)
             if Hitch != None:
                 hitchInfo['Kenny'] = Kenny
+        if currentGame.currentExpo.frecklemirMauled != None:
+            Frecklemir = await searchFunctions.roleIDToPlayer(currentGame, 'Frecklemir')
+            frecklemirMsg = currentTheme.frecklemirMessage
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, frecklemirMsg, '{ALTERNATE}Frecklemir', client)
+            if Hitch != None:
+                hitchInfo['Frecklemir'] = Frecklemir
+        if type(currentGame.currentExpo.warhammerActivated) == dict and 'Frecklemir' in currentGame.currentExpo.warhammerActivated:
+            Warhammer = await searchFunctions.roleIDToPlayer(currentGame, 'Warhammer')
+            warhammerMsg = currentTheme.frecklemirMessage
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, warhammerMsg, '{ALTERNATE}Frecklemir', client)
+            if Hitch != None:
+                hitchInfo['Warhammer'] = Warhammer
         if currentGame.currentExpo.willyBombed != None:
             willyMsg = currentTheme.willyMessage
             await webhookManager.sendWebhook(currentGame, currentTheme, home, willyMsg, '{ALTERNATE}Willy', client)
@@ -382,6 +394,9 @@ class webhookManager:
 
     async def reinerWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.reinerMessage, '{ALTERNATE}Reiner', client)
+
+    async def onyankoponWebhook(currentGame, currentTheme, home, client):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.onyankoponMessage, 'Onyankopon', client)
 
     async def basementSkipWebhook(currentGame, currentTheme, home, client):
         await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.retreatMessage, '{ALTERNATE}Zeke', client)

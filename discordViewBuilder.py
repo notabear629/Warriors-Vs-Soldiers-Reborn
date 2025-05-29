@@ -20,6 +20,7 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
+        #return True
         if player.user == interaction.user:
             return True
         return False
@@ -237,11 +238,35 @@ class discordViewBuilder:
                     for expeditioner in currentGame.currentExpo.expeditionMembers:
                         if expeditioner.user.name == str(petraSelect.values[0]):
                             watchedPlayer = expeditioner
+                            break
                     await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Petra':watchedPlayer})
                     embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
                     await interaction.message.edit(embed=embed, view=None)
             petraSelect.callback = processPetraSelection
             returnedView.add_item(petraSelect)
+
+        if ((player.role.id == 'Frecklemir') or (player.role.id == 'Warhammer' and player.role.abilityActive)) and len(currentGame.currentExpo.expeditionMembers) > 1:
+            freckleSelect = Select(placeholder='Choose Player to Maul')
+            warhammerValid = False
+            for expeditioner in currentGame.currentExpo.expeditionMembers:
+                if expeditioner != player:
+                    if player.role.id == 'Frecklemir':
+                        freckleSelect.add_option(label = expeditioner.user.name, emoji=player.role.secondaryEmoji)
+                    if player.role.id == 'Warhammer' and expeditioner in currentGame.warriors:
+                        warhammerValid = True
+                        freckleSelect.add_option(label = expeditioner.user.name, emoji=player.role.secondaryEmoji)
+            async def processFreckleSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    for expeditioner in currentGame.currentExpo.expeditionMembers:
+                        if expeditioner.user.name == str(freckleSelect.values[0]):
+                            selectedPlayer = expeditioner
+                            break
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, {'Frecklemir':selectedPlayer})
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            if (player.role.id == 'Frecklemir') or (player.role.id == 'Warhammer' and warhammerValid):
+                freckleSelect.callback = processFreckleSelection
+                returnedView.add_item(freckleSelect)
 
         if player.role.id == 'Hange' and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             hangeSelect = Select(placeholder = f'Choose Player to Wiretap')
@@ -357,6 +382,45 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
+    async def onyankoponPilotView(currentGame, Onyankopon):
+        returnedView = View()
+        onionPilotSelection = Select(placeholder='Choose who to fly in!', min_values=1, max_values=1)
+        for player in currentGame.livingPlayers:
+            if player not in currentGame.currentExpo.expeditionMembers:
+                onionPilotSelection.add_option(label = f'{player.user.name}', emoji=Onyankopon.role.secondaryEmoji)
+        async def processOnionSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(Onyankopon, interaction):
+                if currentGame.online and interaction.user == Onyankopon.user and Onyankopon.role.abilityActive and Onyankopon in currentGame.livingPlayers and currentGame.currentExpo.playerFlown is None:
+                    selection = str(onionPilotSelection.values[0])
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    currentGame.currentExpo.fly(Onyankopon, selectedPlayer)
+                    await interaction.message.edit(content=f'You have chosen to fly in: {player.user.name}', view=None)
+                    await interaction.response.defer()
+                    if Onyankopon == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+        onionPilotSelection.callback = processOnionSelection
+        returnedView.add_item(onionPilotSelection)
+
+        noButton = Button(label = 'Do Not Fly', emoji=str('❌'), style=discord.ButtonStyle.grey)
+        async def processNoButton(interaction):
+            if await discordViewBuilder.isInteractionIntended(Onyankopon, interaction):
+                if currentGame.online and interaction.user == Onyankopon.user and Onyankopon.role.abilityActive and Onyankopon in currentGame.livingPlayers and currentGame.currentExpo.playerFlown is None:
+                    currentGame.currentExpo.noFly()
+                    await interaction.message.edit(content=f'You have chosen to fly nobody in.', view = None)
+                    await interaction.response.defer()
+                    if Onyankopon == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+        noButton.callback = processNoButton
+        returnedView.add_item(noButton)
+
+        return returnedView
+    
+        
+    
+    @staticmethod
     async def ricoTargetView(currentGame, currentTheme, Rico):
         returnedView = View()
         ricoTargetSelection = Select(placeholder='Choose who to target!', min_values=1, max_values=1)
@@ -413,7 +477,7 @@ class discordViewBuilder:
         returnedView = View()
 
         moblitPlayerSelection = Select(placeholder= 'Choose who to analyze!', min_values=1, max_values=1)
-        for player in currentGame.livingPlayers:
+        for player in currentGame.players:
             if player != Moblit:
                 moblitPlayerSelection.add_option(label = f'{player.user.name}') 
         async def processMoblitPlayerSelection(interaction):
@@ -434,7 +498,7 @@ class discordViewBuilder:
         for player in currentGame.players:
             gameRoles.append(player.role.id)
         for role in currentGame.loadedRoles:
-            if role.id in gameRoles and role.id != 'Eren' and role.id != 'Moblit':
+            if role.id in gameRoles and role.id != 'Eren' and role.id != 'Moblit' and role.id != 'Zeke':
                 moblitRoleSelection.add_option(label = role.shortName, emoji=role.emoji)
         async def processMoblitRoleSelection(interaction):
             if await discordViewBuilder.isInteractionIntended(Moblit, interaction):

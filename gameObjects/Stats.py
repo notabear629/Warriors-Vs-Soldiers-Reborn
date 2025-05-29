@@ -46,11 +46,12 @@ class Stats:
                 setattr(self, 'RicoTrapsFired', 1)
         if player.role.id == 'Marcel':
             setattr(self, 'MarcelGags', len(currentGame.deadSoldiers))
+        if player.role.id == 'Onyankopon' and player.role.abilityActive == False:
+            setattr(self, 'OnyankoponPilots', 1)
         
 
     def processKill(self, killer, killed):
-        solKillRoles = ['Levi', 'Sasha', 'Armin', 'Petra', 'Pyxis', 'Rico']
-        solKillWinRoles = ['Sasha', 'Armin', 'Pyxis']
+        solKillRoles = ['Levi', 'Sasha', 'Armin', 'Petra', 'Pyxis', 'Rico', 'Frecklemir']
         totalKills = getattr(killer.stats, 'Kills')
         totalDeaths = getattr(killed.stats, 'Deaths')
         if killer != killed:
@@ -68,7 +69,7 @@ class Stats:
         if killer.role.id in solKillRoles:
             killAttribute = getattr(self, f'{killer.role.id}Kills')
             setattr(self, f'{killer.role.id}Kills', killAttribute+1)
-            if killer.role.id in solKillWinRoles and killed.role.team == 'Warriors':
+            if killer.role.id in solKillRoles and killed.role.team == 'Warriors':
                 winAttribute = getattr(self, f'{killer.role.id}KillWins')
                 setattr(self, f'{killer.role.id}KillWins', winAttribute+1)
 
@@ -263,7 +264,7 @@ class Stats:
     @staticmethod
     async def processMVP(currentGame):
 
-        soldierMVPGrading = {'ArminKills': -1, 'ArminKillWins': 2, 'SashaKills': -1, 'SashaKillWins':2, 'PetraKillWins': 1, 'RicoKillWins':1, 'FriedaVows':1, 'PyxisKills':-1, 'PyxisKillWins':2, 'JeanForces':-1, 'JeanForceWins':2, 'ZacharyVetoes':-1, 'ZacharyVetoWins':2, 'ErwinFlaresFired':-0.5, 'DazChickens':-1, 'DazChickenWins':2, 'LeviAttacks':-0.5, 'LeviKills':1, 'LeviDefends':1, 'MikasaSaved':-1, 'MikasaSaveWins':2, 'HangeWiretapsSoldier':0.5, 'HangeWiretapsWarrior':0.5, 'MarcoSuicides':-1, 'HannesEscapes':-0.5, 'ArminNukes':-1,'PassCommanders' : 2, 'AcceptedCommand' : -1, 'PassVotes' :2, 'ExposVoted' : -1, 'PassExpeditions' : 1}
+        soldierMVPGrading = {'ArminKills': -1, 'ArminKillWins': 2, 'SashaKills': -1, 'SashaKillWins':2, 'PetraKillWins': 1, 'FrecklemirKills':-1, 'FrecklemirKillWins':2, 'RicoKillWins':1, 'FriedaVows':1, 'PyxisKills':-1, 'PyxisKillWins':2, 'JeanForces':-1, 'JeanForceWins':2, 'ZacharyVetoes':-1, 'ZacharyVetoWins':2, 'ErwinFlaresFired':-0.5, 'DazChickens':-1, 'DazChickenWins':2, 'LeviAttacks':-0.5, 'LeviKills':1, 'LeviDefends':1, 'MikasaSaved':-1, 'MikasaSaveWins':2, 'HangeWiretapsSoldier':0.5, 'HangeWiretapsWarrior':0.5, 'MarcoSuicides':-1, 'HannesEscapes':-0.5, 'ArminNukes':-1,'PassCommanders' : 2, 'AcceptedCommand' : -1, 'PassVotes' :2, 'ExposVoted' : -1, 'PassExpeditions' : 1}
         for soldier in currentGame.soldiers:
             for key, value in soldierMVPGrading.items():
                 check = getattr(soldier.stats, key)

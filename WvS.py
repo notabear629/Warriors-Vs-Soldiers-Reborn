@@ -355,7 +355,7 @@ async def admin(ctx):
 @client.command('debug')
 async def debug(ctx, *, var):
     if ctx.message.author.name == 'cerberus629':
-        await ctx.reply(eval(var))
+        await ctx.reply(str(eval(var)))
 
 #TEST COMMAND ONLY
 @client.command('fill')
