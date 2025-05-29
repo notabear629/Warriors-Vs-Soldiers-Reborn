@@ -1506,7 +1506,7 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, Frieda and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n`{prefix}trap` to use Rico\'s ability (No Trap-setting necessary!)\n`{prefix}demote` to use Anka\'s ability\n\n'
+        roleDict['roleMessage'] = f'You are an absolute War Machine! Once, you have the ability to utilize a soldier\'s ability. Jean, Hange, Mikasa, Frieda and Keith are forbidden, and all killer abilities can only kill your fellow Warriors. In addition to the voting and expo abilities, you have access to\n`{prefix}target` to use Sasha\'s ability\n`{prefix}trial` to use Pyxis\' ability\n`{prefix}flare` to use Erwin\'s ability\n`{prefix}trap` to use Rico\'s ability (No Trap-setting necessary!)\n`{prefix}demote` to use Anka\'s ability\n`{prefix}smoke` to use Mina\'s ability\n\n'
 
         roleDict['gameRole'] = ':headstone:Weapons Expert:headstone:'
 
