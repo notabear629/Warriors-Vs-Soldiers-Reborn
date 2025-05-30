@@ -739,8 +739,12 @@ class statBuilder:
             leader = databaseManager.searchForUser(client.get_user(leader['userID']))
             if leader is None:
                 raise Exception
+            ava = client.get_user(leader['userID']).avatar.url
+            if ava is None:
+                raise Exception
         except:
             leader = None
+            ava = currentTheme.globalThumbnail
 
         if leader is not None:
             roleID = leader['roleID']
@@ -799,12 +803,6 @@ class statBuilder:
             returnedEmbed.add_field(name = 'True Value', value = valueList, inline=True)
         if pointList != '':
             returnedEmbed.add_field(name = 'Legacy Points(LP)', value = pointList, inline=True)
-            try:
-                ava = client.get_user(leader['userID']).avatar.url
-                if ava is None:
-                    raise Exception
-            except:
-                ava = currentTheme.globalThumbnail
 
         returnedEmbed.set_thumbnail(url = ava)
         return returnedEmbed
