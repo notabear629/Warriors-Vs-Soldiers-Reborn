@@ -329,6 +329,30 @@ class helpBuilder:
         returnedEmbed.add_field(name = f'`{prefix}titles`', value = 'This command displays to you all the titles that are possible to be earned', inline=True)
         return returnedEmbed
     
+    async def displayDataTags(currentTheme, data):
+
+        returnedEmbeds = []
+        keyDisplay = ''
+        embed = discord.Embed(title = f'{currentTheme.gameName} Data Keys', description='These are the keys in the Object-based MongoDB implementation of WvS data storage, displayed in Alphabetical Order. Since these are hardcoded, these will not be themed under any circumstance, and you will see values resembling the default Warriors vs Soldiers skin.', color=currentTheme.helpEmbedColor)
+        for key, value in data.items():
+            if len(embed) + len(f'{key}\n') > 6000:
+                if keyDisplay != '':
+                    embed.add_field(name = 'Data Keys', value=keyDisplay, inline=True)
+                returnedEmbeds.append(embed)
+                embed = discord.Embed(title = f'{currentTheme.gameName} Data Keys', description='These are the keys in the Object-based MongoDB implementation of WvS data storage, displayed in Alphabetical Order. Since these are hardcoded, these will not be themed under any circumstance, and you will see values resembling the default Warriors vs Soldiers skin.', color=currentTheme.helpEmbedColor)
+                keyDisplay = f'{key}\n'
+            else:
+                if len(keyDisplay) + len(f'{key}\n') > 1024:
+                    embed.add_field(name = 'Data Keys', value=keyDisplay, inline=True)
+                    keyDisplay = f'{key}\n'
+                else:
+                    keyDisplay += f'{key}\n'
+
+        if keyDisplay != '':
+            embed.add_field(name = 'Data Keys', value=keyDisplay, inline=True)
+        returnedEmbeds.append(embed)
+        return returnedEmbeds
+    
     async def mainNavigatorView(navigatorContext, navigator, currentTheme, prefix, loadedRoles):
         returnedView = View()
 

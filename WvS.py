@@ -33,6 +33,7 @@ from gameFunctions.rumblingFunctions import rumblingFunctions
 from gameFunctions.infoFunctions import infoFunctions
 
 from dataFunctions.databaseManager import databaseManager
+from dataFunctions.dataFunctions import dataFunctions
 
 #Import the dataFunctions
 from dataFunctions.userInfoManager import userInfoManager
@@ -339,12 +340,8 @@ async def getProfile(ctx, *, input=None):
 async def badges(ctx, *, input=None):
     await infoFunctions.badges(ctx, currentTheme, client, loadedBadges, input)
 
-@client.command('lb')
+@client.command(aliases = ['leaderboard'])
 async def lb(ctx, *, input=None):
-    await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input)
-
-@client.command('leaderboard')
-async def leaderboard(ctx, *, input=None):
     await infoFunctions.leaderboard(ctx, client, homeServer, loadedBadges, currentTheme, input)
 
 @client.command('titles')
@@ -358,6 +355,10 @@ async def advantage(ctx):
 @client.command('admin')
 async def admin(ctx):
     await userInfoManager.toggleAdmin(ctx, home, adminRole)
+
+@client.command(aliases = ['tags', 'datakeys', 'keys'])
+async def datatags(ctx):
+    await dataFunctions.displayDatatags(ctx, currentTheme)
 
 #test command only
 @client.command('debug')

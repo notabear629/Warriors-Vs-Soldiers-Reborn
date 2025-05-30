@@ -227,6 +227,8 @@ class Game:
         Anka.role.disableAbility()
         if Anka.role.id == 'Anka':
             self.demotedPlayer = player
+        else:
+            self.warhammerAbility = {'Anka':player}
 
     def fireColor(self, color):
         if color.lower() == 'green':

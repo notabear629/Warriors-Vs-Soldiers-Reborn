@@ -329,7 +329,7 @@ class midGameFunctions:
         if currentGame.online:
             if currentGame.currentExpo.currentlyPicking and Anka.role.abilityActive and player in currentGame.commanderOrder:
                 currentGame.executeAnka(Anka, player)
-                await webhookManager.ankaWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client)
+                await webhookManager.ankaWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client, Anka)
                 Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
                 if Hitch != None:
                     hitchInfo = {}

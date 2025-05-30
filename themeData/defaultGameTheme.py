@@ -202,7 +202,6 @@ class defaultGameTheme:
     magathMessage = 'This will be my final order...'
     onyankoponMessage = 'Hold on, I\'m flying you in!'
     frecklemirMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
-    ankaMessage = 'You\'ve been demoted!'
     greenFiredMessage = 'https://i.imgur.com/QsobXCg.gif'
     redFiredMessage = 'https://i.imgur.com/dU8Qxne.gif'
     blackFiredMessage = 'https://i.imgur.com/D6aqnNM.gif'
@@ -1960,6 +1959,12 @@ class defaultGameTheme:
             if clause:
                 ymirMessage += f'{Ymir.role.emoji}The Founder Ymir has used the power of the Titans to revive **{player.user.name}** back from the dead!{Ymir.role.emoji}'
         return ymirMessage
+    
+    def getAnkaMessage(currentGame, Anka):
+        if Anka.role.id == 'Anka':
+            return f'**{currentGame.demotedPlayer.user.mention}**, you have been demoted!'
+        else:
+            return f'**{currentGame.warhammerAbility['Anka'].user.mention}**, you have been demoted!'
     
     def getVictoriousWarriors(currentGame, currentTheme):
         victoriousWarriors = []

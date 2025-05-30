@@ -735,10 +735,19 @@ class statBuilder:
                 gatheredPlayers.append(player)
             index += 1
 
-        leader = databaseManager.searchForUser(client.get_user(leader['userID']))
-        roleID = leader['roleID']
-        role = homeServer.get_role(roleID)
-        color = role.color
+        try:
+            leader = databaseManager.searchForUser(client.get_user(leader['userID']))
+            if leader is None:
+                raise Exception
+        except:
+            leader = None
+
+        if leader is not None:
+            roleID = leader['roleID']
+            role = homeServer.get_role(roleID)
+            color = role.color
+        else:
+            color = discord.Color.default()
         if color == discord.Color.default():
             color = currentTheme.helpEmbedColor
 
@@ -790,7 +799,14 @@ class statBuilder:
             returnedEmbed.add_field(name = 'True Value', value = valueList, inline=True)
         if pointList != '':
             returnedEmbed.add_field(name = 'Legacy Points(LP)', value = pointList, inline=True)
-        returnedEmbed.set_thumbnail(url = client.get_user(leader['userID']).avatar.url)
+            try:
+                ava = client.get_user(leader['userID']).avatar.url
+                if ava is None:
+                    raise Exception
+            except:
+                ava = currentTheme.globalThumbnail
+
+        returnedEmbed.set_thumbnail(url = ava)
         return returnedEmbed
     
     async def leaderboardView(navigator, client, homeServer, loadedBadges, currentTheme, statType, page):

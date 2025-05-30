@@ -20,6 +20,7 @@ class discordViewBuilder:
     #The line should be deleted when actually seriously playing games.
     @staticmethod
     async def isInteractionIntended(player, interaction):
+        #return True
         if player.user == interaction.user:
             return True
         return False
@@ -523,6 +524,19 @@ class discordViewBuilder:
                         newEmbed = await embedBuilder.moblitResultsEmbed(currentGame)
                         await interaction.message.edit(embed=newEmbed, view=None)
                         await interaction.response.defer()
+                        Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+                        if Hitch != None:
+                            hitchInfo = {}
+                            if Moblit.role.id == 'Moblit':
+                                hitchInfo['Moblit'] = Moblit
+                        if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
+                            user = databaseManager.searchForUser(Hitch.user)
+                            userChannel = currentGame.client.get_channel(user['channelID'])
+                            hitchMessage = currentGame.currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+                            embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
+                            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client)
+                            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, '', 'Hitch', currentGame.client, embed)
+
                     else:
                         await interaction.message.reply('Please ensure that you have selected both a player and role to analyze!')
                         await interaction.response.defer()
