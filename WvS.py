@@ -118,6 +118,10 @@ async def join(ctx):
 async def leave(ctx):
     await lobbyFunctions.leave(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home)
 
+@client.command(aliases = ['ping'])
+async def notify(ctx):
+    await lobbyFunctions.notify(ctx, home, currentLobby)
+
 @client.command('kick')
 async def kick(ctx, kicked:discord.Member=None):
     await lobbyFunctions.kick(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, kicked)

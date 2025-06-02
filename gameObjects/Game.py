@@ -100,6 +100,7 @@ class Game:
         self.greenFired = False
         self.redFired = False
         self.blackFired = False
+        self.sevenBalance = False
 
         for player in players:
             self.livingPlayers.append(player)
@@ -120,6 +121,10 @@ class Game:
                 self.ymirGuiding = random.choice(ymirChoices)
             if player.role.id == 'Niccolo':
                 self.niccoloDecoy = random.choice(self.soldiers)
+
+        if currentRules.playerCountBalance:
+            if len(self.warriors) + 1 == len(self.soldiers) and len(self.players) >= 7:
+                self.sevenBalance = True
 
     
     def turnOffline(self):

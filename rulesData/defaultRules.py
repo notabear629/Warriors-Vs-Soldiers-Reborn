@@ -23,4 +23,5 @@ class defaultRules:
     noWarchief = False
     wildcards = False
     intelligentRoles = True
+    playerCountBalance = True
 

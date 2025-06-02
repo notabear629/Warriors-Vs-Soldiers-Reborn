@@ -84,6 +84,9 @@ class Rules:
     def toggleWildcards(self):
         self.wildcards = not self.wildcards
 
+    def togglePlayerCountBalance(self):
+        self.playerCountBalance = not self.playerCountBalance
+
     def loadRules(self, rules):
         for key, value in rules.items():
             setattr(self, key, value)

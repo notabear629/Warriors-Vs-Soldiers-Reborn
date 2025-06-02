@@ -25,7 +25,10 @@ from discordViewBuilder import *
 class expoProposalFunctions:
     async def getExpeditionSize(currentGame):
         if currentGame.currentRound == 1:
-            expeditionNumber = 2
+            if currentGame.sevenBalance:
+                expeditionNumber = 1
+            else:
+                expeditionNumber = 2
         elif currentGame.currentRound == 2:
             expeditionNumber = 3
         elif currentGame.currentRound > 2 and (len(currentGame.players) < 7):

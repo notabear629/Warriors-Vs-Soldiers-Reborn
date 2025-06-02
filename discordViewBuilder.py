@@ -1013,6 +1013,17 @@ class discordViewBuilder:
         intelligentButton.callback = processIntelligentButton
         returnedView.add_item(intelligentButton)
 
+        playerCountBalanceButton = Button(label = 'Toggle Player Count Balancing', emoji = str('👥'), style=discord.ButtonStyle.grey)
+        async def processCountBalanceButton(interaction):
+            if currentGame.online == False and currentLobby.online and (interaction.user == currentLobby.host or adminRole in interaction.user.roles):
+                currentLobby.currentRules.togglePlayerCountBalance()
+                refreshedView = await discordViewBuilder.basicOptionsView(currentTheme, client, currentLobby, currentGame, prefix, loadedRoles, adminRole)
+                embed = await embedBuilder.buildLobby(currentLobby, currentTheme, prefix)
+                await interaction.message.edit(embed=embed, view=refreshedView)
+                await interaction.response.defer()
+        playerCountBalanceButton.callback = processCountBalanceButton
+        returnedView.add_item(playerCountBalanceButton)
+
         roleOptionSelect = Button(label = 'Go to Role Options', style=discord.ButtonStyle.grey)
 
         async def processRoleOptionSelect(interaction):

@@ -7,6 +7,17 @@ from discordViewBuilder import discordViewBuilder
 
 
 class lobbyFunctions:
+
+    async def notify(ctx, home, currentLobby):
+        if home == ctx.channel:
+            if currentLobby.online:
+                notifText = ''
+                for player in currentLobby.users:
+                    notifText += f'{player.mention}'
+                await home.send(notifText)
+            else:
+                await ctx.message.reply(f'How in the hell am I supposed to ping players of a non-existent lobby, Karen?')
+            
     async def host(ctx, currentLobby, currentGame, currentTheme, prefix, noMentions, home, currentRules, client, loadedRoles, adminRole):
         if home == ctx.channel:
             if currentLobby.online:     

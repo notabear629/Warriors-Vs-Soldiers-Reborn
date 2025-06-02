@@ -49,6 +49,13 @@ class embedBuilder:
             intelligentEmoji = str('❌')
             intelligentChoice = 'Disabled'
         returnedEmbed.add_field(name = 'Intelligent Role Selection', value = f'{intelligentEmoji}`{intelligentChoice}`', inline=False)
+        if currentLobby.currentRules.playerCountBalance:
+            countBalanceEmoji = str('✅')
+            countBalanceChoice = 'Enabled'
+        else:
+            countBalanceEmoji = str('❌')
+            countBalanceChoice = 'Disabled'
+        returnedEmbed.add_field(name = 'Player Count Balancing', value = f'{countBalanceEmoji}`{countBalanceChoice}`', inline=False)
         if currentLobby.currentRules.multikidnap:
             kidnapEmoji = str('♾️')
             kidnapVal = 'Multi-kidnap'
