@@ -61,6 +61,8 @@ class expoActiveFunctions:
                 expoChoice = 'Rico'
             elif choice == 'Bertholdt' and player.role.id == 'Bertholdt':
                 expoChoice = 'Bertholdt'
+            elif choice == 'Ksaver' and player.role.id == 'Ksaver' and player.role.abilityActive:
+                expoChoice = 'Ksaver'
             elif type(choice) == dict and 'Mikasa' in choice and player.role.id == 'Mikasa':
                 expoChoice = choice
             elif type(choice) == dict and 'Petra' in choice and (player.role.id == 'Petra' or player.role.id == 'Warhammer'):
@@ -225,6 +227,8 @@ class expoActiveFunctions:
             elif currentGame.roundFails == 3:
                 failMessage += f'{currentTheme.wallSinaBreakMessage}'
             await home.send(failMessage)
+        if currentGame.currentExpo.ksaverBlackout:
+            currentGame.setBlackoutRound()
 
     async def processDeaths(currentGame, currentTheme, home, client):
         deathFlags = {'Armin': False, 'Levi': False, 'Sasha': False, 'Marco': False, 'Kenny' : False, 'YmirRevival' : False, 'Gabi': False, 'Petra':False, 'Rico':False, 'Frecklemir':False, 'Willy':False, 'WarhammerArmin':False, 'WarhammerLevi':False, 'WarhammerPetra':False, 'WarhammerMarco':False, 'WarhammerSasha':False, 'WarhammerRico':False, 'WarhammerFrecklemir':False}

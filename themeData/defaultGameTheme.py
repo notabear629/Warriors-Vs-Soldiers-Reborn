@@ -125,6 +125,7 @@ class defaultGameTheme:
     emojiAcceptExpedition = str('✅')
     emojiRejectExpedition = str('❌')
     emojiAbstainExpedition = str('✖️')
+    emojiBlackoutExpedition = str('✴️')
     voteDMColor = discord.Color.blue()
     acceptedExpeditionColor = discord.Color.green()
     rejectedExpeditionColor = discord.Color.red()
@@ -180,6 +181,7 @@ class defaultGameTheme:
     mikasaMessage = 'My guard is unbreakable...'
     reinerMessage = 'Marley\'s Shield is not broken so easily...'
     bertholdtMessage = 'I\'ll deploy a cloak of steam!'
+    ksaverMessage = 'I\'ll trigger a blackout!'
     annieMessage = '***RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA***'
     retreatMessage = 'I\'m ordering a retreat! Pull back from the assault on the walls, and allow the Soldiers to advance to the basement!'
     kennyMessage = 'I hope you don\'t mind being without your throat!'
@@ -1538,6 +1540,33 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] =  f'Marcel is a famously long dead baby version of the Shut-Your-Jaw Titan! Fittingly, when a soldier dies with this Warrior in the field, they will be unable to speak, Marcel makes the DEAD shut their jaw.'    
 
+
+    class Ksaver:
+        roleDict = {'roleID' : 'Ksaver'}
+
+        roleDict['name'] = 'Tom Ksaver'
+
+        roleDict['shortName'] = 'Ksaver'
+
+        roleDict['team'] = 'Warriors'
+
+        roleDict['rumblingTeam'] = 'allianceBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1381784284066611252
+
+        roleDict['secondaryEmoji'] = str('✴️')
+
+        roleDict['imageURL'] = None
+        
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You are a top scientist of Marley! As such, you have developed tools for jamming communications technology! Once per game, in an expo, you can choose the "Blackout" option, which will sabotage the wall AND hide the voting results of the immediate next rounds.\n\n'
+
+        roleDict['gameRole'] = ':eight_pointed_black_star:Blackout:eight_pointed_black_star:'
+
+        roleDict['helpInfo'] =  f'Tom Ksaver is one of the top scientists of Marley! As such, he has developed anti-communications technology. Once per game, during the expo he can choose the "Blackout" option, which will break the wall and make it so voting results the immediate following round will not be visible!'
 
     class Warrior:
         roleDict = {'roleID' : 'Warrior'}

@@ -47,6 +47,7 @@ class Expedition:
         self.playerFlown = None
         self.flownIn = False
         self.frecklemirMauled = None
+        self.ksaverBlackout = False
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -85,6 +86,7 @@ class Expedition:
         self.playerFlown = None
         self.flownIn = False
         self.frecklemirMauled = None
+        self.ksaverBlackout = False
 
     def fillUp(self):
         self.filledUp = True
@@ -224,9 +226,15 @@ class Expedition:
         elif actCase == 'Rico':
             self.passedExpedition.append(player)
             player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
         elif actCase == 'Bertholdt':
             self.sabotagedExpedition.append(player)
             self.bertholdtCloaked = True
+        elif actCase == 'Ksaver':
+            self.sabotagedExpedition.append(player)
+            player.role.disableAbility()
+            self.usedExpoAbilities.append(player)
+            self.ksaverBlackout = True
         elif type(actCase) == dict and 'Mikasa' in actCase:
             self.passedExpedition.append(player)
             self.mikasaGuarded = actCase['Mikasa']

@@ -130,6 +130,11 @@ class webhookManager:
             if Hitch != None:
                 Bertholdt = await searchFunctions.roleIDToPlayer(currentGame, 'Bertholdt')
                 hitchInfo['Bertholdt'] = Bertholdt
+        if currentGame.currentExpo.ksaverBlackout:
+            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.ksaverMessage, 'Ksaver', client)
+            if Hitch != None:
+                Ksaver = await searchFunctions.roleIDToPlayer(currentGame, 'Ksaver')
+                hitchInfo['Ksaver'] = Ksaver
         if currentGame.currentExpo.leviAttacked:
             Levi = await searchFunctions.roleIDToPlayer(currentGame, 'Levi')
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.leviAttackMessage, '{ALTERNATE}Levi', client)

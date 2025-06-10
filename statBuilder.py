@@ -503,6 +503,8 @@ class statBuilder:
             returnedEmbed.add_field(name = f'Final Orders Suceeded', value = f'{db['MagathFinalOrderWins']} ({await statBuilder.getPercentage(db, 'MagathFinalOrderWins', 'MagathFinalOrders')}% of Final Orders, {await statBuilder.getPercentage(db, 'MagathFinalOrderWins', 'MagathPlayed')}% of Games)')
         elif role.id == 'Marcel':
             returnedEmbed.add_field(name = f'Dead {currentTheme.soldierPlural} Silenced', value = f'{db['MarcelGags']} ({await statBuilder.getDivider(db, 'MarcelGags', 'MarcelPlayed')} per Game)')
+        elif role.id == 'Ksaver':
+            returnedEmbed.add_field(name = f'Blackouts', value = f'{db['KsaverBlackouts']} ({await statBuilder.getPercentage(db, 'KsaverBlackouts', 'KsaverPlayed')}% of Games Played)')
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:

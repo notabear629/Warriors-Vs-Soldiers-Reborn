@@ -64,6 +64,8 @@ class Stats:
                 setattr(self, 'MinaBlackSmokes', 1)
                 minaSmokes += 1
             setattr(self, 'MinaSmokes', minaSmokes)
+        if player.role.id == 'Ksaver' and player.role.abilityActive == False:
+            setattr(self, 'KsaverBlackouts', 1)
         
 
     def processKill(self, killer, killed):
@@ -287,7 +289,7 @@ class Stats:
                 if check != None:
                     score = check * value
                     soldier.addMVPPoints(score)
-        warriorMVPGrading = {'GabiFires': -0.5, 'GabiFireWins':1.5, 'AnnieScreams': 0.5, 'PieckFlipAcceptWins': 1, 'PorcoCommanderSkips': 0.5, 'FalcoVoteWins':1, 'ReinerSaves': 0.5, 'BertholdtCloaks': 0.5, 'BertholdtDoubleCloaks':0.5, 'WillyKills':0.5, 'YelenaSteals': 0.5, 'WarhammerAbilities':0.5, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
+        warriorMVPGrading = {'GabiFires': -0.5, 'GabiFireWins':1.5, 'AnnieScreams': 0.5, 'PieckFlipAcceptWins': 1, 'PorcoCommanderSkips': 0.5, 'FalcoVoteWins':1, 'ReinerSaves': 0.5, 'BertholdtCloaks': 0.5, 'BertholdtDoubleCloaks':0.5, 'WillyKills':0.5, 'YelenaSteals': 0.5, 'WarhammerAbilities':0.5, 'KsaverBlackouts':1, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
         for warrior in currentGame.warriors:
             for key, value in warriorMVPGrading.items():
                 check = getattr(warrior.stats, key)

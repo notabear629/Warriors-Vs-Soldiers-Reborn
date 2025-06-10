@@ -374,12 +374,15 @@ class embedBuilder:
                 if voter.role.id == 'Marco' and voter in currentGame.deadPlayers and voter in currentGame.currentExpo.abstained:
                     continue
                 playerList += f'**{voter.user.name}**'
-                if voter in currentGame.currentExpo.accepted:
-                    playerList += displayAccept
-                elif voter in currentGame.currentExpo.rejected:
-                    playerList += displayReject
-                elif voter in currentGame.currentExpo.abstained:
-                    playerList += f'{currentTheme.emojiAbstainExpedition}'
+                if currentGame.blackoutRound == currentGame.currentRound:
+                    playerList += currentTheme.emojiBlackoutExpedition
+                else:
+                    if voter in currentGame.currentExpo.accepted:
+                        playerList += displayAccept
+                    elif voter in currentGame.currentExpo.rejected:
+                        playerList += displayReject
+                    elif voter in currentGame.currentExpo.abstained:
+                        playerList += f'{currentTheme.emojiAbstainExpedition}'
                 playerList += '\n'
         if currentGame.currentExpo.jeanActivated and (currentGame.currentExpo.zacharyActivated == False and currentGame.currentExpo.warhammerActivated != 'Zachary'):
             embedColor = currentTheme.jeanedExpeditionColor
@@ -431,6 +434,8 @@ class embedBuilder:
             playerList += f'{currentTheme.emojiSuicide} Select {currentTheme.suicideLabel} to embrace death\'s sweet release\n'
         if player.role.id == 'Bertholdt':
             playerList += f'{player.role.secondaryEmoji} Select Cloak to Sabotage this {currentTheme.expeditionName} and hide how many saboteurs were present.\n'
+        if player.role.id == 'Ksaver' and player.role.abilityActive:
+            playerList += f'{player.role.secondaryEmoji} Select Blackout to Sabotage this {currentTheme.expeditionName} and create a Blackout for next round\'s votes.\n'
         if player.role.id == 'Willy':
             playerList += f'{player.role.emoji} Select a player from the Kamikaze selection to kill them and yourselves while sabotaging this {currentTheme.expeditionName}!\n'
         if player.role.id == 'Kenny':
@@ -462,6 +467,8 @@ class embedBuilder:
             decisionString = f'You have chosen to {currentTheme.suicideLabel}'
         elif player.role.id == 'Bertholdt' and currentGame.currentExpo.bertholdtCloaked:
             decisionString = f'You have chosen to cloak and sabotage this {currentTheme.expeditionName}.'
+        elif player.role.id == 'Ksaver' and currentGame.currentExpo.ksaverBlackout:
+            decisionString = f'You have chosen to sabotage this {currentTheme.expeditionName} and cause a blackout'
         elif player.role.id == 'Willy' and currentGame.currentExpo.willyBombed != None:
             decisionString = f'You have chosen to Kamikaze {currentGame.currentExpo.willyBombed.user.name}.'
         elif player.role.id == 'Kenny' and currentGame.currentExpo.kennyMurdered != None:

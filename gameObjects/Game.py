@@ -101,6 +101,7 @@ class Game:
         self.redFired = False
         self.blackFired = False
         self.sevenBalance = False
+        self.blackoutRound = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -281,6 +282,9 @@ class Game:
 
     def removeGag(self):
         self.porcoGagged = None
+
+    def setBlackoutRound(self):
+        self.blackoutRound = self.currentRound + 1
         
     def advanceRound(self):
         self.currentRound += 1

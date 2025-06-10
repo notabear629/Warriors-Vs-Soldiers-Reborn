@@ -315,6 +315,16 @@ class discordViewBuilder:
             bertholdtButton.callback = processBertholdtButton
             returnedView.add_item(bertholdtButton)
 
+        if player.role.id == 'Ksaver' and player.role.abilityActive:
+            ksaverButton = Button(label = 'Blackout', emoji=player.role.secondaryEmoji, style=discord.ButtonStyle.grey)
+            async def processKsaverButton(interaction):
+                if await discordViewBuilder.isInteractionIntended(player, interaction):
+                    await chooseExpoFunction(currentGame, player, client, currentTheme, home, 'Ksaver')
+                    embed = await embedBuilder.expeditionDM(currentGame, player, currentTheme)
+                    await interaction.message.edit(embed=embed, view=None)
+            ksaverButton.callback = processKsaverButton
+            returnedView.add_item(ksaverButton)
+
         if player.role.id == 'Willy' and player.role.abilityActive and len(currentGame.currentExpo.expeditionMembers) > 1:
             willySelect = Select(placeholder = 'Choose Player to Kamikaze')
             for expeditioner in currentGame.currentExpo.expeditionMembers:
