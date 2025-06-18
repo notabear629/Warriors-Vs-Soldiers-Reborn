@@ -409,6 +409,9 @@ class statBuilder:
             returnedEmbed.add_field(name = f'Green Smokes Fired', value = f'{db['MinaGreenSmokes']} ({await statBuilder.getPercentage(db, 'MinaGreenSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaGreenSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
             returnedEmbed.add_field(name = f'Red Smokes Fired', value = f'{db['MinaRedSmokes']} ({await statBuilder.getPercentage(db, 'MinaRedSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaRedSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
             returnedEmbed.add_field(name = f'Black Smokes Fired', value = f'{db['MinaBlackSmokes']} ({await statBuilder.getPercentage(db, 'MinaBlackSmokes', 'MinaPlayed')}% of Games, {await statBuilder.getPercentage(db, 'MinaBlackSmokes', 'MinaSmokes')}% of Smokes)', inline=True)
+        elif role.id == 'Kitz':
+            returnedEmbed.add_field(name = f'Players Ordered In', value = f'{db['KitzOrders']} ({await statBuilder.getPercentage(db, 'KitzOrders', 'KitzPlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = f'{currentTheme.soldierPlural} Ordered In', value = f'{db['KitzSoldierOrders']} ({await statBuilder.getPercentage(db, 'KitzSoldierOrders', 'KitzPlayed')}% of Games, {await statBuilder.getPercentage(db, 'KitzSoldierOrders', 'KitzOrders')}% of Orders)', inline=True)
         if type(role.emoji) == str:
             returnedEmbed.set_thumbnail(url = role.imageURL)
         else:
@@ -474,7 +477,7 @@ class statBuilder:
             returnedEmbed.add_field(name = 'Flip Rejects', value = db['PieckFlipRejects'], inline=True)
             returnedEmbed.add_field(name = 'Flip Reject Wins', value = f'{db['PieckFlipRejectWins']} ({await statBuilder.getPercentage(db, 'PieckFlipRejectWins', 'PieckFlipRejects')}% of Flips)', inline=True)
         elif role.id == 'Annie':
-            returnedEmbed.add_field(name = 'Screams', value = f'{db['AnnieScreams']} ({await statBuilder.getPercentage(db, 'AnnieScreams', 'AnniePlayed')}% of Games)', inline=True)
+            returnedEmbed.add_field(name = 'Screams', value = f'{db['AnnieScreams']} ({await statBuilder.getDivider(db, 'AnnieScreams', 'AnniePlayed')} per Game)', inline=True)
         elif role.id == 'Porco':
             returnedEmbed.add_field(name = 'Gags', value = db['PorcoGags'], inline=True)
             returnedEmbed.add_field(name = f'Gag {currentTheme.commanderName} Skips', value = f'{db['PorcoCommanderSkips']} ({await statBuilder.getDivider(db, 'PorcoCommanderSkips', 'PorcoPlayed')} per Game, {await statBuilder.getDivider(db, 'PorcoCommanderSkips', 'PorcoGags')} per Gag)')

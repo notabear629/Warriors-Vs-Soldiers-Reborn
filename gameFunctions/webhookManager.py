@@ -9,6 +9,9 @@ from gameObjects.Player import Player
 
 from embedBuilder import embedBuilder
 
+import asyncio
+import random
+
 class webhookManager:
     
     async def sendWebhook(currentGame, currentTheme, channel, message, author, client, embed=None):
@@ -236,19 +239,6 @@ class webhookManager:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.gabiMessage, 'Gabi', client)
             if Hitch != None:
                 hitchInfo['Gabi'] = Gabi
-        Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
-        if currentGame.annieMessage != None and Annie != None and Annie in currentGame.livingPlayers:
-            await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.annieMessage, '{ALTERNATE}Annie', client)
-            for player in currentGame.warriors:
-                    user = databaseManager.searchForUser(player.user)
-                    userChannel = client.get_channel(user['channelID'])
-                    await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{player.user.mention}\n\n{currentGame.annieMessage}', '{ALTERNATE}Annie', client)
-            Annie.role.disableAbility()
-            if currentGame.currentRules.casual == False:
-                Annie.stats.annieScream()
-            currentGame.changeAnnieMessage(None)
-            if Hitch != None:
-                hitchInfo['Annie'] = Annie
         if Hitch != None and Hitch in currentGame.livingPlayers and hitchInfo != {}:
             user = databaseManager.searchForUser(Hitch.user)
             userChannel = client.get_channel(user['channelID'])
@@ -391,6 +381,30 @@ class webhookManager:
             embed = await embedBuilder.infoUpdate(currentTheme, Hitch, hitchMessage)
             await webhookManager.sendWebhook(currentGame, currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', client, embed)
 
+    async def processAnnie(currentGame, Annie, message):
+        
+        if currentGame.currentRound not in currentGame.annieRounds:
+            currentGame.annieScream()
+            Annie.stats.annieScream()
+            delay = random.randrange(3, 7)
+            await asyncio.sleep(delay)
+            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.currentTheme.annieMessage, '{ALTERNATE}Annie', currentGame.client)
+            for player in currentGame.warriors:
+                    user = databaseManager.searchForUser(player.user)
+                    userChannel = currentGame.client.get_channel(user['channelID'])
+                    embed = await embedBuilder.annieEmbed(currentGame, Annie, message)
+                    await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{player.user.mention}', '{ALTERNATE}Annie', currentGame.client, embed)
+            Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+            if Hitch != None:
+                hitchInfo = {'Annie':Annie}
+                user = databaseManager.searchForUser(Hitch.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                hitchMessage = currentGame.currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+                embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
+                await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client, embed)
+            
+        
+
     async def marcoWebhook(currentGame, currentTheme, home, client):
         if currentGame.currentExpo.marcoActivated:
             await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.marcoMessage, '{ALTERNATE}Marco', client)
@@ -403,6 +417,13 @@ class webhookManager:
     async def ankaWebhook(currentGame, currentTheme, home, client, Anka):
         ankaMessage = currentTheme.getAnkaMessage(currentGame, Anka)
         await webhookManager.sendWebhook(currentGame, currentTheme, home, ankaMessage, 'Anka', client)
+
+    async def kitzWebhook(currentGame, currentTheme, home, client, Kitz):
+        kitzMessage = currentTheme.getKitzMessage(currentGame)
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, kitzMessage, 'Kitz', client)
+
+    async def kitzCancelWebhook(currentGame, currentTheme, home, client, Kitz):
+        await webhookManager.sendWebhook(currentGame, currentTheme, home, currentTheme.kitzCancelMessage, 'Kitz', client)
 
     async def minaWebhook(currentGame, Color):
         msg = getattr(currentGame.currentTheme, f'{Color.lower()}FiredMessage')

@@ -173,7 +173,7 @@ def getModifiedStr(roleName):
 async def renamerole(ctx, *, roleName=None):
     bannedSegments = ['pingrole', 'pingroie']
     naughtyUsers = [192780209882136576, 525287902578475008]
-    validChars = '1234567890qwertyuiopasdfghjklzxcvbnm,.!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM@#$_&-+()/\\*"\':;!?~`|•√π÷×§∆£¢€¥^°={}%©®™✓[]+-*/%'
+    validChars = '1234567890qwertyuiopasdfghjklzxcvbnm,.!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM@#$_&-+()/\\*"\':;!?~`|•√π÷×§∆£¢€¥^°={}%©®™✓[]+-*/% '
     for elem in bannedSegments:
         if roleName != None and elem in getModifiedStr(roleName):
             await ctx.reply('Fuck you.')
@@ -203,6 +203,14 @@ async def start(ctx):
 @client.command('status')
 async def status(ctx):
     await midGameFunctions.status(ctx, currentLobby, currentGame, currentTheme, home, prefix, noMentions)
+
+@client.command('history')
+async def history(ctx):
+    await midGameFunctions.history(ctx, currentGame)
+
+@client.command('expo')
+async def expo(ctx):
+    await midGameFunctions.expo(ctx, currentGame)
 
 @client.command('roles')
 async def roles(ctx):
@@ -306,6 +314,10 @@ async def ungag(ctx):
 @client.command('demote')
 async def demote(ctx):
     await midGameFunctions.demote(ctx, currentGame)
+
+@client.command('order')
+async def order(ctx):
+    await midGameFunctions.order(ctx, currentGame)
 
 @client.command('smoke')
 async def smoke(ctx):

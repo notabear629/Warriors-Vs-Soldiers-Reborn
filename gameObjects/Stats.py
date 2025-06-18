@@ -289,7 +289,7 @@ class Stats:
                 if check != None:
                     score = check * value
                     soldier.addMVPPoints(score)
-        warriorMVPGrading = {'GabiFires': -0.5, 'GabiFireWins':1.5, 'AnnieScreams': 0.5, 'PieckFlipAcceptWins': 1, 'PorcoCommanderSkips': 0.5, 'FalcoVoteWins':1, 'ReinerSaves': 0.5, 'BertholdtCloaks': 0.5, 'BertholdtDoubleCloaks':0.5, 'WillyKills':0.5, 'YelenaSteals': 0.5, 'WarhammerAbilities':0.5, 'KsaverBlackouts':1, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
+        warriorMVPGrading = {'GabiFires': -0.5, 'GabiFireWins':1.5, 'AnnieScreams': 0.3, 'PieckFlipAcceptWins': 1, 'PorcoCommanderSkips': 0.5, 'FalcoVoteWins':1, 'ReinerSaves': 0.5, 'BertholdtCloaks': 0.5, 'BertholdtDoubleCloaks':0.5, 'WillyKills':0.5, 'YelenaSteals': 0.5, 'WarhammerAbilities':0.5, 'KsaverBlackouts':1, 'BreakCommanders' : 1, 'BreakVotes' : 1, 'BreakExpeditions' : 1}
         for warrior in currentGame.warriors:
             for key, value in warriorMVPGrading.items():
                 check = getattr(warrior.stats, key)
@@ -371,7 +371,13 @@ class Stats:
         setattr(self, 'MikasaGuards', mikasaGuards+1)
 
     def annieScream(self):
-        setattr(self, 'AnnieScreams', 1)
+        annieScreams = getattr(self, 'AnnieScreams')
+        setattr(self, 'AnnieScreams', annieScreams+1)
+    
+    def processKitz(self, currentGame):
+        setattr(self, 'KitzOrders', 1)
+        if currentGame.kitzTarget in currentGame.soldiers:
+            setattr(self, 'KitzSoldierOrders', 1)
 
 
             

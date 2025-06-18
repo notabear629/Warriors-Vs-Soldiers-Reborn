@@ -223,7 +223,7 @@ class helpBuilder:
         Gabi = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Gabi')
         returnedEmbed.add_field(name = f'{Gabi.emoji}`{prefix}fire`', value = f'A one-time special ability granted to {Gabi.emoji}{Gabi.shortName}{Gabi.emoji}. This command designates a person to fire upon. Once the results are read, that player will be shot, and they will be wounded for a round. Wounded players cannot be on the {currentTheme.expeditionName}.', inline=True)
         Annie = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Annie')
-        returnedEmbed.add_field(name = f'{Annie.emoji}`{prefix}scream`', value = f'This is a command able to be used by {Annie.emoji}{Annie.shortName}{Annie.emoji} once per game. It allows you to type a secret message that will be sent to all of the {currentTheme.warriorPlural} in their private channels the next time the results are read. The players in the main game will also see that you sent a scream message, but it will not tell them the content of the message, merely inform them that one was sent.', inline=True)
+        returnedEmbed.add_field(name = f'{Annie.emoji}`{prefix}scream`', value = f'This is a command able to be used by {Annie.emoji}{Annie.shortName}{Annie.emoji}. It allows you to type a secret message that will be sent to all of the {currentTheme.warriorPlural} in their private channels after a short delay. The players in the main game will also see that you sent a scream message, but it will not tell them the content of the message, merely inform them that one was sent.', inline=True)
         Ymir = await searchFunctions.roleIDToRoleFromLoadedRoles(loadedRoles, 'Ymir')
         returnedEmbed.add_field(name = f'{Ymir.emoji}`{prefix}paths`', value = f'Opens up the menu for paths options. Unique to {Ymir.emoji}{Ymir.shortName}{Ymir.emoji}. This command is the center that lets you use the message send, blessing granting, or player revival.', inline=True)
         returnedEmbed.add_field(name = f'{currentTheme.emojiPaths}`{prefix}check @mention`', value = f'If the blessing was bestowed upon you, you can use this command to check to see what team any player is on.', inline=True)
@@ -272,7 +272,7 @@ class helpBuilder:
                 condition = f'{dependencies['soldierCount']}'
             if 'warriorCount' in dependencies:
                 dependency += f'Minimum {currentTheme.warriorPlural} Count\n'
-                condition = f'{dependencies['soldierCount']}'
+                condition = f'{dependencies['warriorCount']}'
             if 'requiredRoles' in dependencies:
                 dependency += f'At Least One Role Must Be Present\n'
                 for role in loadedRoles:

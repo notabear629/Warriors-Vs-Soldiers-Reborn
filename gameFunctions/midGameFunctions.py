@@ -38,6 +38,16 @@ class midGameFunctions:
             else:
                 await lobbyFunctions.lobby(ctx, home, currentLobby, currentTheme, currentGame, prefix, noMentions)
 
+    async def history(ctx, currentGame):
+        if currentGame.online:
+            embed = await embedBuilder.buildHistoryEmbed(currentGame)
+            await ctx.reply(embed=embed)
+
+    async def expo(ctx, currentGame):
+        if currentGame.online and currentGame.currentExpo.currentlyPicking:
+            embed = await embedBuilder.pickExpoMember(currentGame, currentGame.currentTheme)
+            await ctx.reply(embed=embed)
+
     async def roles(ctx, currentGame, currentTheme, home, loadedRoles):
         if currentGame.online:
             await midGameFunctions.showRoles(currentGame, currentTheme, ctx.message.channel)
@@ -215,14 +225,17 @@ class midGameFunctions:
             Annie = await searchFunctions.roleIDToPlayer(currentGame, 'Annie')
             user = databaseManager.searchForUser(Annie.user)
             userChannel = currentGame.client.get_channel(user['channelID'])
-            if Annie != None and Annie.user == ctx.message.author and Annie.role.abilityActive and ctx.message.channel == userChannel:
-                view = await discordViewBuilder.annieView(currentGame, currentTheme, Annie)
-                await userChannel.send('Enter your message!', view=view)
-                if Annie == currentGame.hangeWiretapped:
-                    await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
-                Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
-                if Colt != None and Colt in currentGame.livingPlayers:
-                    await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Annie)
+            if Annie != None and Annie.user == ctx.message.author and ctx.message.channel == userChannel:
+                if currentGame.currentRound not in currentGame.annieRounds:
+                    view = await discordViewBuilder.annieView(currentGame, currentTheme, Annie)
+                    await userChannel.send('Enter your message!', view=view)
+                    if Annie == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentTheme, 'midgame')
+                    Colt = await searchFunctions.roleIDToPlayer(currentGame, 'Colt')
+                    if Colt != None and Colt in currentGame.livingPlayers:
+                        await webhookManager.processColtWebhook(currentGame, currentTheme, 'midgame', Annie)
+                else:
+                    await ctx.reply('You have already used your scream power for this round!')
 
     async def summon(ctx, currentGame, currentTheme):
         if currentGame.online:
@@ -325,6 +338,19 @@ class midGameFunctions:
                     if Warhammer == currentGame.hangeWiretapped:
                         await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
 
+    async def order(ctx, currentGame):
+        if currentGame.online:
+            Kitz = await searchFunctions.roleIDToPlayer(currentGame, 'Kitz')
+            if Kitz != None:
+                user = databaseManager.searchForUser(Kitz.user)
+                userChannel = currentGame.client.get_channel(user['channelID'])
+                if Kitz != None and Kitz.user == ctx.message.author and ctx.message.channel == userChannel and currentGame.currentExpo.currentlyPicking and Kitz not in currentGame.deadPlayers:
+                    view = await discordViewBuilder.kitzView(currentGame, Kitz, midGameFunctions.executeOrder)
+                    await userChannel.send('Choose who to order onwards!', view=view)
+                    if Kitz == currentGame.hangeWiretapped:
+                        await webhookManager.processHangeWebhook(currentGame, currentGame.currentTheme, 'midgame')
+    
+
     async def executeDemote(currentGame, Anka, player):
         if currentGame.online:
             if currentGame.currentExpo.currentlyPicking and Anka.role.abilityActive and player in currentGame.commanderOrder:
@@ -344,6 +370,30 @@ class midGameFunctions:
                     embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
                     await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client)
                     await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, '', 'Hitch', currentGame.client, embed)
+
+    async def executeOrder(currentGame, Kitz, player):
+        if currentGame.online:
+            if currentGame.currentExpo.currentlyPicking:
+                if player != None:
+                    if Kitz.role.abilityActive and player in currentGame.livingPlayers:
+                        currentGame.setKitz(player)
+                        Kitz.role.disableAbility()
+                        Kitz.stats.processKitz(currentGame)
+                        Hitch = await searchFunctions.roleIDToPlayer(currentGame, 'Hitch')
+                        if Hitch != None and Hitch in currentGame.livingPlayers:
+                            hitchInfo = {'Kitz':Kitz}
+                            user = databaseManager.searchForUser(Hitch.user)
+                            userChannel = currentGame.client.get_channel(user['channelID'])
+                            hitchMessage = currentGame.currentTheme.getHitchInfo(currentGame, Hitch, hitchInfo)
+                            embed = await embedBuilder.infoUpdate(currentGame.currentTheme, Hitch, hitchMessage)
+                            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, f'{Hitch.user.mention}', 'Hitch', currentGame.client)
+                            await webhookManager.sendWebhook(currentGame, currentGame.currentTheme, userChannel, '', 'Hitch', currentGame.client, embed)
+                else:
+                    if not Kitz.role.abilityActive and currentGame.kitzTarget != None:
+                        currentGame.setKitz(None)
+                        
+
+
 
 
     async def paths(ctx, currentGame, currentTheme, prefix, client):

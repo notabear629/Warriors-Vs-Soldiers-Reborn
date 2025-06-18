@@ -147,6 +147,8 @@ class expoProposalFunctions:
             await expoProposalFunctions.pyxisTakeover(currentGame, currentTheme, home, currentGame.client)
         elif type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated:
             await expoProposalFunctions.pyxisTakeover(currentGame, currentTheme, home, currentGame.client)
+        elif currentGame.currentExpo.kitzActivated:
+            await expoProposalFunctions.kitzInterrupt(currentGame, currentTheme, home, currentGame.client)
         else:
             currentGame.nextCommander()
         if currentGame.currentExpo.pyxisTrial != None:
@@ -159,12 +161,15 @@ class expoProposalFunctions:
             currentGame.pyxisOrderFix()
             await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, currentGame.client, noMentions)
             return
-        currentGame.currentExpo.resetExpo()
+        currentGame.currentExpo.resetExpo(currentGame)
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
         await home.send(commanderMessage)
         if len(currentGame.livingSoldiers) == len(currentGame.livingWarriors):
             await home.send(f'⚠️Warning! Voting Gridlock detected because the amount of living {currentTheme.soldierPlural} and {currentTheme.warriorPlural} are the same! In the case of a tied vote, instead of a reject, the commander\'s vote will play as the tiebreaker!⚠️')
+        if len(currentGame.currentExpo.expeditionMembers) > 0:
+            embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)
+            await home.send(embed=embed)
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Pick')
         if timeout == None:
             return
@@ -176,6 +181,8 @@ class expoProposalFunctions:
                 await home.send(f'You have passed the responsibility of choice to the next {currentTheme.commanderName}.')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.currentExpo.erwinActivated:
+                await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif currentGame.currentExpo.kitzActivated:
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
             elif currentGame.currentExpo.warhammerActivated == 'Erwin':
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
@@ -196,6 +203,8 @@ class expoProposalFunctions:
             elif currentGame.currentExpo.commander not in currentGame.commanderOrder:
                 await home.send(f'The {currentTheme.commanderName} has been demoted and is no longer eligble to pick their {currentTheme.expeditionTeam}!')
                 await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
+            elif len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size and not currentGame.currentExpo.filledUp:
+                await expoProposalFunctions.triggerVoting(currentGame, home, currentTheme, prefix, currentGame.client, noMentions)
             else:
                 return
 
@@ -222,12 +231,16 @@ class expoProposalFunctions:
                 embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)
                 await home.send(embed=embed)
                 await home.send(f'{pickedPlayer.name} has been added to the {currentTheme.expeditionTeam}.')
-                if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size and currentGame.currentExpo.filledUp == False:
-                    currentGame.currentExpo.fillUp()
-                    if currentGame.currentExpo.pyxisTrial != None and (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) == False:
-                        return
-                    await home.send(f'The {currentTheme.expeditionName} is now full. The time to vote on if it should be allowed to pass has come.')
-                    await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
+                await expoProposalFunctions.triggerVoting(currentGame, home, currentTheme, prefix, client, noMentions)
+                
+
+    async def triggerVoting(currentGame, home, currentTheme, prefix, client, noMentions):
+        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size and currentGame.currentExpo.filledUp == False:
+            currentGame.currentExpo.fillUp()
+            if currentGame.currentExpo.pyxisTrial != None and (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) == False:
+                return
+            await home.send(f'The {currentTheme.expeditionName} is now full. The time to vote on if it should be allowed to pass has come.')
+            await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, client, noMentions)
 
     async def passExpo(ctx, currentGame, home):
         if home == ctx.message.channel and currentGame.online and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
@@ -236,6 +249,8 @@ class expoProposalFunctions:
     async def clearExpo(ctx, currentGame, home, prefix, currentTheme):
         if home == ctx.message.channel and currentGame.online and currentGame.currentExpo.currentlyPicking and currentGame.currentExpo.commander.user == ctx.message.author:
             currentGame.currentExpo.clearExpedition()
+            if currentGame.kitzTarget in currentGame.livingPlayers and currentGame.kitzRound == currentGame.currentRound:
+                currentGame.currentExpo.addMember(currentGame.kitzTarget)
             embed = await embedBuilder.pickExpoMember(currentGame, currentTheme)
             await home.send(embed=embed)
             await home.send(f'Your {currentTheme.expeditionTeam} proposal has been reset.')
@@ -429,6 +444,13 @@ class expoProposalFunctions:
 
     async def pyxisTakeover(currentGame, currentTheme, home, client):
         await webhookManager.pyxisWebhook(currentGame, currentTheme, home, client)
+
+    async def kitzInterrupt(currentGame, currentTheme, home, client):
+        Kitz = await searchFunctions.roleIDToPlayer(currentGame, 'Kitz')
+        if currentGame.kitzTarget != None:
+            await webhookManager.kitzWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client, Kitz)
+        else:
+            await webhookManager.kitzCancelWebhook(currentGame, currentGame.currentTheme, currentGame.home, currentGame.client, Kitz)
 
 
                 

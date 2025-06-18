@@ -88,7 +88,7 @@ class Game:
         self.hangeWiretapped = None
         self.playersOnExpos = []
         self.mikasaGuarded = None
-        self.annieMessage = None
+        self.annieRounds = []
         self.warhammerAbility = None
         self.moblitPlayer = None
         self.moblitRole = None
@@ -102,6 +102,8 @@ class Game:
         self.blackFired = False
         self.sevenBalance = False
         self.blackoutRound = None
+        self.kitzTarget = None
+        self.kitzRound = None
 
         for player in players:
             self.livingPlayers.append(player)
@@ -534,11 +536,20 @@ class Game:
             if player not in self.playersOnExpos:
                 self.playersOnExpos.append(player)
 
-    def changeAnnieMessage(self, msg):
-        self.annieMessage = msg
 
     def clearWarhammmerAbility(self):
         self.warhammerAbility = None
+
+    def annieScream(self):
+        self.annieRounds.append(self.currentRound)
+
+    def setKitz(self, player):
+        self.kitzTarget = player
+        if player == None:
+            self.kitzRound = None
+        else:
+            self.kitzRound = self.currentRound
+        self.currentExpo.activateKitz()
 
                     
         

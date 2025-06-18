@@ -649,22 +649,15 @@ class discordViewBuilder:
                         annieModal.add_item(annieInput)
                         async def processAnnieInput(newInteraction):
                             if await discordViewBuilder.isInteractionIntended(Annie, newInteraction):
-                                currentGame.changeAnnieMessage(annieInput.value)
-                                await interaction.message.edit(content = 'Your Message has been set.')
-                                await newInteraction.response.defer()
+                                if currentGame.currentRound not in currentGame.annieRounds:
+                                    await newInteraction.response.defer()
+                                    await interaction.message.edit(content = 'Your Message will soon be sent.', view=None)
+                                    await webhookManager.processAnnie(currentGame, Annie, annieInput.value)
+                                    
                         annieModal.on_submit = processAnnieInput
                         await interaction.response.send_modal(annieModal)
                 annieButton.callback = processAnnieButton
                 returnedView.add_item(annieButton)
-
-                cancelButton = Button(label = 'Cancel Scream', emoji = str('✖️'), style=discord.ButtonStyle.grey)
-                async def processCancelButton(interaction):
-                    if await discordViewBuilder.isInteractionIntended(Annie, interaction):
-                        currentGame.changeAnnieMessage(None)
-                        await interaction.message.edit(content = 'You will no longer send a message.')
-                        await interaction.response.defer()
-                cancelButton.callback = processCancelButton
-                returnedView.add_item(cancelButton)
         return returnedView
     
     @staticmethod
@@ -853,6 +846,47 @@ class discordViewBuilder:
         ankaDemoteSelection.callback = processAnkaSelection
         returnedView.add_item(ankaDemoteSelection)
 
+
+        return returnedView
+    
+    @staticmethod
+    async def kitzView(currentGame, Kitz, kitzFunction):
+        returnedView = View()
+        
+        if Kitz.role.abilityActive:
+            kitzSelection = Select(placeholder='Choose who to order!', min_values=1, max_values=1)
+            for player in currentGame.livingPlayers:
+                kitzSelection.add_option(label = f'{player.user.name}', emoji=Kitz.role.secondaryEmoji)
+
+            async def processKitzSelection(interaction):
+                if await discordViewBuilder.isInteractionIntended(Kitz, interaction):
+                    if currentGame.online and interaction.user == Kitz.user and Kitz.role.abilityActive and Kitz in currentGame.livingPlayers and currentGame.currentExpo.currentlyPicking:
+                        selection = str(kitzSelection.values[0])
+                        for player in currentGame.livingPlayers:
+                            if player.user.name == selection:
+                                selectedPlayer = player
+                                break
+                        if Kitz.role.id == 'Kitz':
+                            await kitzFunction(currentGame, Kitz, selectedPlayer)
+                        await interaction.message.edit(content = f'You have chosen to order in: {player.user.name}', view=None)
+                        await interaction.response.defer()
+            kitzSelection.callback = processKitzSelection
+            returnedView.add_item(kitzSelection)
+
+
+        elif currentGame.kitzTarget != None:
+            cancelButton = Button(emoji=str('❌'), style=discord.ButtonStyle.grey, label='Cancel Order')
+            async def processCancel(interaction):
+                if await discordViewBuilder.isInteractionIntended(Kitz, interaction):
+                    if currentGame.online and interaction.user == Kitz.user and not Kitz.role.abilityActive and Kitz in currentGame.livingPlayers and currentGame.currentExpo.currentlyPicking and currentGame.kitzTarget != None:
+                        await kitzFunction(currentGame, Kitz, None)
+                        await interaction.message.edit(content = f'You have chosen to cancel your order.', view=None)
+                        await interaction.response.defer()
+            cancelButton.callback = processCancel
+            returnedView.add_item(cancelButton)
+
+        if len(returnedView.children) == 0:
+            return None
 
         return returnedView
     

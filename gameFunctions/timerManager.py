@@ -83,7 +83,7 @@ class timerManager:
         return {'timerValue' : timerValue, 'breakoutCondition' : breakoutCondition, 'timerMessage' : timerMessage}
     
     async def pickWillBreakOut(currentGame, args=[]):
-        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or currentGame.currentExpo.warhammerActivated == 'Erwin' or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or (currentGame.currentExpo.commander not in currentGame.commanderOrder) or currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) or currentGame.exposOver:
+        if len(currentGame.currentExpo.expeditionMembers) == currentGame.currentExpo.size or currentGame.currentExpo.passed or currentGame.currentExpo.erwinActivated or currentGame.currentExpo.kitzActivated or currentGame.currentExpo.warhammerActivated == 'Erwin' or (currentGame.porcoGagged == currentGame.currentExpo.commander and currentGame.currentExpo.erwinActivated == False) or (currentGame.currentExpo.commander not in currentGame.commanderOrder) or currentGame.currentExpo.pyxisTrial != None or (type(currentGame.currentExpo.warhammerActivated) == dict and 'Pyxis' in currentGame.currentExpo.warhammerActivated) or currentGame.exposOver:
             return True
         return False
     

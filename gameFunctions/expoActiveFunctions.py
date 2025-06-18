@@ -132,7 +132,7 @@ class expoActiveFunctions:
     
     async def processKeith(currentGame, currentTheme, result):
         Keith = await searchFunctions.roleIDToPlayer(currentGame, 'Keith')
-        if Keith != None and currentGame.summonedRole != None and result == 'y':
+        if Keith != None and currentGame.summonedRole != None and (result == 'y' or (currentGame.roundFails == 2 and currentGame.roundWins == 0)):
             newRoleDict = getattr(currentTheme, currentGame.summonedRole)
             newRole = Role(newRoleDict)
             newRole.resolveEmojis(currentGame.client)

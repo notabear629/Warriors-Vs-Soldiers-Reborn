@@ -192,6 +192,42 @@ class embedBuilder:
         returnedEmbed.add_field(name = currentTheme.statusExpeditions, value = expeditionString, inline = False)
         return returnedEmbed
     
+    async def buildHistoryEmbed(currentGame):
+        currentTheme = currentGame.currentTheme
+
+        buildDescription = f'It is currently Round **{currentGame.currentRound}**, there have been **{currentGame.roundWins}** passed {currentTheme.expeditionPlural} and **{currentGame.roundFails}** sabotaged {currentTheme.expeditionPlural}.'
+
+        if currentGame.roundFails == 3:
+            selectedColor = currentTheme.lostColor
+        elif currentGame.roundFails > currentGame.roundWins:
+            selectedColor = currentTheme.losingColor
+        elif currentGame.roundFails == currentGame.roundWins:
+            selectedColor = currentTheme.neutralColor
+        else:
+            selectedColor = currentTheme.winningColor
+        returnedEmbed = discord.Embed(title = f'{currentTheme.expeditionName} History', description=buildDescription, color=selectedColor)
+
+        expeditionString = ''
+        for i in range(currentGame.roundFails + currentGame.roundWins):
+            x = i + 1
+            expeditionString += f'{currentTheme.expeditionName} {x}: '
+            if x in currentGame.failedRounds:
+                expeditionString += f'{currentTheme.emojiSabotageExpedition} - '
+            if x in currentGame.passedRounds:
+                expeditionString += f'{currentTheme.emojiPassExpedition} - '
+            for player in currentGame.expeditionHistory[i].expeditionMembers:
+                expeditionString += f'**{player.user.name}**'
+                if player != currentGame.expeditionHistory[i].expeditionMembers[len(currentGame.expeditionHistory[i].expeditionMembers)-1]:
+                    expeditionString += f', '
+            expeditionString += '\n\n'
+
+        if expeditionString == '':
+            expeditionString = f'`There is no {currentTheme.expeditionName} History`'
+
+        returnedEmbed.add_field(name = f'', value=expeditionString)
+
+        return returnedEmbed
+    
     async def buildCurrentRoles(currentGame, currentTheme):
         returnedEmbed = discord.Embed(title = 'Current list of roles in game', color = currentTheme.rolesEmbedColor)
         soldierList = ''
@@ -863,6 +899,12 @@ class embedBuilder:
             for killer, causeOfDeath in player.killedBy.items():
                 returnedEmbed.add_field(name = f'**{player.role.emoji}{player.user.name}{player.role.emoji}**', value = f'Killed By {killer.role.emoji}`{killer.user.name}`{killer.role.emoji}', inline=True)
         returnedEmbed.set_thumbnail(url = currentTheme.deadThumbnail)
+        return returnedEmbed
+    
+    async def annieEmbed(currentGame, Annie, msg):
+        currentTheme = currentGame.currentTheme
+        returnedEmbed = discord.Embed(title= f'❗ Scream Detected ❗', description=msg, color = currentTheme.warriorColor)
+        returnedEmbed.set_thumbnail(url=currentGame.currentTheme.warriorThumbnail)
         return returnedEmbed
     
     async def moblitSetEmbed(currentGame, currentTheme):

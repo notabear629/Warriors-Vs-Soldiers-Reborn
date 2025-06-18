@@ -77,6 +77,7 @@ class defaultGameTheme:
     statusExpeditions = 'Expedition Info'
 
     expeditionName = 'Expedition'
+    expeditionPlural = 'Expeditions'
     expoMembersName = 'members'
 
     executionName = 'Execution'
@@ -207,6 +208,7 @@ class defaultGameTheme:
     greenFiredMessage = 'https://i.imgur.com/QsobXCg.gif'
     redFiredMessage = 'https://i.imgur.com/dU8Qxne.gif'
     blackFiredMessage = 'https://i.imgur.com/D6aqnNM.gif'
+    kitzCancelMessage = 'Ugh, fine! You can stand down!'
 
     #Other role messages
     flochMessageEren = 'Eren Yeager is on the expedition team!'
@@ -665,11 +667,11 @@ class defaultGameTheme:
 
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'You are responsible for training the Soldiers of Paradis! As such, you have many students that trained under you to call upon. Use `{prefix}summon` to step aside, and allow them to take your place. (This will make it so that you can choose any Soldier role to morph into that isn\'t already present in the game. Your role will change upon a passed expedition.)\n\n'
+        roleDict['roleMessage'] = f'You are responsible for training the Soldiers of Paradis! As such, you have many students that trained under you to call upon. Use `{prefix}summon` to step aside, and allow them to take your place. (This will make it so that you can choose any Soldier role to morph into that isn\'t already present in the game. Your role will change upon a passed expedition, or upon the circumstance the Soldiers go down 0-2)\n\n'
 
         roleDict['gameRole'] = ':man_teacher:Instructor:man_teacher:'
 
-        roleDict['helpInfo'] = 'Keith is the instructor for the cadet corps! As such, he has made many connections with his students. As he himself, is a mere bystander, he has the ability to leave the battlefield, calling one of his students to take his place. This effectively means, that the player with this role can change their role to any Soldier role not already present in the game. Their role will not be changed until the next passed round\'s results are read, however.'
+        roleDict['helpInfo'] = 'Keith is the instructor for the cadet corps! As such, he has made many connections with his students. As he himself, is a mere bystander, he has the ability to leave the battlefield, calling one of his students to take his place. This effectively means, that the player with this role can change their role to any Soldier role not already present in the game. Their role will not be changed until the next passed round\'s results are read, however. (Or until the Soldiers go down 0-2)'
 
     class Zachary:
         roleDict = {'roleID' : 'Zachary'}
@@ -1131,6 +1133,35 @@ class defaultGameTheme:
 
         roleDict['helpInfo'] = f'Mina is a new cadet to the Paradisian Military! As such... She can\'t really do anything besides fire her signal flare gun. But she CAN do that! She has three colors of smoke cannisters, Green, Red, and Black, with one cannister of each variant. She can use `{prefix}smoke` to fire the various signals to make signals for her team!'
 
+
+    class Kitz:
+        roleDict = {'roleID' : 'Kitz'}
+
+        roleDict['name'] = 'Kitz Woermann'
+
+        roleDict['shortName'] = 'Kitz'
+
+        roleDict['team'] = 'Soldiers'
+
+        roleDict['rumblingTeam'] = 'yeageristBench'
+
+        roleDict['isTitan'] = True
+
+        roleDict['emoji'] = 1384672380978204732
+
+        roleDict['secondaryEmoji'] = None
+
+        roleDict['imageURL'] = None
+
+        roleDict['secondaryImageURL'] = None
+
+        roleDict['roleMessage'] = f'You have some authority, but are an absolute freakin\' coward! Once per game, while Expeditions are being picked, you can use the `{prefix}order` command to order someone onto the expedition, forcing them onto the expedition! If you regret your choice, you may use the same command to cancel your order.\n\n'
+
+        roleDict['gameRole'] = ':chicken:Cowardly Commander:chicken:'
+
+        roleDict['helpInfo'] = f'Kitz is an absolute freaking chicken! However, thankfully for him, he does have a position of power. As such, once per game, he can use the `{prefix}order` command to choose one individual (including himself) to be forced into being picked for the Expedition, with all expo choices automatically starting with that player until the round is over.'
+
+    
     class Soldier:
         roleDict = {'roleID' : 'Soldier'}
 
@@ -1289,11 +1320,11 @@ class defaultGameTheme:
         
         roleDict['secondaryImageURL'] = None
 
-        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use the `{prefix}scream` command to send a message to all of your Warrior comrades upon the next time results are read! When you use this ability, an alert will be shown in the home channel.\n\n'
+        roleDict['roleMessage'] = f'Your titan has a unique screaming ability! In order to use it, use the `{prefix}scream` command to send a message to all of your Warrior comrades up to once per round! When you use this ability, an alert will be shown in the home channel.\n\n'
 
         roleDict['gameRole'] = ':speaking_head:Screaming Titan:speaking_head:'
 
-        roleDict['helpInfo'] = 'Annie is the owner of the Female Titan! One of this titan\'s abilities is its scream can be used to attract titans. However, it can also be used to convey hidden messages! Once per game, Annie can send ONE message to all of the Warriors, and the Soldiers will only know that a message was sent, but not what it was!'
+        roleDict['helpInfo'] = 'Annie is the owner of the Female Titan! One of this titan\'s abilities is its scream can be used to attract titans. However, it can also be used to convey hidden messages! Once per round, Annie can send a message to all of the Warriors, and the Soldiers will only know that a message was sent, but not what it was!'
 
     class Porco:
         roleDict = {'roleID' : 'Porco'}
@@ -1994,6 +2025,9 @@ class defaultGameTheme:
             return f'**{currentGame.demotedPlayer.user.mention}**, you have been demoted!'
         else:
             return f'**{currentGame.warhammerAbility['Anka'].user.mention}**, you have been demoted!'
+        
+    def getKitzMessage(currentGame):
+        return f'Y-y-y-y-you there, **{currentGame.kitzTarget.user.mention}**, fight in my stead!'
     
     def getVictoriousWarriors(currentGame, currentTheme):
         victoriousWarriors = []

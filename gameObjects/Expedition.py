@@ -48,11 +48,12 @@ class Expedition:
         self.flownIn = False
         self.frecklemirMauled = None
         self.ksaverBlackout = False
+        self.kitzActivated = False
 
     def changeCommander(self, commander):
         self.commander = commander
         
-    def resetExpo(self):
+    def resetExpo(self, currentGame):
         self.expeditionMembers = []
         self.currentlyPicking = True
         self.passed = False
@@ -87,6 +88,10 @@ class Expedition:
         self.flownIn = False
         self.frecklemirMauled = None
         self.ksaverBlackout = False
+        self.kitzActivated = False
+
+        if currentGame.kitzRound == currentGame.currentRound and currentGame.kitzTarget in currentGame.livingPlayers:
+            self.addMember(currentGame.kitzTarget)
 
     def fillUp(self):
         self.filledUp = True
@@ -373,6 +378,9 @@ class Expedition:
 
     def changeWarhammerAbility(self, ability):
         self.warhammerActivated = ability
+
+    def activateKitz(self):
+        self.kitzActivated = True
 
 
         

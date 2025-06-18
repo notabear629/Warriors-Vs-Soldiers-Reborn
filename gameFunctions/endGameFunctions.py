@@ -37,6 +37,11 @@ class endGameFunctions:
         if currentGame.currentRules.noCoordinate:
             await endGameFunctions.noCoordinateWin(currentGame, currentTheme, home)
             return
+        
+        if currentGame.currentExpo != None and currentGame.roundWins == 3:
+            currentGame.expeditionHistory.append(currentGame.currentExpo)
+            currentGame.previousExpeditionCounts.append(currentGame.currentExpo.size)
+
         currentGame.activateKidnap()
         await home.send(currentTheme.basementMessage)
         await home.send(await endGameFunctions.getWarriorList(currentGame, currentTheme))
