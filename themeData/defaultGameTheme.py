@@ -1145,7 +1145,7 @@ class defaultGameTheme:
 
         roleDict['rumblingTeam'] = 'yeageristBench'
 
-        roleDict['isTitan'] = True
+        roleDict['isTitan'] = False
 
         roleDict['emoji'] = 1384672380978204732
 
