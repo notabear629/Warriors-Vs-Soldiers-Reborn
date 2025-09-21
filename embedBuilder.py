@@ -931,6 +931,24 @@ class embedBuilder:
         else:
             returnedEmbed.set_thumbnail(url = Moblit.role.imageURL)
         return returnedEmbed
+    
+    async def scanEmbed(currentGame, scanPlayer):
+        if scanPlayer in currentGame.warriors:
+            color = currentGame.currentTheme.warriorColor
+            if scanPlayer.role.imageURL is not None:
+                thumb_url = scanPlayer.role.imageURL
+            else:
+                thumb_url = scanPlayer.role.emoji.url
+            desc = f'Our scan has shown that **{scanPlayer.user.name}**\'s true identity is {scanPlayer.role.emoji}{scanPlayer.role.name}{scanPlayer.role.emoji}!'
+
+        else:
+            color = currentGame.currentTheme.soldierColor
+            thumb_url = currentGame.currentTheme.soldierThumbnail
+            desc = f'Our scan has shown that **{scanPlayer.user.name}** is fighting on behalf of the {currentGame.currentTheme.soldierPlural}!'
+        
+        returnedEmbed = discord.Embed(title = f'Scanning of **{scanPlayer.user.name}**', description=desc, color = color)
+        returnedEmbed.set_thumbnail(url=thumb_url)
+        return returnedEmbed
 
     async def blessingEmbed(currentGame, currentTheme, checkedPlayer):
         if checkedPlayer in currentGame.soldiers:

@@ -586,6 +586,31 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
+    async def scanVoteView(currentGame, voter):
+        returnedView = View()
+        scanVoteSelection = Select(placeholder= 'Choose Player to be Investigated')
+        for player in currentGame.playersOnExpos:
+            if player not in currentGame.scannedPlayers and player in currentGame.livingPlayers:
+                scanVoteSelection.add_option(label = f'{player.user.name}', emoji = str('❓'))
+        async def processScanVoteSelection(interaction):
+            if await discordViewBuilder.isInteractionIntended(voter, interaction):
+                if currentGame.online and voter in currentGame.livingPlayers:
+                    selection = str(scanVoteSelection.values[0])
+                    for player in currentGame.livingPlayers:
+                        if player.user.name == selection:
+                            selectedPlayer = player
+                            break
+                    currentGame.currentExpo.scanVote(voter, selectedPlayer)
+                    await interaction.message.edit(content = f'You have voted to scan **{player.user.name}**.', view=None)
+                    await interaction.response.defer()
+                    
+        scanVoteSelection.callback = processScanVoteSelection
+        returnedView.add_item(scanVoteSelection)
+        return returnedView
+
+
+    
+    @staticmethod
     async def mikasaGuardView(currentGame, currentTheme, Mikasa):
         returnedView = View()
         mikasaSelect = Select(placeholder=f'Choose Player to Guard')

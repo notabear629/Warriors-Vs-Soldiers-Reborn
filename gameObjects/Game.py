@@ -32,9 +32,11 @@ class Game:
         self.deadWarriors = []
         self.livingWildcards = []
         self.deadWildcards = []
+        self.scannedPlayers = []
         self.currentRound = 1
         self.passedRounds = []
         self.failedRounds = []
+        self.scannedRounds = []
         self.previousExpeditionCounts = []
         self.roundWins = 0
         self.roundFails = 0
@@ -550,6 +552,23 @@ class Game:
         else:
             self.kitzRound = self.currentRound
         self.currentExpo.activateKitz()
+
+    def scanRound(self):
+        self.scannedRounds.append(self.currentRound)
+
+        topVotedPlayers = []
+        curr_max_value = 0
+        for key, value in self.currentExpo.scanVotes.items():
+            if value > curr_max_value:
+                topVotedPlayers = [key]
+                curr_max_value = value
+            if value == curr_max_value:
+                topVotedPlayers.append(key)
+
+        scannedPlayer = random.choice(topVotedPlayers)
+        self.scannedPlayers.append(scannedPlayer)
+
+        return scannedPlayer
 
                     
         

@@ -49,6 +49,8 @@ class Expedition:
         self.frecklemirMauled = None
         self.ksaverBlackout = False
         self.kitzActivated = False
+        self.scanVotes = {}
+        self.scanVoted = []
 
     def changeCommander(self, commander):
         self.commander = commander
@@ -89,6 +91,8 @@ class Expedition:
         self.frecklemirMauled = None
         self.ksaverBlackout = False
         self.kitzActivated = False
+        self.scanVotes = {}
+        self.scanVoted = []
 
         if currentGame.kitzRound == currentGame.currentRound and currentGame.kitzTarget in currentGame.livingPlayers:
             self.addMember(currentGame.kitzTarget)
@@ -381,6 +385,13 @@ class Expedition:
 
     def activateKitz(self):
         self.kitzActivated = True
+
+    def init_scanVote(self, input_dict):
+        self.scanVotes = input_dict
+
+    def scanVote(self, voter, vote):
+        self.scanVoted.append(voter)
+        self.scanVotes[vote] = self.scanVotes[vote] + 1
 
 
         

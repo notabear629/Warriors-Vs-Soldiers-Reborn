@@ -162,6 +162,7 @@ class expoProposalFunctions:
             await expoProposalFunctions.beginVoting(currentGame, home, prefix, currentTheme, currentGame.client, noMentions)
             return
         currentGame.currentExpo.resetExpo(currentGame)
+
         await expoProposalFunctions.showPlayers(currentGame, currentTheme, noMentions, home)
         commanderMessage = f'{currentGame.currentExpo.commander.user.mention}, you are now the {currentTheme.commanderName}! Use `{prefix}pick @mention` to pick your {currentTheme.expeditionTeamMembers} or use `{prefix}pass` to skirt your responsibility and allow the next player to propose a new {currentTheme.expeditionTeam}. You may empty your picks and start over by using `{prefix}clear`'
         await home.send(commanderMessage)
@@ -277,6 +278,44 @@ class expoProposalFunctions:
                     currentGame.currentExpo.voteExpo(currentGame, player, 'a')
         if currentGame.exposOver == False:
             await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
+
+    async def beginScanVote(currentGame, home, currentTheme, client):
+        checkList = currentGame.playersOnExpos.copy()
+        for player in currentGame.players:
+            if player in checkList and (player not in currentGame.livingPlayers or player in currentGame.scannedPlayers):
+                checkList.remove(player)
+
+        if len(checkList) < 1:
+            return
+        
+        scanDict = {}
+        for player in checkList:
+            scanDict[player] = 0
+
+        currentGame.currentExpo.init_scanVote(scanDict)
+
+        scanMessage = f'After a successful {currentTheme.expeditionName}, we now have the resources available to confirm the loyalty of a previous {currentTheme.expeditionTeamMember}. Voting will now begin on who should be investigated.'
+        await home.send(scanMessage)
+
+        for player in currentGame.livingPlayers:
+            user = databaseManager.searchForUser(player.user)
+            userChannel = client.get_channel(user['channelID'])
+            view = await discordViewBuilder.scanVoteView(currentGame, player)
+            await userChannel.send(f'{player.user.mention}, vote on who to investigate!', view=view)
+
+        timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Scan')
+        if timeout == None:
+            return
+        elif timeout:
+            await home.send(f'The time to vote on who to investigate has ran out! The votes will be tallied among those who submitted a vote.')
+        else:
+            pass
+
+        scannedPlayer = currentGame.scanRound()
+        embed = await embedBuilder.scanEmbed(currentGame, scannedPlayer)
+        await home.send(embed=embed)
+
+
 
     
     async def voteExpo(currentGame, player, client, currentTheme, home, vote):
@@ -407,6 +446,8 @@ class expoProposalFunctions:
         embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
         await home.send(embed=embed)
         await webhookManager.processNewRoundWebhooks(currentGame, currentTheme, home, client)
+        if currentGame.currentRules.playerCountBalance and currentGame.currentRound - 1 in currentGame.passedRounds and currentGame.currentRound not in currentGame.scannedRounds:
+            await expoProposalFunctions.beginScanVote(currentGame, home, currentTheme, client)
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
 

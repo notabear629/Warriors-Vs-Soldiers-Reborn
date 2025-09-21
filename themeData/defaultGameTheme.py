@@ -114,6 +114,7 @@ class defaultGameTheme:
 
     #Expedition aesthetics
     expeditionTeamMembers = 'Expedition Team Members'
+    expeditionTeamMember = 'Expedition Team Member'
     expeditionTeam = 'Expedition Team'
     emojiPassExpedition = str('✅')
     emojiSabotageExpedition = str('❌')
@@ -219,6 +220,7 @@ class defaultGameTheme:
     timeoutCoreEnd = ' left to'
     timeoutPick = ' pick your Expedition Team!'
     timeoutVote = ' vote on the Expedition Team!'
+    timeoutScan = ' vote on who to Scan!'
     timeoutExecution = ' vote on the Execution!'
     timeoutExpo = ' act on the Expedition!'
     timeoutKidnap = ' kidnap the Coordinate!'

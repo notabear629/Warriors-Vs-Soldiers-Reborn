@@ -60,6 +60,11 @@ class timerManager:
             else:
                 timerMessage = currentTheme.timeoutVote
 
+        elif context == 'Scan':
+            timerValue = currentGame.currentRules.voteExpeditionTimer
+            breakoutCondition = timerManager.scanWillBreakOut
+            timerMessage = currentTheme.timeoutScan
+
         elif context == 'Expo':
             timerValue = currentGame.currentRules.actExpeditionTimer
             breakoutCondition = timerManager.expoWillBreakOut
@@ -89,6 +94,11 @@ class timerManager:
     
     async def voteWillBreakOut(currentGame, args=[]):
         if len(currentGame.currentExpo.eligibleVoters) == len(currentGame.currentExpo.voted) or currentGame.exposOver:
+            return True
+        return False
+    
+    async def scanWillBreakOut(currentGame, args=[]):
+        if len(currentGame.currentExpo.scanVoted) == len(currentGame.livingPlayers):
             return True
         return False
     
