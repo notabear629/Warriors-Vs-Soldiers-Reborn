@@ -283,10 +283,10 @@ class expoProposalFunctions:
         checkList = []
 
         for round in currentGame.passedRounds:
-            for player in round.expeditionMembers:
+            for player in currentGame.expeditionHistory[round-1].expeditionMembers:
                 if player not in checkList:
                     checkList.append(player)
-                    
+
         for player in currentGame.players:
             if player in checkList and (player not in currentGame.livingPlayers or player in currentGame.scannedPlayers):
                 checkList.remove(player)
@@ -306,7 +306,7 @@ class expoProposalFunctions:
         for player in currentGame.livingPlayers:
             user = databaseManager.searchForUser(player.user)
             userChannel = client.get_channel(user['channelID'])
-            view = await discordViewBuilder.scanVoteView(currentGame, player)
+            view = await discordViewBuilder.scanVoteView(currentGame, player, checkList)
             await userChannel.send(f'{player.user.mention}, vote on who to investigate!', view=view)
 
         timeout = await timerManager.setTimer(currentGame, home, currentTheme, 'Scan')

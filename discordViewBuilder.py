@@ -586,10 +586,10 @@ class discordViewBuilder:
         return returnedView
     
     @staticmethod
-    async def scanVoteView(currentGame, voter):
+    async def scanVoteView(currentGame, voter, checkList):
         returnedView = View()
         scanVoteSelection = Select(placeholder= 'Choose Player to be Investigated')
-        for player in currentGame.playersOnExpos:
+        for player in checkList:
             if player not in currentGame.scannedPlayers and player in currentGame.livingPlayers:
                 scanVoteSelection.add_option(label = f'{player.user.name}', emoji = str('❓'))
         async def processScanVoteSelection(interaction):
