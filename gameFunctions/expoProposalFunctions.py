@@ -446,7 +446,7 @@ class expoProposalFunctions:
         embed = await embedBuilder.buildStatusEmbed(currentGame, currentTheme, futureExpoCounts)
         await home.send(embed=embed)
         await webhookManager.processNewRoundWebhooks(currentGame, currentTheme, home, client)
-        if currentGame.currentRules.sevenBalance and currentGame.currentRound - 1 in currentGame.passedRounds and currentGame.currentRound not in currentGame.scannedRounds:
+        if currentGame.sevenBalance and currentGame.currentRound - 1 in currentGame.passedRounds and currentGame.currentRound not in currentGame.scannedRounds:
             await expoProposalFunctions.beginScanVote(currentGame, home, currentTheme, client)
         await expoProposalFunctions.resetExpedition(currentGame, currentTheme, noMentions, home, prefix)
 
