@@ -280,7 +280,13 @@ class expoProposalFunctions:
             await expoProposalFunctions.showVotingResults(currentGame, currentTheme, home, noMentions, prefix, client)
 
     async def beginScanVote(currentGame, home, currentTheme, client):
-        checkList = currentGame.playersOnExpos.copy()
+        checkList = []
+
+        for round in currentGame.passedRounds:
+            for player in round.expeditionMembers:
+                if player not in checkList:
+                    checkList.append(player)
+                    
         for player in currentGame.players:
             if player in checkList and (player not in currentGame.livingPlayers or player in currentGame.scannedPlayers):
                 checkList.remove(player)
